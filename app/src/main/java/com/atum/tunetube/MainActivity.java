@@ -9,10 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.atum.tunetube.youtube.YoutubeHttp;
 import com.github.axet.vget.VGet;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
-import com.madturnip.atum.testtube.R;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             try
                             {
+                                YoutubeHttp http = new YoutubeHttp();
+                                //open YoutubeMusic page
+                                http.openUrl("https://www.youtube.com/playlist?list=PLqG_Qt4vmaV0x8qTPdcrUyNQ4MglIIxHB");
+
                                 VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
                                 /*File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                                 System.out.println(downloadDir);
