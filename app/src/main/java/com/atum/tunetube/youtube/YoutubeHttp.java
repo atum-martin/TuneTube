@@ -3,6 +3,9 @@ package com.atum.tunetube.youtube;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
@@ -13,6 +16,10 @@ import java.util.List;
  */
 
 public class YoutubeHttp {
+
+    public YoutubeHttp(){
+        CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
+    }
 
     public List<String> openUrl(String url){
         List<String> output = new LinkedList<>();
