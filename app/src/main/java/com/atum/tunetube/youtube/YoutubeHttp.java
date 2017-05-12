@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by atum-martin on 12/05/2017.
@@ -12,7 +14,8 @@ import java.net.URL;
 
 public class YoutubeHttp {
 
-    public void openUrl(String url){
+    public List<String> openUrl(String url){
+        List<String> output = new LinkedList<>();
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestProperty("accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
@@ -28,11 +31,12 @@ public class YoutubeHttp {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while((line = br.readLine()) != null){
                 System.out.println(line);
+                output.add(line);
             }
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return output;
     }
 }
