@@ -8,7 +8,7 @@ import java.util.List;
 public class YoutubePlaylist {
 
     public void get(YoutubeHttp http){
-        List<String> content = http.openUrl("");
+        List<String> content = http.openUrl("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
         for(String line : content){
             if(line.contains("yt-lockup-title")){
                 int index = line.indexOf("<a");
@@ -18,7 +18,7 @@ public class YoutubePlaylist {
                 index = line.indexOf("\"");
                 String videoId = line.substring(0, index);
                 String title = line.substring(line.indexOf(">")+1,line.indexOf("</a>"));
-
+                System.out.println(videoId+" "+title);
             }
         }
     }

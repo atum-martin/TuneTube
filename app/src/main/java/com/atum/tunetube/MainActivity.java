@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.atum.tunetube.youtube.YoutubeHttp;
+import com.atum.tunetube.youtube.YoutubePlaylist;
 import com.github.axet.vget.VGet;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
@@ -38,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
                             try
                             {
                                 YoutubeHttp http = new YoutubeHttp();
+                                YoutubePlaylist playlist = new YoutubePlaylist();
                                 //open YoutubeMusic page
                                 http.openUrl("https://www.youtube.com/playlist?list=PLqG_Qt4vmaV0x8qTPdcrUyNQ4MglIIxHB");
+                                playlist.get(http);
+                                if(true)
+                                    return;
 
                                 VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
                                 /*File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
