@@ -27,6 +27,10 @@ public class YoutubeLink {
         return track.trim();
     }
 
+    /**
+     * Returns all artists in the form of a list that collabrated on a track.
+     * @return
+     */
     public List<String> getArtists(){
         List<String> artists = new LinkedList<>();
         if(!title.contains("-"))
@@ -37,6 +41,13 @@ public class YoutubeLink {
         return artists;
     }
 
+    /**
+     * This function takes a string which is presumed to be entirly artists with no special
+     * characters and creates and list using various seperators to determine when a new artist
+     * begins.
+     * @param string The string you wish to be turned into a list of artists.
+     * @return A list of artists.
+     */
     private List<String> isArtistList(String string){
         List<String> artists = new LinkedList<>();
         String[] parts = string.split(",");
@@ -53,6 +64,11 @@ public class YoutubeLink {
         return artists;
     }
 
+    /**
+     * Uses the various acronyms to determine if an artist is featuring on the track.
+     * Then splits the result to determine if multiple artists are featuring.
+     * @return
+     */
     public List<String> getFeaturingArtist() {
         List<String> artists = new LinkedList<>();
         String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
@@ -72,6 +88,12 @@ public class YoutubeLink {
         return artists;
     }
 
+    /**
+     * Returns the first index that represents a special character. Its primary function is to spot
+     * opening brackets. i.e [ { (
+     * @param string
+     * @return
+     */
     private int getSpecialIndex(String string) {
         int index = -1;
         for(char c : string.toCharArray()){
@@ -85,6 +107,11 @@ public class YoutubeLink {
         return string.length();
     }
 
+    /**
+     * A list of exceptions to the rule from getSpecialIndex, generally represents punctuation marks.
+     * @param c
+     * @return
+     */
     private boolean characterException(char c) {
         char[] exceptions = new char[]{'\'', '’', ',', '&'};
         for(char exception : exceptions){
