@@ -1,9 +1,13 @@
 package com.atum.tunetube.youtube;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
- * Created by Admin on 13/05/2017.
+ * Created by atum-martin on 13/05/2017.
  */
 public class YoutubePlaylist {
 
@@ -17,8 +21,14 @@ public class YoutubePlaylist {
                 line = line.substring(index+6);
                 index = line.indexOf("\"");
                 String videoId = line.substring(0, index);
-                String title = line.substring(line.indexOf(">")+1,line.indexOf("</a>"));
+                String title =  StringEscapeUtils.unescapeHtml4(line.substring(line.indexOf(">")+1,line.indexOf("</a>")));
                 System.out.println(videoId+" "+title);
+
+                YoutubeLink link = new YoutubeLink(videoId,title);
+                System.out.println("track: "+link.getTrackName());
+                if(link.getArtists().size() != 0)
+                  System.out.println("artist: "+link.getArtists().get(0));
+                System.out.println("featuring artist: "+link.getFeatureingArtist());
             }
         }
     }
