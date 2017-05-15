@@ -28,46 +28,55 @@ public class YoutubeLink {
     }
 
     public List<String> getArtists(){
-        List<String> artists = new LinkedList<String>();
+        List<String> artists = new LinkedList<>();
         if(!title.contains("-"))
             return artists;
         String primaryArtist = title.substring(0,title.indexOf("-")).trim();
-        if(primaryArtist.contains("&")){
-            String[] splits = primaryArtist.split("&");
-
-            artists.add(splits[0].trim());
-            artists.add(splits[1].trim());
-        } else {
-            artists.add(primaryArtist.trim());
-        }
-        String featuringArtist = getFeatureingArtist();
-        if(featuringArtist != null)
-            artists.add(featuringArtist);
+        artists.addAll(isArtistList(primaryArtist));
+        artists.addAll(getFeaturingArtist());
         return artists;
     }
 
-    public String getFeatureingArtist() {
-        String[] feat = new String[]{"ft", "feat", "featuring"};
+    private List<String> isArtistList(String string){
+        List<String> artists = new LinkedList<>();
+        String[] parts = string.split(",");
+        for(String artist : parts) {
+            if (artist.contains("&")) {
+                String[] splits = artist.split("&");
+
+                artists.add(splits[0].trim());
+                artists.add(splits[1].trim());
+            } else {
+                artists.add(artist.trim());
+            }
+        }
+        return artists;
+    }
+
+    public List<String> getFeaturingArtist() {
+        List<String> artists = new LinkedList<>();
+        String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
         for(String featuring : feat) {
             if (title.contains(featuring)) {
                 int index = title.indexOf(featuring)+featuring.length();
                 String artist = title.substring(index);
-                //featuring starts at the space
-                artist = artist.substring(artist.indexOf(" ")+1);
                 //at this point we want to look for commas and & symbols to make a list
+
                 int specialIndex = getSpecialIndex(artist);
-                artist = artist.substring(0,specialIndex);
-                return artist.trim();
+                artist = artist.substring(0,specialIndex).trim();
+                artists.addAll(isArtistList(artist));
+                break;
+                //return artist.trim();
             }
         }
-        return null;
+        return artists;
     }
 
     private int getSpecialIndex(String string) {
         int index = -1;
         for(char c : string.toCharArray()){
             index++;
-            if(c != ' ' && !Character.isLetterOrDigit(c) && !characterExpcetion(c)){
+            if(c != ' ' && !Character.isLetterOrDigit(c) && !characterException(c)){
                 if(index == 0)
                     continue;
                 return index;
@@ -76,8 +85,8 @@ public class YoutubeLink {
         return string.length();
     }
 
-    private boolean characterExpcetion(char c) {
-        char[] exceptions = new char[]{'\'', '’',};
+    private boolean characterException(char c) {
+        char[] exceptions = new char[]{'\'', '’', ',', '&'};
         for(char exception : exceptions){
             if(c == exception)
                 return true;

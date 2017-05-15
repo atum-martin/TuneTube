@@ -26,9 +26,9 @@ public class YoutubePlaylist {
 
                 YoutubeLink link = new YoutubeLink(videoId,title);
                 System.out.println("track: "+link.getTrackName());
-                if(link.getArtists().size() != 0)
-                  System.out.println("artist: "+link.getArtists().get(0));
-                System.out.println("featuring artist: "+link.getFeatureingArtist());
+                for(String artist : link.getArtists()) {
+                    System.out.println("artist: " + artist);
+                }
             }
         }
     }
