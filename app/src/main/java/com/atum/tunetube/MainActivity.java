@@ -1,5 +1,6 @@
 package com.atum.tunetube;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.atum.tunetube.dummy.DummyContent;
 import com.atum.tunetube.youtube.YoutubeHttp;
 import com.atum.tunetube.youtube.YoutubePlaylist;
 import com.github.axet.vget.VGet;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -31,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
+
+                   // Intent i = new Intent( MainActivity.this, VideoFragment.class);
+                   // startActivity(i);
 
                     //if(true)
                     //    break;
@@ -41,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
                                 YoutubeHttp http = new YoutubeHttp();
                                 YoutubePlaylist playlist = new YoutubePlaylist();
                                 //open YoutubeMusic page
-                                http.openUrl("https://www.youtube.com/playlist?list=PLqG_Qt4vmaV0x8qTPdcrUyNQ4MglIIxHB");
+                                //http.openUrl("https://www.youtube.com/playlist?list=PLqG_Qt4vmaV0x8qTPdcrUyNQ4MglIIxHB");
                                 playlist.get(http);
-                                if(true)
-                                    return;
+                                //if(true)
+                                //    return;
 
                                 VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
                                 /*File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
