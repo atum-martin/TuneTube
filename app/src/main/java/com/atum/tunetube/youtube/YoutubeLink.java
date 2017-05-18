@@ -113,7 +113,7 @@ public class YoutubeLink {
      * @return
      */
     private boolean characterException(char c) {
-        char[] exceptions = new char[]{'\'', '’', ',', '&'};
+        char[] exceptions = new char[]{'\'', '’', ',', '&', '-'};
         for(char exception : exceptions){
             if(c == exception)
                 return true;
