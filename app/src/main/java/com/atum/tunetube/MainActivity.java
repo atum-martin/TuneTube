@@ -45,11 +45,9 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             try
                             {
-                                YoutubeHttp http = new YoutubeHttp();
                                 YoutubePlaylist playlist = new YoutubePlaylist();
                                 //open YoutubeMusic page
-                                //http.openUrl("https://www.youtube.com/playlist?list=PLqG_Qt4vmaV0x8qTPdcrUyNQ4MglIIxHB");
-                                playlist.get(http);
+                                playlist.get("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
                                 //if(true)
                                 //    return;
 

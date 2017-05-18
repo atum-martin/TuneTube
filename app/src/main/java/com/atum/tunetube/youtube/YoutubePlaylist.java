@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,8 +12,9 @@ import java.util.List;
  */
 public class YoutubePlaylist {
 
-    public void get(YoutubeHttp http){
-        List<String> content = http.openUrl("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+    public List<YoutubeLink> get(String url){
+        List<String> content = YoutubeHttp.getSingleton().openUrl(url);
+        List<YoutubeLink> links = new LinkedList<>();
         for(String line : content){
             if(line.contains("yt-lockup-title")){
                 int index = line.indexOf("<a");
@@ -29,7 +31,9 @@ public class YoutubePlaylist {
                 for(String artist : link.getArtists()) {
                     System.out.println("artist: " + artist);
                 }
+                links.add(link);
             }
         }
+        return links;
     }
 }

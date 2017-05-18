@@ -17,8 +17,16 @@ import java.util.List;
 
 public class YoutubeHttp {
 
+    private static YoutubeHttp singleton = null;
+
     public YoutubeHttp(){
         CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
+    }
+
+    public static YoutubeHttp getSingleton() {
+        if(singleton == null)
+            singleton = new YoutubeHttp();
+        return singleton;
     }
 
     public List<String> openUrl(String url){
