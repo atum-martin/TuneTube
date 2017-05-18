@@ -8,6 +8,9 @@ import java.util.List;
  */
 
 public class YoutubeLink {
+
+    private static final String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
+
     private String videoId;
     private String title;
 
@@ -22,8 +25,10 @@ public class YoutubeLink {
             return title;
         String track = title.substring(title.indexOf("-")+1).trim();
         int specialIdx = getSpecialIndex(track);
-        if(specialIdx != 0)
+        if(specialIdx != 0){
+            //use case for ft should go here.
             track = track.substring(0,getSpecialIndex(track));
+        }
         return track.trim();
     }
 
@@ -71,7 +76,7 @@ public class YoutubeLink {
      */
     public List<String> getFeaturingArtist() {
         List<String> artists = new LinkedList<>();
-        String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
+
         for(String featuring : feat) {
             if (title.contains(featuring)) {
                 int index = title.indexOf(featuring)+featuring.length();

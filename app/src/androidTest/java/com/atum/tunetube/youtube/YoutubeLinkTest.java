@@ -24,6 +24,12 @@ public class YoutubeLinkTest {
     }
 
     @Test
+    public void testTrack1() throws Exception {
+        YoutubeLink link = new YoutubeLink("","Jason Derulo - Swalla (feat. Nicki Minaj & Ty Dolla $ign) (Official Music Video)");
+        Assert.assertEquals("Swalla", link.getTrackName());
+    }
+
+    @Test
     public void multipleFeatured1() throws Exception {
         YoutubeLink link = new YoutubeLink("","Jason Derulo - Swalla (feat. Nicki Minaj & Ty Dolla $ign) (Official Music Video)");
         List<String> artists = link.getArtists();
@@ -55,6 +61,12 @@ public class YoutubeLinkTest {
     }
 
     @Test
+    public void testTrack2() throws Exception {
+        YoutubeLink link = new YoutubeLink("","Major Lazer - Run Up (feat. PARTYNEXTDOOR & Nicki Minaj) (Official Lyric Video)");
+        Assert.assertEquals("Run Up", link.getTrackName());
+    }
+
+    @Test
     public void multipleArtists3() throws Exception {
         YoutubeLink link = new YoutubeLink("","Beyoncé - Hold Up");
         List<String> artists = link.getArtists();
@@ -62,6 +74,12 @@ public class YoutubeLinkTest {
         List<String> featuredArtists = link.getFeaturingArtist();
 
         Assert.assertArrayEquals(assertingValues, artists.toArray());
+    }
+
+    @Test
+    public void testTrack3() throws Exception {
+        YoutubeLink link = new YoutubeLink("","Beyoncé - Hold Up");
+        Assert.assertEquals("Hold Up", link.getTrackName());
     }
 
 
@@ -86,6 +104,12 @@ public class YoutubeLinkTest {
     }
 
     @Test
+    public void testTrack4() throws Exception {
+        YoutubeLink link = new YoutubeLink("","Clean Bandit - Rockabye ft. Sean Paul & Anne-Marie [Official Video]");
+        Assert.assertEquals("Rockabye", link.getTrackName());
+    }
+
+    @Test
     public void multipleArtists5() throws Exception {
         YoutubeLink link = new YoutubeLink("","Fifth Harmony - Worth It ft. Kid Ink");
         List<String> artists = link.getArtists();
@@ -103,5 +127,12 @@ public class YoutubeLinkTest {
         List<String> featuredArtists = link.getFeaturingArtist();
 
         Assert.assertArrayEquals(assertingValues, featuredArtists.toArray());
+    }
+
+
+    @Test
+    public void testTrack5() throws Exception {
+        YoutubeLink link = new YoutubeLink("","Fifth Harmony - Worth It ft. Kid Ink");
+        Assert.assertEquals("Worth It", link.getTrackName());
     }
 }
