@@ -24,12 +24,25 @@ public class YoutubeLink {
         if(!title.contains("-"))
             return title;
         String track = title.substring(title.indexOf("-")+1).trim();
+        //When obtaining the track name, you want to end the string at featuring or the first symbol you encounter.
         int specialIdx = getSpecialIndex(track);
+        int getFeatIdx = getFeaturingIndex(track);
+        if(getFeatIdx != -1 && getFeatIdx < specialIdx)
+            specialIdx = getFeatIdx;
         if(specialIdx != 0){
-            //use case for ft should go here.
-            track = track.substring(0,getSpecialIndex(track));
+            track = track.substring(0,specialIdx);
         }
         return track.trim();
+    }
+
+    private int getFeaturingIndex(String track) {
+        for(String featuring : feat) {
+            int idx = track.indexOf(featuring);
+            if (idx != -1) {
+                return idx;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -118,7 +131,7 @@ public class YoutubeLink {
      * @return
      */
     private boolean characterException(char c) {
-        char[] exceptions = new char[]{'\'', '’', ',', '&', '-'};
+        char[] exceptions = new char[]{'\'', '’', ',', '&', '-', '$'};
         for(char exception : exceptions){
             if(c == exception)
                 return true;

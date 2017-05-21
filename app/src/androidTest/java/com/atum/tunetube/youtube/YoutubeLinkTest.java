@@ -17,7 +17,7 @@ public class YoutubeLinkTest {
         YoutubeLink link = new YoutubeLink("","Jason Derulo - Swalla (feat. Nicki Minaj & Ty Dolla $ign) (Official Music Video)");
         List<String> artists = link.getArtists();
         //should be Ty Dolla $ign
-        String[] assertingValues = new String[]{"Jason Derulo","Nicki Minaj","Ty Dolla"};
+        String[] assertingValues = new String[]{"Jason Derulo","Nicki Minaj","Ty Dolla $ign"};
         List<String> featuredArtists = link.getFeaturingArtist();
 
         Assert.assertArrayEquals(assertingValues, artists.toArray());
@@ -34,7 +34,7 @@ public class YoutubeLinkTest {
         YoutubeLink link = new YoutubeLink("","Jason Derulo - Swalla (feat. Nicki Minaj & Ty Dolla $ign) (Official Music Video)");
         List<String> artists = link.getArtists();
         //should be Ty Dolla $ign
-        String[] assertingValues = new String[]{"Nicki Minaj","Ty Dolla"};
+        String[] assertingValues = new String[]{"Nicki Minaj","Ty Dolla $ign"};
         List<String> featuredArtists = link.getFeaturingArtist();
 
         Assert.assertArrayEquals(assertingValues, featuredArtists.toArray());
