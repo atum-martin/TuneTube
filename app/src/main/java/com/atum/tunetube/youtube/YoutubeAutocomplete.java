@@ -19,7 +19,7 @@ public class YoutubeAutocomplete {
         if(index == 1+query.length())
             return output;
         String json = javascript.substring(index);
-        int endIdx = json.indexOf("]],")+2;
+        int endIdx = json.lastIndexOf("]],")+2;
         //index returned -1
         if(endIdx == 1)
             return output;
@@ -29,6 +29,7 @@ public class YoutubeAutocomplete {
             JSONArray array = new JSONArray(json);
             for(int i = 0; i < array.length(); i++){
                 String term = getSearchTerm(array.getJSONArray(i));
+                System.out.println("suggestion: "+term);
                 if(term != null && !term.isEmpty())
                     output.add(term);
             }
