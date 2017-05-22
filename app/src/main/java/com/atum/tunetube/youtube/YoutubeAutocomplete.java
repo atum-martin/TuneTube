@@ -3,6 +3,8 @@ package com.atum.tunetube.youtube;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,8 +14,25 @@ import java.util.List;
 
 public class YoutubeAutocomplete {
 
+    public static List<String> getAutocompleteSuggestions(String query){
+        YoutubeHttp http = YoutubeHttp.getSingleton();
+        String url = null;
+        try {
+            url = "https://clients1.google.com/complete/search?client=youtube&hl=en&gl=us&sugexp=ytd2_arm_1&gs_rn=23&gs_ri=youtube&ds=yt&cp="+query.length()+"&gs_id=33&q="+ URLEncoder.encode(query,"UTF-8")+"&callback=google.sbox.p50";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        List<String> content = http.openUrl(url);
+        //http error
+        if (content.size() == 0)
+            return new LinkedList<String>();
+        //output should only be 1 line long.
+        String javascript = content.get(0);
+        return extractSuggestions(query, javascript);
+    }
+
     /**
-     * The purpose of this code is to return a List of strings representing the suggested autocomplete options for the query specified.
+     * The purpose of this code is to return a List of strings representing the suggested autocomplete options for the query specified from the javascript supplied as a parameter.
      * @param query
      * @param javascript
      * @return

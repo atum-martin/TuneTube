@@ -31,5 +31,17 @@ public class YoutubeAutocompleteTest {
         Assert.assertArrayEquals(expected, results.toArray());
     }
 
+    @Test
+    public void test3(){
+        List<String> results = YoutubeAutocomplete.getAutocompleteSuggestions("alyssa reid game");
+        Assert.assertTrue(results.size() > 0);
+    }
+
+    @Test
+    public void test4(){
+        List<String> results = YoutubeAutocomplete.getAutocompleteSuggestions("hello");
+        Assert.assertTrue(results.size() > 0);
+    }
+
 
 }
