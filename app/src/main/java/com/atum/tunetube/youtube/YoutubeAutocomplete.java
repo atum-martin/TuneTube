@@ -29,8 +29,8 @@ public class YoutubeAutocomplete {
             JSONArray array = new JSONArray(json);
             for(int i = 0; i < array.length(); i++){
                 String term = getSearchTerm(array.getJSONArray(i));
-                System.out.println("suggestion: "+term);
-                output.add(term);
+                if(term != null && !term.isEmpty())
+                    output.add(term);
             }
         } catch (JSONException e) {
             e.printStackTrace();
