@@ -1,6 +1,7 @@
 package com.github.axet.vget.vhs;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -52,13 +53,31 @@ import com.github.axet.wget.info.ex.DownloadRetry;
 
 public class YouTubeParser extends VGetParser {
 
-    static public class VideoDownload {
+    static public class VideoDownload implements Comparable<VideoDownload>{
         public StreamInfo stream;
         public URL url;
 
         public VideoDownload(StreamInfo s, URL u) {
             this.stream = s;
             this.url = u;
+        }
+
+        @Override
+        public int compareTo(@NonNull VideoDownload other) {
+            if(other.equals(this)){
+                return 0;
+            }
+            if(stream instanceof YouTubeInfo.StreamAudio && !(other.stream instanceof YouTubeInfo.StreamAudio)){
+                return -1;
+            } else if(!(stream instanceof YouTubeInfo.StreamAudio) && other.stream instanceof YouTubeInfo.StreamAudio){
+                return 1;
+            } else if(stream instanceof YouTubeInfo.StreamAudio && other.stream instanceof YouTubeInfo.StreamAudio){
+                YouTubeInfo.StreamAudio streamAudio = (YouTubeInfo.StreamAudio) stream;
+                YouTubeInfo.StreamAudio compareAudio = (YouTubeInfo.StreamAudio) stream;
+                //returns the superier quality to the start of the list
+                return streamAudio.aq.ordinal() < compareAudio.aq.ordinal() ? -1 : 1;
+            }
+            return stream.hashCode() < other.stream.hashCode() ? 1 : -1;
         }
     }
 

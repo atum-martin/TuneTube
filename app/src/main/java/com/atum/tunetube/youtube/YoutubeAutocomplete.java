@@ -14,18 +14,24 @@ import java.util.List;
 
 public class YoutubeAutocomplete {
 
+    /**
+     * Returns a list of suggestions based on the query provided from youtubes autocomplete backend.
+     * @param query
+     * @return
+     */
     public static List<String> getAutocompleteSuggestions(String query){
         YoutubeHttp http = YoutubeHttp.getSingleton();
-        String url = null;
+        String url;
         try {
             url = "https://clients1.google.com/complete/search?client=youtube&hl=en&gl=us&sugexp=ytd2_arm_1&gs_rn=23&gs_ri=youtube&ds=yt&cp="+query.length()+"&gs_id=33&q="+ URLEncoder.encode(query,"UTF-8")+"&callback=google.sbox.p50";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return new LinkedList<>();
         }
         List<String> content = http.openUrl(url);
         //http error
         if (content.size() == 0)
-            return new LinkedList<String>();
+            return new LinkedList<>();
         //output should only be 1 line long.
         String javascript = content.get(0);
         return extractSuggestions(query, javascript);
@@ -39,6 +45,7 @@ public class YoutubeAutocomplete {
      */
     public static List<String> extractSuggestions(String query, String javascript){
 
+        //returns the json that is contained within the javascript block.
         String json = extractJson(query,javascript);
         List<String> output = new LinkedList<>();
         if(json == null)

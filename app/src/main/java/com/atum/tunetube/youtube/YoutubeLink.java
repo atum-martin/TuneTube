@@ -1,5 +1,11 @@
 package com.atum.tunetube.youtube;
 
+import com.github.axet.vget.vhs.YouTubeInfo;
+import com.github.axet.vget.vhs.YouTubeParser;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,11 +19,34 @@ public class YoutubeLink {
 
     private String videoId;
     private String title;
+    private List<YouTubeParser.VideoDownload> youtubeUrls = null;
 
     public YoutubeLink(String videoId, String title){
 
         this.videoId = videoId;
         this.title = title;
+    }
+
+    public List<YouTubeParser.VideoDownload> getYoutubeUrls(){
+        if(youtubeUrls == null)
+            populateYoutubeUrls();
+        return youtubeUrls;
+    }
+
+    private void populateYoutubeUrls(){
+        YouTubeInfo info = null;
+        try {
+            info = new YouTubeInfo(new URL("https://www.youtube.com/watch?v="+videoId));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        youtubeUrls = new LinkedList<>();
+
+        YouTubeParser parser = new YouTubeParser();
+
+        List<YouTubeParser.VideoDownload> list = parser.extractLinks(info);
+        youtubeUrls.addAll(list);
+        Collections.sort(youtubeUrls);
     }
 
     public String getTrackName(){
