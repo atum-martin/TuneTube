@@ -12,25 +12,12 @@ import java.util.List;
  */
 public class YoutubePlaylist {
 
-    public List<YoutubeLink> get(String url){
+    public List<YoutubeLink> parsePlaylist(String url){
         List<String> content = YoutubeHttp.getSingleton().openUrl(url);
         List<YoutubeLink> links = new LinkedList<>();
         for(String line : content){
             if(line.contains("yt-lockup-title")){
-                int index = line.indexOf("<a");
-                line = line.substring(index);
-                index = line.indexOf("href=\"");
-                line = line.substring(index+6);
-                index = line.indexOf("\"");
-                String videoId = line.substring(0, index);
-                String title =  StringEscapeUtils.unescapeHtml4(line.substring(line.indexOf(">")+1,line.indexOf("</a>")));
-                System.out.println(videoId+" "+title);
-
-                YoutubeLink link = new YoutubeLink(videoId,title);
-                System.out.println("track: "+link.getTrackName());
-                for(String artist : link.getArtists()) {
-                    System.out.println("artist: " + artist);
-                }
+                YoutubeLink link = ParseYoutubeLink.parseHtml(line);
                 links.add(link);
             }
         }
