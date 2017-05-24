@@ -12,12 +12,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.atum.tunetube.dummy.DummyContent;
+import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.youtube.YoutubeHttp;
+import com.atum.tunetube.youtube.YoutubeLink;
 import com.atum.tunetube.youtube.YoutubePlaylist;
+import com.atum.tunetube.youtube.YoutubeSearch;
 import com.github.axet.vget.VGet;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -45,9 +49,31 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             try
                             {
+                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Grimes - Kill V. Maim");
+                                //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
+                                TunePlayer player = new TunePlayer(MainActivity.this);
+                                int index = 0;
+                                while(++index < 10) {
+                                    try {
+                                        System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
+                                        for(YouTubeParser.VideoDownload link : songs.get(0).getYoutubeUrls()){
+                                            System.out.println(link.stream.getClass()+" url: "+link.url.toString());
+                                        }
+                                        player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        break;
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch(NullPointerException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                                player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
+
+
                                 YoutubePlaylist playlist = new YoutubePlaylist();
                                 //open YoutubeMusic page
-                                playlist.get("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+                                playlist.parsePlaylist("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+                                //playSong
                                 //if(true)
                                 //    return;
 
@@ -61,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println("url: "+v.getVideo().getSource().toExternalForm());
                                 System.out.println("Finsished downloading");*/
 
-                                YouTubeInfo info = new YouTubeInfo(new URL("https://www.youtube.com/watch?v=5RNePy_awq0"));
+                                /*YouTubeInfo info = new YouTubeInfo(new URL("https://www.youtube.com/watch?v=5RNePy_awq0"));
 
                                 YouTubeParser parser = new YouTubeParser();
 
@@ -82,12 +108,11 @@ public class MainActivity extends AppCompatActivity {
                                         playSong(d.url.toString());
                                     }
                                     System.out.println(d.stream + " " + d.url);
-                                }
+                                }*/
 
-                            } catch(
-                                    MalformedURLException e)
-
-                            {
+                            } catch(MalformedURLException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }

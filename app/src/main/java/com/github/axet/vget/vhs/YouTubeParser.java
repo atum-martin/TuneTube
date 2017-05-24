@@ -239,13 +239,21 @@ public class YouTubeParser extends VGetParser {
          * @return name of decode-function or null
          */
         private String getMainDecodeFunctionName(String playerJS) {
-            Pattern decodeFunctionName = Pattern.compile("\\.sig\\|\\|([a-zA-Z0-9$]+)\\(");
+            //Pattern decodeFunctionName = Pattern.compile("\\.sig\\|\\|([a-zA-Z0-9$]+)\\(");
+            Pattern decodeFunctionName = Pattern.compile("([\"'])signature\\1\\s*,\\s*(?P<sig>[a-zA-Z0-9$]+)\\(");
             Matcher decodeFunctionNameMatch = decodeFunctionName.matcher(playerJS);
             if (decodeFunctionNameMatch.find()) {
                 return decodeFunctionNameMatch.group(1);
             }
             return null;
         }
+        /*
+            def _parse_sig_js(self, jscode):
+        funcname = self._search_regex(
+            (r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(',
+             r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\('),
+            jscode, 'Initial JS player signature function name', group='sig')
+         */
 
         /**
          * Extracts the relevant decode functions of the html5player script. Besides the main decode function we need to
@@ -304,9 +312,11 @@ public class YouTubeParser extends VGetParser {
             JSContext context = new JSContext();
 
             final String playerScript = getHtml5PlayerScript(stop, notify);
+            System.out.println("html5player: "+playerScript);
             final String decodeFuncName = getMainDecodeFunctionName(playerScript);
+            System.out.println("decodeFuncName: "+decodeFuncName);
             final String decodeScript = extractDecodeFunctions(playerScript, decodeFuncName);
-
+            System.out.println("decodeScript: "+decodeScript);
             String decodedSignature = null;
             try {
                 // evaluate script
@@ -694,10 +704,16 @@ public class YouTubeParser extends VGetParser {
 
         // grab html5 player url
         {
-            Pattern playerURL = Pattern.compile("(//.*?/player-[\\w\\d\\-]+\\/.*\\.js)");
+            //Pattern playerURL = Pattern.compile("(//.*?/player-[\\w\\d\\-]+\\/.*\\.js)");
+            String s = "(?:www|player)-([^/]+)(?:/[a-z]{2}_[A-Z]{2})?/base\\.js";
+            Pattern playerURL = Pattern.compile(s);
             Matcher playerVersionMatch = playerURL.matcher(html);
             if (playerVersionMatch.find()) {
-                info.setPlayerURI(new URI("https:" + playerVersionMatch.group(1)));
+                String playerFinalUrl = "https://www.youtube.com/yts/jsbin/player-"+playerVersionMatch.group(1)+"/en_US/base.js";
+                info.setPlayerURI(new URI(playerFinalUrl));
+                System.out.println("setting player url as: " + info.getPlayerURI());
+            } else {
+                System.out.println("no player found");
             }
         }
 
@@ -863,6 +879,7 @@ public class YouTubeParser extends VGetParser {
                         sig = linkMatch.group(1);
 
                         if (info.getPlayerURI() == null) {
+                            System.out.println("no html5 player could be found.");
                             DecryptSignature ss = new DecryptSignature(sig);
                             sig = ss.decrypt();
                         } else {

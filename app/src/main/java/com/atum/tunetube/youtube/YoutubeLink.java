@@ -17,6 +17,7 @@ public class YoutubeLink {
 
     private static final String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
 
+    //video ID represents a string similar to the following: /watch?v=rDWuqrJAyGw
     private String videoId;
     private String title;
     private List<YouTubeParser.VideoDownload> youtubeUrls = null;
@@ -36,7 +37,7 @@ public class YoutubeLink {
     private void populateYoutubeUrls(){
         YouTubeInfo info = null;
         try {
-            info = new YouTubeInfo(new URL("https://www.youtube.com/watch?v="+videoId));
+            info = new YouTubeInfo(new URL(getYoutubeUrl()));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -45,7 +46,12 @@ public class YoutubeLink {
         YouTubeParser parser = new YouTubeParser();
 
         List<YouTubeParser.VideoDownload> list = parser.extractLinks(info);
-        youtubeUrls.addAll(list);
+        //Video only content is useless to the app.
+        for(YouTubeParser.VideoDownload track : list){
+            if(!(track.stream instanceof YouTubeInfo.StreamVideo))
+                youtubeUrls.add(track);
+        }
+        //youtubeUrls.addAll(list);
         Collections.sort(youtubeUrls);
     }
 
@@ -166,5 +172,9 @@ public class YoutubeLink {
                 return true;
         }
         return false;
+    }
+
+    public String getYoutubeUrl() {
+        return "https://www.youtube.com"+videoId;
     }
 }

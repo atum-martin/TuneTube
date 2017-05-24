@@ -17,9 +17,9 @@ public class ParseYoutubeLink {
             index = line.indexOf("\"");
             String videoId = line.substring(0, index);
             String title =  StringEscapeUtils.unescapeHtml4(line.substring(line.indexOf(">")+1,line.indexOf("</a>")));
-            System.out.println(videoId+" "+title);
-
             YoutubeLink link = new YoutubeLink(videoId,title);
+
+            System.out.println(videoId+" "+title);
             System.out.println("track: "+link.getTrackName());
             for(String artist : link.getArtists()) {
                 System.out.println("artist: " + artist);

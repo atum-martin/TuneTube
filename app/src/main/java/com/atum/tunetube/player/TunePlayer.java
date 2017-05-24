@@ -10,7 +10,7 @@ import java.io.IOException;
  * Created by atum-martin on 23/05/2017.
  */
 
-public class TunePlayer implements MediaPlayer.OnCompletionListener {
+public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
     private final Context context;
     private String url = null;
@@ -54,6 +54,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener {
             e.printStackTrace();
         }
         mPlayer.setOnCompletionListener(this);
+        mPlayer.setOnErrorListener(this);
         mPlayer.setVolume(0.5f, 0.5f);
         mPlayer.start();
         return mPlayer;
@@ -72,5 +73,11 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener {
         if (playerCompletedListener != null){
             playerCompletedListener.trackCompleted(tmpUrl);
         }
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        System.out.println("error with media player");
+        return true;
     }
 }
