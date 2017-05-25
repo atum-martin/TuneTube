@@ -53,6 +53,11 @@ public class YoutubeLink {
         }
         //youtubeUrls.addAll(list);
         Collections.sort(youtubeUrls);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getTrackName(){

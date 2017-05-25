@@ -32,6 +32,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.liquidplayer.webkit.javascriptcore.JSContext;
 import org.liquidplayer.webkit.javascriptcore.JSFunction;
+import org.liquidplayer.webkit.javascriptcore.JSObject;
 import org.liquidplayer.webkit.javascriptcore.JSValue;
 //import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -73,7 +74,10 @@ public class YouTubeParser extends VGetParser {
                 return 1;
             } else if(stream instanceof YouTubeInfo.StreamAudio && other.stream instanceof YouTubeInfo.StreamAudio){
                 YouTubeInfo.StreamAudio streamAudio = (YouTubeInfo.StreamAudio) stream;
-                YouTubeInfo.StreamAudio compareAudio = (YouTubeInfo.StreamAudio) stream;
+                YouTubeInfo.StreamAudio compareAudio = (YouTubeInfo.StreamAudio) other.stream;
+                if(streamAudio.audio == Encoding.AAC && compareAudio.audio != Encoding.AAC){
+                    return 1;
+                }
                 //returns the superier quality to the start of the list
                 return streamAudio.aq.ordinal() < compareAudio.aq.ordinal() ? -1 : 1;
             }
@@ -239,12 +243,20 @@ public class YouTubeParser extends VGetParser {
          * @return name of decode-function or null
          */
         private String getMainDecodeFunctionName(String playerJS) {
+                                                          //  \.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(
             //Pattern decodeFunctionName = Pattern.compile("\\.sig\\|\\|([a-zA-Z0-9$]+)\\(");
-            Pattern decodeFunctionName = Pattern.compile("([\"'])signature\\1\\s*,\\s*(?P<sig>[a-zA-Z0-9$]+)\\(");
+                                                        // (["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(
+
+
+            String test1 = "(?<new>network=\\\\{|(?!^)\\\\G)\\\\s*(?<key>\\\\w+)=\\\"?(?<value>[^\\\"\\n]+)\\\"?";
+            String test2 = "(network=\\\\{|(?!^)\\\\G)\\\\s*(\\\\w+)=\\\"?([^\\\"\\n]+)\\\"?";
+
+            Pattern decodeFunctionName = Pattern.compile("([\"'])signature\\1\\s*,\\s*([a-zA-Z0-9$]+)\\(");
             Matcher decodeFunctionNameMatch = decodeFunctionName.matcher(playerJS);
             if (decodeFunctionNameMatch.find()) {
-                return decodeFunctionNameMatch.group(1);
+                return decodeFunctionNameMatch.group(2);
             }
+            //String funcName = playerJS.substring(playerJS.indexOf("\"signature"));
             return null;
         }
         /*
@@ -312,27 +324,31 @@ public class YouTubeParser extends VGetParser {
             JSContext context = new JSContext();
 
             final String playerScript = getHtml5PlayerScript(stop, notify);
-            System.out.println("html5player: "+playerScript);
+            //System.out.println("html5player: "+playerScript);
             final String decodeFuncName = getMainDecodeFunctionName(playerScript);
             System.out.println("decodeFuncName: "+decodeFuncName);
             final String decodeScript = extractDecodeFunctions(playerScript, decodeFuncName);
-            System.out.println("decodeScript: "+decodeScript);
+            //System.out.println("decodeScript: "+decodeScript);
             String decodedSignature = null;
             try {
                 // evaluate script
                 //engine.eval(decodeScript);
                 JSValue inv = context.evaluateScript(decodeScript);
-                System.out.println("starting decrypt logic 1: "+inv);
-                JSFunction inv2 = (JSFunction) context.property(decodeFuncName);
-                System.out.println("starting decrypt logic 2: "+inv2);
-                decodedSignature = inv2.call().toString();
-                System.out.println("starting decrypt logic 3: "+decodedSignature);
+                //System.out.println("starting decrypt logic 1: "+inv);
+
+                JSFunction inv2 = context.property(decodeFuncName).toFunction();
+                //System.out.println("starting decrypt logic 2: "+inv2);
+                JSValue value = new JSValue(context, sig);
+                decodedSignature = inv2.call(context, value).toString();
+                //decodedSignature = inv2.call().toString();
+                //System.out.println("starting decrypt logic 3: "+decodedSignature);
                 //inv.
 
                 //Invocable inv = (Invocable) engine;
                 // execute the javascript code directly
                 //decodedSignature = (String) inv.invokeFunction(decodeFuncName, sig);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new DownloadError("Unable to decrypt signature!");
             }
 

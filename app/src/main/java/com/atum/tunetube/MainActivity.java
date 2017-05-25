@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             try
                             {
-                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Grimes - Kill V. Maim");
+                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Mark McCabe Maniac");
                                 //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
                                 TunePlayer player = new TunePlayer(MainActivity.this);
-                                int index = 0;
+                                int index = -1;
                                 while(++index < 10) {
                                     try {
                                         System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
@@ -72,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 YoutubePlaylist playlist = new YoutubePlaylist();
                                 //open YoutubeMusic page
-                                playlist.parsePlaylist("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+                                //playlist.parsePlaylist("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
                                 //playSong
                                 //if(true)
                                 //    return;
 
-                                VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
+                                //VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
                                 /*File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                                 System.out.println(downloadDir);
                                 v.setTargetDir(downloadDir);

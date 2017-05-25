@@ -37,7 +37,11 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         this.playerCompletedListener = listener;
     }
 
-    public void setNextUrl(String url){
+    public void setNextUrl(String url) throws IOException {
+        if(player.isPlaying()){
+            setUrl(url);
+            return;
+        }
         this.nextUrl = url;
     }
 
@@ -78,6 +82,6 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         System.out.println("error with media player");
-        return true;
+        return false;
     }
 }
