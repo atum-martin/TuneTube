@@ -16,6 +16,10 @@ public class ParseYoutubeLink {
             line = line.substring(index+6);
             index = line.indexOf("\"");
             String videoId = line.substring(0, index);
+            if(videoId.startsWith("/user")){
+                //TODO:
+                return null;
+            }
             String title =  StringEscapeUtils.unescapeHtml4(line.substring(line.indexOf(">")+1,line.indexOf("</a>")));
             YoutubeLink link = new YoutubeLink(videoId,title);
 

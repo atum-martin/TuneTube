@@ -29,7 +29,8 @@ public class YoutubeSearch {
         for(String line : content){
             if(line.contains("yt-lockup-title")){
                 YoutubeLink link = ParseYoutubeLink.parseHtml(line);
-                links.add(link);
+                if(link != null)
+                    links.add(link);
             }
         }
         return links;

@@ -81,7 +81,8 @@ public class YouTubeParser extends VGetParser {
                 //returns the superier quality to the start of the list
                 return streamAudio.aq.ordinal() < compareAudio.aq.ordinal() ? -1 : 1;
             }
-            return stream.hashCode() < other.stream.hashCode() ? 1 : -1;
+            return 0;
+            //return stream.hashCode() < other.stream.hashCode() ? 1 : -1;
         }
     }
 

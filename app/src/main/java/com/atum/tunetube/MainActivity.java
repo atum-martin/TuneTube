@@ -47,27 +47,31 @@ public class MainActivity extends AppCompatActivity {
                     //    break;
                     new Thread() {
                         public void run(){
-                            try
-                            {
-                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Mark McCabe Maniac");
+                            /*try
+                            {*/
+                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Grimes");
+                                for(YoutubeLink link : songs){
+                                    System.out.println(link.getTrackName()+" "+link.getYoutubeUrl());
+                                }
                                 //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
                                 TunePlayer player = new TunePlayer(MainActivity.this);
                                 int index = -1;
                                 while(++index < 10) {
-                                    try {
+                                    //try {
                                         System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
                                         for(YouTubeParser.VideoDownload link : songs.get(0).getYoutubeUrls()){
                                             System.out.println(link.stream.getClass()+" url: "+link.url.toString());
                                         }
-                                        player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                       //player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
                                         break;
-                                    } catch (IOException e) {
+                                    /*} catch (IOException e) {
                                         e.printStackTrace();
                                     } catch(NullPointerException e){
+
                                         e.printStackTrace();
-                                    }
+                                    }*/
                                 }
-                                player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
+                                //player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
 
 
                                 YoutubePlaylist playlist = new YoutubePlaylist();
@@ -110,11 +114,11 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(d.stream + " " + d.url);
                                 }*/
 
-                            } catch(MalformedURLException e) {
+                            /*} catch(MalformedURLException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
                         }
                     }.start();
                     return true;
