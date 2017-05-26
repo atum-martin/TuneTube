@@ -249,8 +249,8 @@ public class YouTubeParser extends VGetParser {
                                                         // (["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(
 
 
-            String test1 = "(?<new>network=\\\\{|(?!^)\\\\G)\\\\s*(?<key>\\\\w+)=\\\"?(?<value>[^\\\"\\n]+)\\\"?";
-            String test2 = "(network=\\\\{|(?!^)\\\\G)\\\\s*(\\\\w+)=\\\"?([^\\\"\\n]+)\\\"?";
+            //String test1 = "(?<new>network=\\\\{|(?!^)\\\\G)\\\\s*(?<key>\\\\w+)=\\\"?(?<value>[^\\\"\\n]+)\\\"?";
+            //String test2 = "(network=\\\\{|(?!^)\\\\G)\\\\s*(\\\\w+)=\\\"?([^\\\"\\n]+)\\\"?";
 
             Pattern decodeFunctionName = Pattern.compile("([\"'])signature\\1\\s*,\\s*([a-zA-Z0-9$]+)\\(");
             Matcher decodeFunctionNameMatch = decodeFunctionName.matcher(playerJS);
@@ -342,7 +342,7 @@ public class YouTubeParser extends VGetParser {
                 JSValue value = new JSValue(context, sig);
                 decodedSignature = inv2.call(context, value).toString();
                 //decodedSignature = inv2.call().toString();
-                //System.out.println("starting decrypt logic 3: "+decodedSignature);
+                System.out.println("starting decrypt logic 3: "+decodedSignature);
                 //inv.
 
                 //Invocable inv = (Invocable) engine;
@@ -902,6 +902,7 @@ public class YouTubeParser extends VGetParser {
                         } else {
                             DecryptSignatureHtml5 ss = new DecryptSignatureHtml5(sig, info.getPlayerURI());
                             sig = ss.decrypt(stop, notify);
+                            System.out.println("decrypted video url: "+itag+" "+sig);
                         }
                     }
                 }
@@ -909,7 +910,8 @@ public class YouTubeParser extends VGetParser {
                 if (url != null && itag != null && sig != null) {
                     try {
                         url += "&signature=" + sig;
-
+                        if(!url.contains("&ratebypass"))
+                            url += "&ratebypass=yes";
                         filter(sNextVideoURL, itag, new URL(url));
                         continue;
                     } catch (MalformedURLException e) {

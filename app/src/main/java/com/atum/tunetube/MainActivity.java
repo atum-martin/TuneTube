@@ -57,19 +57,20 @@ public class MainActivity extends AppCompatActivity {
                                 TunePlayer player = new TunePlayer(MainActivity.this);
                                 int index = -1;
                                 while(++index < 10) {
-                                    //try {
+                                    try {
                                         System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
                                         for(YouTubeParser.VideoDownload link : songs.get(0).getYoutubeUrls()){
                                             System.out.println(link.stream.getClass()+" url: "+link.url.toString());
                                         }
-                                       //player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        System.out.println("playing song google: "+songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
                                         break;
-                                    /*} catch (IOException e) {
+                                    } catch (IOException e) {
                                         e.printStackTrace();
                                     } catch(NullPointerException e){
 
                                         e.printStackTrace();
-                                    }*/
+                                    }
                                 }
                                 //player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
 
