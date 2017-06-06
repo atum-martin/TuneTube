@@ -194,6 +194,7 @@ public class YouTubeParser extends VGetParser {
         static ConcurrentMap<String, String> playerCache = new ConcurrentHashMap<String, String>();
 
         public DecryptSignatureHtml5(String signatur, URI playerURI) {
+            System.out.println("encrypted signiture: "+signatur);
             this.sig = signatur;
             this.playerURI = playerURI;
         }
@@ -224,6 +225,7 @@ public class YouTubeParser extends VGetParser {
                             notify.run();
                         }
                     }, stop);
+                    System.out.println("player uri: "+ playerURI.toString());
                     playerCache.put(playerURI.toString(), result);
                     return result;
                 } catch (MalformedURLException e) {

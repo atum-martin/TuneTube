@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +22,13 @@ import com.github.axet.vget.VGet;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,21 +54,34 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             /*try
                             {*/
-                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Grimes");
+                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("The Chainsmokers – Don't Say");
                                 for(YoutubeLink link : songs){
                                     System.out.println(link.getTrackName()+" "+link.getYoutubeUrl());
                                 }
                                 //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
                                 TunePlayer player = new TunePlayer(MainActivity.this);
                                 int index = -1;
+                            String youtubeUrl = "https://www.youtube.com/watch?v=FvSdjFju2g0ac";
+                            for(YouTubeParser.VideoDownload s : songs.get(0).getYoutubeUrls()){
+                                System.out.println("decoded: "+s.url.toString());
+                            }
                                 while(++index < 10) {
                                     try {
-                                        System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
+                                        /*System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
                                         for(YouTubeParser.VideoDownload link : songs.get(0).getYoutubeUrls()){
                                             System.out.println(link.stream.getClass()+" url: "+link.url.toString());
                                         }
                                         System.out.println("playing song google: "+songs.get(0).getYoutubeUrls().get(index).url.toString());
-                                        player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());*/
+
+                                        System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
+                                        System.out.println("playing song google: "+songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                        System.out.println(dir.getAbsolutePath()+"/output.m3u");
+                                        URL website = new URL(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                                        FileOutputStream fos = new FileOutputStream(dir.getAbsolutePath()+"/output.m3u");
+                                        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                                         break;
                                     } catch (IOException e) {
                                         e.printStackTrace();
