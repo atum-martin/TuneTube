@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run(){
                             /*try
                             {*/
-                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("The Chainsmokers – Don't Say");
+                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Adele Hello");
                                 for(YoutubeLink link : songs){
                                     System.out.println(link.getTrackName()+" "+link.getYoutubeUrl());
                                 }

@@ -32,7 +32,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.liquidplayer.webkit.javascriptcore.JSContext;
 import org.liquidplayer.webkit.javascriptcore.JSFunction;
-import org.liquidplayer.webkit.javascriptcore.JSObject;
 import org.liquidplayer.webkit.javascriptcore.JSValue;
 //import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -651,7 +650,7 @@ public class YouTubeParser extends VGetParser {
 
         String url_encoded_fmt_stream_map = URLDecoder.decode(map.get("url_encoded_fmt_stream_map"), UTF8);
 
-        extractUrlEncodedVideos(sNextVideoURL, url_encoded_fmt_stream_map, info, stop, notify);
+        extractUrlEncodedVideos(sNextVideoURL, url_encoded_fmt_stream_map, info, stop, notify, true);
 
         // 'iurlmaxresæ or 'iurlsd' or 'thumbnail_url'
         String icon = map.get("thumbnail_url");
@@ -750,7 +749,7 @@ public class YouTubeParser extends VGetParser {
                 if (encodMatch.find()) {
                     String sline = encodMatch.group(1);
 
-                    extractUrlEncodedVideos(sNextVideoURL, sline, info, stop, notify);
+                    extractUrlEncodedVideos(sNextVideoURL, sline, info, stop, notify, false);
                 }
 
                 // stream video
@@ -797,7 +796,7 @@ public class YouTubeParser extends VGetParser {
                 if (encodMatch.find()) {
                     String sline = encodMatch.group(1);
 
-                    extractUrlEncodedVideos(sNextVideoURL, sline, info, stop, notify);
+                    extractUrlEncodedVideos(sNextVideoURL, sline, info, stop, notify, true);
                 }
 
                 // stream video
@@ -844,23 +843,32 @@ public class YouTubeParser extends VGetParser {
     }
 
     void extractUrlEncodedVideos(List<VideoDownload> sNextVideoURL, String sline, YouTubeInfo info, AtomicBoolean stop,
-            Runnable notify) throws Exception {
-        String[] urlStrings = sline.split("url=");
+                                 Runnable notify, boolean adaptive_fmts) throws Exception {
+        String[] urlStrings;
+        if(adaptive_fmts)
+            urlStrings = sline.split(",");
+        else
+            urlStrings = sline.split("url=");
 
         for (String urlString : urlStrings) {
             urlString = StringEscapeUtils.unescapeJava(urlString);
 
+            System.out.println("undecoded youtube url: "+urlString);
             String urlFull = URLDecoder.decode(urlString, UTF8);
 
             // universal request
             {
                 String url = null;
                 {
+                    String createUrl = urlString;
+                    if(adaptive_fmts && urlString.contains("url="))
+                        createUrl = urlString.substring(urlString.indexOf("url=")+4);
                     Pattern link = Pattern.compile("([^&,]*)[&,]");
-                    Matcher linkMatch = link.matcher(urlString);
+                    Matcher linkMatch = link.matcher(createUrl);
                     if (linkMatch.find()) {
                         url = linkMatch.group(1);
                         url = URLDecoder.decode(url, UTF8);
+                        System.out.println("undecoded youtube url 2: "+urlString);
                     }
                 }
 
