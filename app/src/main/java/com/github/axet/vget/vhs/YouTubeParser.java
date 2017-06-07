@@ -845,6 +845,7 @@ public class YouTubeParser extends VGetParser {
     void extractUrlEncodedVideos(List<VideoDownload> sNextVideoURL, String sline, YouTubeInfo info, AtomicBoolean stop,
                                  Runnable notify, boolean adaptive_fmts) throws Exception {
         String[] urlStrings;
+        adaptive_fmts = true;
         if(adaptive_fmts)
             urlStrings = sline.split(",");
         else

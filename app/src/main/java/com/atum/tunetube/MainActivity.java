@@ -1,6 +1,5 @@
 package com.atum.tunetube;
 
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,32 +8,31 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.atum.tunetube.dummy.DummyContent;
 import com.atum.tunetube.player.TunePlayer;
-import com.atum.tunetube.youtube.YoutubeHttp;
+import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.atum.tunetube.youtube.YoutubePlaylist;
 import com.atum.tunetube.youtube.YoutubeSearch;
-import com.github.axet.vget.VGet;
-import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
-
+    private PlaylistAdapter playListAdapter;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -45,28 +43,36 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
 
-                   // Intent i = new Intent( MainActivity.this, VideoFragment.class);
-                   // startActivity(i);
-
-                    //if(true)
-                    //    break;
                     new Thread() {
-                        public void run(){
+                        public void run() {
                             /*try
                             {*/
-                                List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Adele Hello");
-                                for(YoutubeLink link : songs){
-                                    System.out.println(link.getTrackName()+" "+link.getYoutubeUrl());
-                                }
-                                //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
-                                TunePlayer player = new TunePlayer(MainActivity.this);
-                                int index = -1;
-                            String youtubeUrl = "https://www.youtube.com/watch?v=FvSdjFju2g0ac";
-                            for(YouTubeParser.VideoDownload s : songs.get(0).getYoutubeUrls()){
-                                System.out.println("decoded: "+s.url.toString());
+                            List<YoutubeLink> songs = YoutubeSearch.getSearchResults("Adele Hello");
+
+
+
+                            // Add more planets. If you passed a String[] instead of a List<String>
+                            // into the ArrayAdapter constructor, you must not add more items.
+                            // Otherwise an exception will occur.
+
+
+
+                            for (YoutubeLink link : songs) {
+                                //mainListView.add
+                                System.out.println(link.getTrackName() + " " + link.getYoutubeUrl());
+                               // listAdapter.add(link.getTrackName()+" by "+link.getArtists());
                             }
-                                while(++index < 10) {
-                                    try {
+
+
+                            //playSong(songs.get(0).getYoutubeUrls().get(0).url.toString());
+                            TunePlayer player = new TunePlayer(MainActivity.this);
+                            int index = -1;
+                            String youtubeUrl = "https://www.youtube.com/watch?v=FvSdjFju2g0ac";
+                            for (YouTubeParser.VideoDownload s : songs.get(0).getYoutubeUrls()) {
+                                System.out.println("decoded: " + s.url.toString());
+                            }
+                            while (++index < 10) {
+                                try {
                                         /*System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
                                         for(YouTubeParser.VideoDownload link : songs.get(0).getYoutubeUrls()){
                                             System.out.println(link.stream.getClass()+" url: "+link.url.toString());
@@ -74,33 +80,33 @@ public class MainActivity extends AppCompatActivity {
                                         System.out.println("playing song google: "+songs.get(0).getYoutubeUrls().get(index).url.toString());
                                         player.setUrl(songs.get(0).getYoutubeUrls().get(index).url.toString());*/
 
-                                        System.out.println("playing song: "+songs.get(0).getTrackName()+" "+songs.get(0).getYoutubeUrl());
-                                        System.out.println("playing song google: "+songs.get(0).getYoutubeUrls().get(index).url.toString());
-                                        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                                        System.out.println(dir.getAbsolutePath()+"/output.m3u");
-                                        URL website = new URL(songs.get(0).getYoutubeUrls().get(index).url.toString());
-                                        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                                        FileOutputStream fos = new FileOutputStream(dir.getAbsolutePath()+"/output.m3u");
-                                        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                                        break;
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    } catch(NullPointerException e){
+                                    System.out.println("playing song: " + songs.get(0).getTrackName() + " " + songs.get(0).getYoutubeUrl());
+                                    System.out.println("playing song google: " + songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                    File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                    System.out.println(dir.getAbsolutePath() + "/output.m3u");
+                                    URL website = new URL(songs.get(0).getYoutubeUrls().get(index).url.toString());
+                                    ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                                    FileOutputStream fos = new FileOutputStream(dir.getAbsolutePath() + "/output.m3u");
+                                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                                    break;
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (NullPointerException e) {
 
-                                        e.printStackTrace();
-                                    }
+                                    e.printStackTrace();
                                 }
-                                //player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
+                            }
+                            //player.setNextUrl(songs.get(1).getYoutubeUrls().get(0).url.toString());
 
 
-                                YoutubePlaylist playlist = new YoutubePlaylist();
-                                //open YoutubeMusic page
-                                //playlist.parsePlaylist("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
-                                //playSong
-                                //if(true)
-                                //    return;
+                            YoutubePlaylist playlist = new YoutubePlaylist();
+                            //open YoutubeMusic page
+                            //playlist.parsePlaylist("https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+                            //playSong
+                            //if(true)
+                            //    return;
 
-                                //VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
+                            //VGet v = new VGet(new URL("https://www.youtube.com/watch?v=5exA_x2P6G8"));
                                 /*File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                                 System.out.println(downloadDir);
                                 v.setTargetDir(downloadDir);
@@ -153,22 +159,27 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    public PlaylistAdapter getPlayListAdapter() {
+        return playListAdapter;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        playListAdapter = new PlaylistAdapter(this);
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    private void playSong(String url){
+    private void playSong(String url) {
         MediaPlayer mPlayer = null;
         try {
             mPlayer = MediaPlayer.create(this, Uri.parse(url));
             mPlayer.start();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         mPlayer.start();
