@@ -11,6 +11,11 @@ import java.util.List;
 
 public class YoutubeSearch {
 
+    /**
+     * A search functions that returns results from youtubes search API, supports both artists and videos returned.
+     * @param query The query you wish to pash to the search function.
+     * @return
+     */
     public static List<YoutubeLink> getSearchResults(String query){
         YoutubeHttp http = YoutubeHttp.getSingleton();
         String url;
