@@ -24,14 +24,12 @@ public class PlaylistAdapter {
 
     public void displayPlaylist(List<YoutubeLink> songs){
         ListView mainListView = (ListView) activity.findViewById(R.id.listview);
-        // Create ArrayAdapter using the planet list.
         final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(activity, R.layout.simplerow, new ArrayList<String>());
 
         for(YoutubeLink link : songs){
             listAdapter.add(link.getYoutubeTitle());
         }
 
-        // Set the ArrayAdapter as the ListView's adapter.
         mainListView.setAdapter( listAdapter );
 
     }
