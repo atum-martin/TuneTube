@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.atum.tunetube.player.TunePlayer;
@@ -30,10 +31,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private TextView mTextMessage;
     private PlaylistAdapter playListAdapter;
+    private TunePlayer player;
+    private SearchView searchMenuItem;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -42,15 +44,14 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, "Adele Hello");
+                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, "Adele");
                     new YoutubeAsyncTask(MainActivity.this).execute(task);
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                    player.resetPlayer();
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                    player.resetPlayer();
                     return true;
             }
             return false;
@@ -67,21 +68,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playListAdapter = new PlaylistAdapter(this);
-        mTextMessage = (TextView) findViewById(R.id.message);
+        player = new TunePlayer(this);
+        playListAdapter = new PlaylistAdapter(this, player);
+        searchMenuItem = (SearchView) findViewById(R.id.musicsearch);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        searchMenuItem.setOnQueryTextListener(this);
     }
 
-    private void playSong(String url) {
-        MediaPlayer mPlayer = null;
-        try {
-            mPlayer = MediaPlayer.create(this, Uri.parse(url));
-            mPlayer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mPlayer.start();
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, query);
+        new YoutubeAsyncTask(MainActivity.this).execute(task);
+        return false;
     }
 
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }

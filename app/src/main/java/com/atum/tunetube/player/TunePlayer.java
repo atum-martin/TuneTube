@@ -4,13 +4,15 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import com.atum.tunetube.youtube.YoutubeLink;
+
 import java.io.IOException;
 
 /**
  * Created by atum-martin on 23/05/2017.
  */
 
-public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, PlayTrackListener {
 
     private final Context context;
     private String url = null;
@@ -29,7 +31,8 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         } else {
             resetPlayer();
             player.setDataSource(context, Uri.parse(url));
-            player.prepareAsync();
+            player.prepare();
+            player.start();
         }
     }
 
@@ -45,7 +48,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         this.nextUrl = url;
     }
 
-    private void resetPlayer() {
+    public void resetPlayer() {
         player.reset();
     }
 
@@ -59,7 +62,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         }
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
-        mPlayer.setVolume(0.5f, 0.5f);
+        //mPlayer.setVolume(0.1f, 0.1f);
         mPlayer.start();
         return mPlayer;
     }
@@ -83,5 +86,11 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     public boolean onError(MediaPlayer mp, int what, int extra) {
         System.out.println("error with media player");
         return false;
+    }
+
+    @Override
+    public void playTrack(YoutubeLink link) {
+        System.out.println("play track: "+link.getYoutubeTitle()+" "+link.getYoutubeUrl());
+        new PlayTrackAsync(this).execute(link);
     }
 }
