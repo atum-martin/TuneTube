@@ -182,4 +182,8 @@ public class YoutubeLink {
     public String getYoutubeUrl() {
         return "https://www.youtube.com"+videoId;
     }
+
+    public String getYoutubeTitle() {
+        return title;
+    }
 }

@@ -1,9 +1,5 @@
 package com.atum.tunetube.youtube;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +8,7 @@ import java.util.List;
  */
 public class YoutubePlaylist {
 
-    public List<YoutubeLink> parsePlaylist(String url){
+    public static List<YoutubeLink> parsePlaylist(String url){
         List<String> content = YoutubeHttp.getSingleton().openUrl(url);
         List<YoutubeLink> links = new LinkedList<>();
         for(String line : content){

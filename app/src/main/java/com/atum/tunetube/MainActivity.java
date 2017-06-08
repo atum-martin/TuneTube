@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.presentation.PlaylistAdapter;
+import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.atum.tunetube.youtube.YoutubePlaylist;
 import com.atum.tunetube.youtube.YoutubeSearch;
@@ -42,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
-
+                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, "Adele Hello");
+                    new YoutubeAsyncTask(MainActivity.this).execute(task);
+                    if(true)
+                        break;
                     new Thread() {
                         public void run() {
                             /*try

@@ -9,7 +9,7 @@ import com.atum.tunetube.youtube.YoutubeSearch;
 import java.util.List;
 
 /**
- * Created by Admin on 07/06/2017.
+ * Created by atum-martin on 07/06/2017.
  */
 
 public class YoutubeAsyncTask extends AsyncTask<YoutubeTask, Integer, Long> {
@@ -24,7 +24,7 @@ public class YoutubeAsyncTask extends AsyncTask<YoutubeTask, Integer, Long> {
     @Override
     protected Long doInBackground(YoutubeTask... tasks) {
         for(YoutubeTask task : tasks){
-             songs = YoutubeSearch.getSearchResults("Adele Hello");
+             songs = task.execute();
         }
         return 0L;
     }

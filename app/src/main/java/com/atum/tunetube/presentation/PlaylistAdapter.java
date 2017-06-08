@@ -27,12 +27,8 @@ public class PlaylistAdapter {
         // Create ArrayAdapter using the planet list.
         final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(activity, R.layout.simplerow, new ArrayList<String>());
 
-        listAdapter.add( "test1" );
-        listAdapter.add( "test2" );
-        listAdapter.add( "test3" );
-
         for(YoutubeLink link : songs){
-            listAdapter.add(""+link.getTrackName()+" By: "+link.getArtists());
+            listAdapter.add(link.getYoutubeTitle());
         }
 
         // Set the ArrayAdapter as the ListView's adapter.
