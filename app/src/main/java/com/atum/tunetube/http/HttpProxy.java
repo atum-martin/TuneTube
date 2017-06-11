@@ -29,8 +29,13 @@ public class HttpProxy extends NanoHTTPD {
         if (parms.get("url") != null) {
             String url = parms.get("url");
             String title = parms.get("title");
+            System.out.println("receiving http buffer for: "+title);
             try {
                 HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
+                if(parms.get("Range") != null){
+                    http.setRequestProperty("Range", parms.get("Range"));
+                    System.out.println("range: "+parms.get("Range"));
+                }
                 FileOutputStream fileOut = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u");
                 InputStream in = new RelayInputStream(http.getInputStream(), fileOut);
                 return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
