@@ -28,9 +28,10 @@ public class HttpProxy extends NanoHTTPD {
         Map<String, String> parms = session.getParms();
         if (parms.get("url") != null) {
             String url = parms.get("url");
+            String title = parms.get("title");
             try {
                 HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
-                FileOutputStream fileOut = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/output12.m3u");
+                FileOutputStream fileOut = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u");
                 InputStream in = new RelayInputStream(http.getInputStream(), fileOut);
                 return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
             } catch (IOException e) {
@@ -44,6 +45,7 @@ public class HttpProxy extends NanoHTTPD {
     {
         private InputStream mInputStream = null;
         private OutputStream mOutputStream = null;
+        private long total = 0L;
 
         public RelayInputStream(InputStream is, OutputStream os)
         {
@@ -72,7 +74,8 @@ public class HttpProxy extends NanoHTTPD {
         public int read(byte[] buffer, int offset, int length) throws IOException
         {
             int read = mInputStream.read(buffer, offset, length);
-            System.out.println("read buffer = " + buffer.toString() + "; offset = " + offset + "; length = " + length);
+            total += read;
+            System.out.println("read buffer = " + buffer.toString() + "; offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
             mOutputStream.write(buffer, offset, read);
             mOutputStream.flush();
             return read;
@@ -89,6 +92,7 @@ public class HttpProxy extends NanoHTTPD {
 
         @Override
         public void close() throws IOException {
+            System.out.println("http proxy conn closed");
             mOutputStream.flush();
             mOutputStream.close();
             mInputStream.close();

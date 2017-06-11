@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * Created by atum-martin on 23/05/2017.
@@ -17,6 +18,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     private final Context context;
     private String url = null;
     private String nextUrl = null;
+    private String nextTitle = null;
     private MediaPlayer player = null;
     private TunePlayerCompleted playerCompletedListener = null;
 
@@ -24,7 +26,10 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         this.context = context;
     }
 
-    public void setUrl(String url) throws IOException {
+    public void setUrl(String url, String title) throws IOException {
+        System.out.println("url of player: "+url);
+        url = "http://localhost:8093/?url="+ URLEncoder.encode(url)+"&title="+URLEncoder.encode(title);
+        System.out.println("url of player: "+url);
         this.url = url;
         if(player == null) {
             player = createPlayer();
@@ -40,9 +45,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         this.playerCompletedListener = listener;
     }
 
-    public void setNextUrl(String url) throws IOException {
-        if(player.isPlaying()){
-            setUrl(url);
+    public void setNextUrl(String url, String title) throws IOException {
+        if(!player.isPlaying()){
+            setUrl(url, title);
             return;
         }
         this.nextUrl = url;
@@ -72,7 +77,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         String tmpUrl = this.url;
         try {
             if(nextUrl != null)
-                setUrl(nextUrl);
+                setUrl(nextUrl, nextTitle);
         } catch (IOException e) {
             e.printStackTrace();
         }
