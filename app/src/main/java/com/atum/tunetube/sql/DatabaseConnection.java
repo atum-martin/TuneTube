@@ -2,6 +2,7 @@ package com.atum.tunetube.sql;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import com.atum.tunetube.youtube.YoutubeLink;
 
@@ -20,6 +21,7 @@ public class DatabaseConnection {
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
         createTables();
         updatePlaytime(null);
+        getRecentlyPlayed().toString();
     }
 
     private void createTables() {
@@ -44,16 +46,12 @@ public class DatabaseConnection {
     }
 
     public void updatePlaytime(YoutubeLink track){
-        String[] args = new String[]{new String(""+System.currentTimeMillis()), "/watch?v=ux8-EbW6DUI"};
-        //Cursor resultSet = connection.rawQuery("INSERT INTO tracks_played VALUES(?, ?, ?);", args);
-        Cursor resultSet = connection.rawQuery("UPDATE tracks_played SET last_played = ? WHERE youtubeUrl = ?;", args);
-        if(resultSet.get){
-            System.out.println("update successful.");
-        } else {
-
-            args = new String[]{"Tobu - Infectious [NCS Release]", "/watch?v=ux8-EbW6DUI", new String(""+System.currentTimeMillis())};
+        String updateQuery = "UPDATE tracks_played SET last_played = "+System.currentTimeMillis()+" WHERE youtubeUrl = '"+track.getYoutubeUrl()+"';";
+        SQLiteStatement statement = connection.compileStatement(updateQuery);
+        int affectedRows = statement.executeUpdateDelete();
+        if(affectedRows <= 0){
+            String[] args = new String[]{track.getYoutubeTitle(), track.getYoutubeUrl(), new Long(System.currentTimeMillis()).toString()};
             connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?);", args);
-            System.out.println("update not successful.");
         }
     }
 }
