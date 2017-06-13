@@ -1,5 +1,6 @@
 package com.atum.tunetube;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,8 +11,10 @@ import android.widget.SearchView;
 import com.atum.tunetube.http.HttpProxy;
 import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.presentation.PlaylistAdapter;
+import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -61,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         searchMenuItem.setOnQueryTextListener(this);
+
+        new File(this.getCacheDir()+"/testdb1").delete();
+        new DatabaseConnection(this.getCacheDir()+"/testdb1");
     }
 
     @Override
