@@ -30,7 +30,8 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     public void setUrl(String url, String title) throws IOException {
         System.out.println("url of player: "+url);
-        url = "http://localhost:8093/?url="+ URLEncoder.encode(url)+"&title="+URLEncoder.encode(title);
+        if(url.toLowerCase().startsWith("http"))
+            url = "http://localhost:8093/?url="+ URLEncoder.encode(url)+"&title="+URLEncoder.encode(title);
         System.out.println("url of player: "+url);
         this.url = url;
         if(player == null) {
@@ -39,7 +40,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
             resetPlayer();
             player.setDataSource(context, Uri.parse(url));
             player.prepare();
+            System.out.println("media player prepared");
             player.start();
+            System.out.println("media player started");
         }
     }
 
@@ -67,10 +70,13 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         } catch (Exception e){
             e.printStackTrace();
         }
+        System.out.println("media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
         //mPlayer.setVolume(0.1f, 0.1f);
+
         mPlayer.start();
+        System.out.println("media player started");
         return mPlayer;
     }
 

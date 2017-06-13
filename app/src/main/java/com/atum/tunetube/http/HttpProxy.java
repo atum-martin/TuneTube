@@ -2,6 +2,7 @@ package com.atum.tunetube.http;
 
 import android.os.Environment;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,14 +30,24 @@ public class HttpProxy extends NanoHTTPD {
         if (parms.get("url") != null) {
             String url = parms.get("url");
             String title = parms.get("title");
-            System.out.println("receiving http buffer for: "+title);
+            System.out.println("receiving http buffer for: "+title+ " "+url);
             try {
                 HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
                 if(parms.get("Range") != null){
                     http.setRequestProperty("Range", parms.get("Range"));
                     System.out.println("range: "+parms.get("Range"));
                 }
-                FileOutputStream fileOut = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u");
+                String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u";
+                int i = 0;
+                while(i++ < 10){
+                    File f = new File(filePath);
+                    if(f.exists()){
+                        filePath =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+"_"+i+".m3u";
+                    } else {
+                        break;
+                    }
+                }
+                FileOutputStream fileOut = new FileOutputStream(filePath);
                 InputStream in = new RelayInputStream(http.getInputStream(), fileOut);
                 return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
             } catch (IOException e) {
