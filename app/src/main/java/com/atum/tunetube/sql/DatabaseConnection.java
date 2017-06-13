@@ -20,8 +20,6 @@ public class DatabaseConnection {
     public DatabaseConnection(String name){
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
         createTables();
-        updatePlaytime(null);
-        getRecentlyPlayed().toString();
     }
 
     private void createTables() {
@@ -46,11 +44,11 @@ public class DatabaseConnection {
     }
 
     public void updatePlaytime(YoutubeLink track){
-        String updateQuery = "UPDATE tracks_played SET last_played = "+System.currentTimeMillis()+" WHERE youtubeUrl = '"+track.getYoutubeUrl()+"';";
+        String updateQuery = "UPDATE tracks_played SET last_played = "+System.currentTimeMillis()+" WHERE youtubeUrl = '"+track.getVideoId()+"';";
         SQLiteStatement statement = connection.compileStatement(updateQuery);
         int affectedRows = statement.executeUpdateDelete();
         if(affectedRows <= 0){
-            String[] args = new String[]{track.getYoutubeTitle(), track.getYoutubeUrl(), new Long(System.currentTimeMillis()).toString()};
+            String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(), new Long(System.currentTimeMillis()).toString()};
             connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?);", args);
         }
     }

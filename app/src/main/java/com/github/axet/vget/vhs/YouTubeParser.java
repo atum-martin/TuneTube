@@ -292,15 +292,17 @@ public class YouTubeParser extends VGetParser {
                 throw new DownloadError("Unable to extract the main decode function!");
             }
 
+            System.out.println("decoder function script after obtaining func: "+functionName+" '"+decodeScript+"'");
+            //System.out.println("playerJS: "+playerJS);
             // determine the name of the helper function which is used by the
             // main decode function
             Pattern decodeFunctionHelperName = Pattern.compile("\\);([a-zA-Z0-9]+)\\.");
             Matcher decodeFunctionHelperNameMatch = decodeFunctionHelperName.matcher(decodeScript.toString());
             if (decodeFunctionHelperNameMatch.find()) {
                 final String decodeFuncHelperName = decodeFunctionHelperNameMatch.group(1);
-
+                System.out.println("searching for JS func: "+decodeFuncHelperName);
                 Pattern decodeFunctionHelper = Pattern.compile(
-                        String.format("(var %s=\\{[a-zA-Z]*:function\\(.*?\\};)", decodeFuncHelperName),
+                        String.format("(var %s=\\{[a-zA-Z0-9]*:function\\(.*?\\};)", decodeFuncHelperName),
                         Pattern.DOTALL);
                 Matcher decodeFunctionHelperMatch = decodeFunctionHelper.matcher(playerJS);
                 if (decodeFunctionHelperMatch.find()) {
@@ -312,6 +314,7 @@ public class YouTubeParser extends VGetParser {
             } else {
                 throw new DownloadError("Unable to determine the name of the helper decode function!");
             }
+            System.out.println("decoder function script after obtaining func2: "+functionName+" '"+decodeScript+"'");
             return decodeScript.toString();
         }
 
@@ -425,6 +428,7 @@ public class YouTubeParser extends VGetParser {
             try {
                 streamCapture(sNextVideoURL, info, stop, notify);
             } catch (DownloadError e) {
+                e.printStackTrace();
                 try {
                     extractEmbedded(sNextVideoURL, info, stop, notify);
                 } catch (EmbeddingDisabled ee) {
@@ -632,7 +636,7 @@ public class YouTubeParser extends VGetParser {
 
         Map<String, String> map = getQueryMap(qs);
 
-        if (map.get("status").equals("fail")) {
+        if (map.get("status") != null && map.get("status").equals("fail")) {
             String r = URLDecoder.decode(map.get("reason"), UTF8);
             if (map.get("errorcode").equals("150"))
                 throw new EmbeddingDisabled("error code 150");
@@ -643,7 +647,8 @@ public class YouTubeParser extends VGetParser {
             // throw new PrivateVideoException(r);
         }
 
-        info.setTitle(URLDecoder.decode(map.get("title"), UTF8));
+        if(map.get("title") != null)
+            info.setTitle(URLDecoder.decode(map.get("title"), UTF8));
 
         // String fmt_list = URLDecoder.decode(map.get("fmt_list"), UTF8);
         // String[] fmts = fmt_list.split(",");
@@ -677,6 +682,7 @@ public class YouTubeParser extends VGetParser {
     public static Map<String, String> getQueryMap(String qs) {
         try {
             qs = qs.trim();
+            System.out.println("getQueryMap: "+qs);
             List<NameValuePair> list;
             list = getQueryString(qs);
             HashMap<String, String> map = new HashMap<String, String>();

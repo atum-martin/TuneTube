@@ -186,4 +186,8 @@ public class YoutubeLink {
     public String getYoutubeTitle() {
         return title;
     }
+
+    public String getVideoId() {
+        return videoId;
+    }
 }

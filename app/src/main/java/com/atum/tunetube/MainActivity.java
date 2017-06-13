@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private PlaylistAdapter playListAdapter;
     private TunePlayer player;
     private SearchView searchMenuItem;
+    private DatabaseConnection databaseConnection;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     new YoutubeAsyncTask(MainActivity.this).execute(task);
                     return true;
                 case R.id.navigation_dashboard:
-                    player.resetPlayer();
+                    YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+                    new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
                 case R.id.navigation_notifications:
                     player.resetPlayer();
@@ -47,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public PlaylistAdapter getPlayListAdapter() {
         return playListAdapter;
+    }
+
+    public DatabaseConnection getDBConnection(){
+        return databaseConnection;
     }
 
     @Override
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchMenuItem.setOnQueryTextListener(this);
 
         new File(this.getCacheDir()+"/testdb1").delete();
-        new DatabaseConnection(this.getCacheDir()+"/testdb1");
+        databaseConnection = new DatabaseConnection(this.getCacheDir()+"/testdb1");
     }
 
     @Override

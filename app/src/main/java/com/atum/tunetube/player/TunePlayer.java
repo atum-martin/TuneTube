@@ -4,6 +4,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import com.atum.tunetube.MainActivity;
+import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
@@ -15,14 +17,14 @@ import java.net.URLEncoder;
 
 public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, PlayTrackListener {
 
-    private final Context context;
+    private final MainActivity context;
     private String url = null;
     private String nextUrl = null;
     private String nextTitle = null;
     private MediaPlayer player = null;
     private TunePlayerCompleted playerCompletedListener = null;
 
-    public TunePlayer(Context context){
+    public TunePlayer(MainActivity context){
         this.context = context;
     }
 
@@ -97,5 +99,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     public void playTrack(YoutubeLink link) {
         System.out.println("play track: "+link.getYoutubeTitle()+" "+link.getYoutubeUrl());
         new PlayTrackAsync(this).execute(link);
+    }
+
+    public DatabaseConnection getDBConnection(){
+        return context.getDBConnection();
     }
 }
