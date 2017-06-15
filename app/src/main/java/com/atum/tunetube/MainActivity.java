@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         searchMenuItem.setOnQueryTextListener(this);
 
-        new File(this.getCacheDir()+"/testdb1").delete();
+        //new File(this.getCacheDir()+"/testdb1").delete();
         databaseConnection = new DatabaseConnection(this.getCacheDir()+"/testdb1");
     }
 

@@ -3,6 +3,7 @@ package com.atum.tunetube.http;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,34 +28,39 @@ public class HttpProxy extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         Map<String, String> parms = session.getParms();
-        if (parms.get("url") != null) {
-            String url = parms.get("url");
-            String title = parms.get("title");
-            System.out.println("receiving http buffer for: "+title+ " "+url);
-            try {
-                HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
-                if(parms.get("Range") != null){
-                    http.setRequestProperty("Range", parms.get("Range"));
-                    System.out.println("range: "+parms.get("Range"));
+        if (parms.get("url") == null) {
+            return newFixedLengthResponse("invalid url");
+        }
+        if (parms.get("title") == null) {
+            return newFixedLengthResponse("invalid title");
+        }
+        String url = parms.get("url");
+        String title = parms.get("title");
+        System.out.println("receiving http buffer for: "+title+ " "+url);
+        try {
+            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u";
+            File f = new File(filePath);
+            InputStream in;
+            if(f.exists()){
+                for(Map.Entry<String, String> e : session.getHeaders().entrySet()){
+                    System.out.println("headers: "+e.getKey()+" "+e.getValue());
                 }
-                String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u";
-                int i = 0;
-                while(i++ < 10){
-                    File f = new File(filePath);
-                    if(f.exists()){
-                        filePath =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+"_"+i+".m3u";
-                    } else {
-                        break;
-                    }
+                in = new FileInputStream(f);
+            } else {
+                HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
+                if (parms.get("Range") != null) {
+                    http.setRequestProperty("Range", parms.get("Range"));
+                    System.out.println("range: " + parms.get("Range"));
                 }
                 FileOutputStream fileOut = new FileOutputStream(filePath);
-                InputStream in = new RelayInputStream(http.getInputStream(), fileOut);
-                return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
-            } catch (IOException e) {
-                e.printStackTrace();
+                in = new RelayInputStream(http.getInputStream(), fileOut);
             }
+            return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return newFixedLengthResponse("exception: "+e.getCause().toString());
         }
-        return newFixedLengthResponse("invalid url");
+
     }
 
     private class RelayInputStream extends InputStream
