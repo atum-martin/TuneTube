@@ -39,7 +39,12 @@ public class YoutubeLink {
 
     private void populateYoutubeUrls(){
         youtubeUrls = new LinkedList<>();
-        checkForLocalFiles();
+        try {
+            checkForLocalFiles();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         if(youtubeUrls.size() > 0)
             return;
         YouTubeInfo info = null;

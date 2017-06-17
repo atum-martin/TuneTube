@@ -20,6 +20,28 @@ public class DatabaseConnection {
     public DatabaseConnection(String name){
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
         createTables();
+        upgradeDB();
+    }
+
+    private void upgradeDB() {
+        Cursor resultSet = connection.rawQuery("PRAGMA user_version", null);
+        int dbVersion = -1;
+        if(resultSet.moveToNext()){
+            dbVersion = resultSet.getInt(0);
+            System.out.println("db version: "+resultSet.getInt(0));
+        }
+        while(true){
+            switch (dbVersion){
+                case 0:
+                    System.out.println("applying schema update 0");
+                    connection.execSQL("ALTER TABLE tracks_played ADD COLUMN play_count INT");
+                    break;
+                default:
+                    return;
+            }
+            dbVersion++;
+            connection.execSQL("PRAGMA user_version = "+dbVersion);
+        }
     }
 
     private void createTables() {
