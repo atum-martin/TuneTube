@@ -6,8 +6,14 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.atum.tunetube.youtube.YoutubeLink;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by atum-martin on 13/06/17.
@@ -30,17 +36,64 @@ public class DatabaseConnection {
             dbVersion = resultSet.getInt(0);
             System.out.println("db version: "+resultSet.getInt(0));
         }
+
+        Map<Integer, Upgrade> upgradeMap = new HashMap<>();
+        List<String> sqlCommands = null;
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(null));
+        String line;
+        try {
+            int id = -1;
+
+            int lineNumber = 0;
+            while((line = br.readLine()) != null){
+                lineNumber++;
+                line = line.trim();
+                if(line.startsWith("#")){
+                    //comments ignore
+                    continue;
+                }
+                else if(line.startsWith("id")){
+                    if(id != -1){
+                        upgradeMap.put(id, new Upgrade(id, sqlCommands));
+                    }
+                    sqlCommands = new LinkedList<>();
+                    id = Integer.parseInt(line.substring(3));
+                } else if(line.length() > 0){
+                    if(sqlCommands == null){
+                        throw new IOException("SQL command detected prior to database ID lineNo: "+lineNumber);
+                    }
+                    sqlCommands.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         while(true){
-            switch (dbVersion){
-                case 0:
-                    System.out.println("applying schema update 0");
-                    connection.execSQL("ALTER TABLE tracks_played ADD COLUMN play_count INT");
-                    break;
-                default:
-                    return;
+            Upgrade up = upgradeMap.get(dbVersion);
+            if(up == null)
+                break;
+            System.out.println("applying schema update "+dbVersion);
+            for(String sql : up.getSqlCommands()){
+                connection.execSQL(sql);
             }
             dbVersion++;
             connection.execSQL("PRAGMA user_version = "+dbVersion);
+        }
+    }
+
+    private class Upgrade {
+        private int id;
+        private List<String> sqlCommands;
+
+        public Upgrade(int id, List<String> sqlCommands){
+            this.id = id;
+            this.sqlCommands = sqlCommands;
+        }
+
+        public List<String> getSqlCommands() {
+            return sqlCommands;
         }
     }
 
