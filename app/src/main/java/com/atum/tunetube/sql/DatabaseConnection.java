@@ -29,6 +29,16 @@ public class DatabaseConnection {
         upgradeDB();
     }
 
+    /*
+    #
+#
+# A basic CSV file used for upgrading the sqllite database.
+#
+id 0
+ALTER TABLE tracks_played ADD COLUMN play_count INT
+
+     */
+
     private void upgradeDB() {
         Cursor resultSet = connection.rawQuery("PRAGMA user_version", null);
         int dbVersion = -1;
