@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchMenuItem.setOnQueryTextListener(this);
 
         //new File(this.getCacheDir()+"/testdb1").delete();
-        databaseConnection = new DatabaseConnection(this.getCacheDir()+"/testdb1");
+        databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
     }
 
     @Override

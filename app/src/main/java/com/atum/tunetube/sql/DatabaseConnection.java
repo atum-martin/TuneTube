@@ -1,14 +1,17 @@
 package com.atum.tunetube.sql;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.atum.tunetube.R;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,23 +24,15 @@ import java.util.Map;
 
 public class DatabaseConnection {
 
+    private final Context ctx;
     private SQLiteDatabase connection;
 
-    public DatabaseConnection(String name){
+    public DatabaseConnection(Context ctx, String name){
+        this.ctx = ctx;
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
         createTables();
         upgradeDB();
     }
-
-    /*
-    #
-#
-# A basic CSV file used for upgrading the sqllite database.
-#
-id 0
-ALTER TABLE tracks_played ADD COLUMN play_count INT
-
-     */
 
     private void upgradeDB() {
         Cursor resultSet = connection.rawQuery("PRAGMA user_version", null);
@@ -49,8 +44,8 @@ ALTER TABLE tracks_played ADD COLUMN play_count INT
 
         Map<Integer, Upgrade> upgradeMap = new HashMap<>();
         List<String> sqlCommands = null;
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(null));
+        InputStream ins = ctx.getResources().openRawResource(R.raw.databaseupdates);
+        BufferedReader br = new BufferedReader(new InputStreamReader(ins));
         String line;
         try {
             int id = -1;
@@ -76,6 +71,8 @@ ALTER TABLE tracks_played ADD COLUMN play_count INT
                     sqlCommands.add(line);
                 }
             }
+            if(id != -1)
+                upgradeMap.put(id, new Upgrade(id, sqlCommands));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,6 +97,7 @@ ALTER TABLE tracks_played ADD COLUMN play_count INT
         public Upgrade(int id, List<String> sqlCommands){
             this.id = id;
             this.sqlCommands = sqlCommands;
+            System.out.println("DB Upgrade: id: "+id+" commands: "+sqlCommands.size());
         }
 
         public List<String> getSqlCommands() {

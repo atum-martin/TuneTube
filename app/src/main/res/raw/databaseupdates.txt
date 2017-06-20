@@ -1,0 +1,6 @@
+#
+#
+# A basic CSV file used for upgrading the sqllite database.
+#
+id 0
+ALTER TABLE tracks_played ADD COLUMN play_count INT
