@@ -1,6 +1,5 @@
 package com.atum.tunetube;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,7 +13,6 @@ import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
 
-import java.io.File;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -31,14 +29,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, "Adele");
+                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
                     new YoutubeAsyncTask(MainActivity.this).execute(task);
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.recently_played:
                     YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
                     new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.stop_playing:
                     player.resetPlayer();
                     return true;
             }
