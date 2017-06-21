@@ -27,8 +27,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<PlaylistItem> playlists = new LinkedList<>();
 
     private void constructPlaylists(){
-        YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
-        playlists.add(new PlaylistItem("Recently Played", task2));
+        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+        playlists.add(new PlaylistItem("Recently Played", task));
+
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/playlist?list=PLFPg_IUxqnZNnACUGsfn50DySIOVSkiKI");
+        playlists.add(new PlaylistItem("EDM", task));
+
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/playlist?list=PLDcnymzs18LWrKzHmzrGH1JzLBqrHi3xQ");
+        playlists.add(new PlaylistItem("Pop Music", task));
+
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w");
+        playlists.add(new PlaylistItem("Rock Music", task));
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -86,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         //new File(this.getCacheDir()+"/testdb1").delete();
         databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
+        constructPlaylists();
     }
 
     @Override

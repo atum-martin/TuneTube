@@ -90,6 +90,10 @@ public class DatabaseConnection {
         }
     }
 
+    public void submitSearch(String query, List<YoutubeLink> tracks) {
+
+    }
+
     private class Upgrade {
         private int id;
         private List<String> sqlCommands;

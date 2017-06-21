@@ -9,15 +9,19 @@ import com.atum.tunetube.task.YoutubeTask;
 public class PlaylistItem {
 
     private String description;
-    private YoutubeTask tsak;
+    private YoutubeTask task;
 
-    public PlaylistItem(String description, YoutubeTask tsak){
+    public PlaylistItem(String description, YoutubeTask task){
         this.description = description;
-        this.tsak = tsak;
+        this.task = task;
 
     }
 
     public String toString(){
         return description;
+    }
+
+    public YoutubeTask getTask(){
+        return task;
     }
 }

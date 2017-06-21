@@ -7,8 +7,10 @@ import android.widget.ListView;
 
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
+import com.atum.tunetube.YoutubeAsyncTask;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.PlayTrackListener;
+import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.util.ArrayList;
@@ -56,7 +58,9 @@ public class PlaylistAdapter {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                //listener.playTrack(items.get(itemPosition));
+                YoutubeTask task = items.get(itemPosition).getTask();
+                System.out.println("executing display playlist event: "+task+" ");
+                new YoutubeAsyncTask(activity).execute(task);
             }
         });
     }

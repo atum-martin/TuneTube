@@ -19,6 +19,7 @@ public class YoutubeTask {
         switch(action){
             case SEARCH:
                 tracks = YoutubeSearch.getSearchResults(query);
+                connection.submitSearch(query, tracks);
                 return tracks;
             case PLAYLIST:
                 tracks = YoutubePlaylist.parsePlaylist(query);
