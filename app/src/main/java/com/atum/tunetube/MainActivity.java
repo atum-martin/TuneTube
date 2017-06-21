@@ -8,12 +8,15 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 
 import com.atum.tunetube.http.HttpProxy;
+import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -21,6 +24,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private TunePlayer player;
     private SearchView searchMenuItem;
     private DatabaseConnection databaseConnection;
+    private List<PlaylistItem> playlists = new LinkedList<>();
+
+    private void constructPlaylists(){
+        YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+        playlists.add(new PlaylistItem("Recently Played", task2));
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -28,9 +37,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    YoutubeTask task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
-                    new YoutubeAsyncTask(MainActivity.this).execute(task);
+                case R.id.playlists:
+                    //YoutubeTask task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+                    //new YoutubeAsyncTask(MainActivity.this).execute(task);
+
+                    /*playlists.add("Recent Searches");
+                    playlists.add("EDM");
+                    playlists.add("Pop Music");
+                    playlists.add("Dance Music");*/
+                    playListAdapter.displayPlaylists(playlists);
                     return true;
                 case R.id.recently_played:
                     YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);

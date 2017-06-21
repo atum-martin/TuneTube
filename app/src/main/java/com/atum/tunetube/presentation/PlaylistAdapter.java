@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
+import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.PlayTrackListener;
 import com.atum.tunetube.youtube.YoutubeLink;
 
@@ -29,10 +30,10 @@ public class PlaylistAdapter {
 
     public void displayPlaylist(final List<YoutubeLink> songs){
         ListView mainListView = (ListView) activity.findViewById(R.id.listview);
-        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(activity, R.layout.simplerow, new ArrayList<String>());
+        final ArrayAdapter<YoutubeLink> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<YoutubeLink>());
 
         for(YoutubeLink link : songs){
-            listAdapter.add(link.getYoutubeTitle());
+            listAdapter.add(link);
         }
         mainListView.setAdapter( listAdapter );
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -42,5 +43,21 @@ public class PlaylistAdapter {
             }
         });
 
+    }
+
+    public void displayPlaylists(final List<PlaylistItem> items){
+        ListView mainListView = (ListView) activity.findViewById(R.id.listview);
+        final ArrayAdapter<PlaylistItem> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<PlaylistItem>());
+
+        for(PlaylistItem item : items){
+            listAdapter.add(item);
+        }
+        mainListView.setAdapter( listAdapter );
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
+            {
+                //listener.playTrack(items.get(itemPosition));
+            }
+        });
     }
 }

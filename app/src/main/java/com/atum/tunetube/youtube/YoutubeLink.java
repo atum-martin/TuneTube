@@ -215,4 +215,9 @@ public class YoutubeLink {
     public String getVideoId() {
         return videoId;
     }
+
+    @Override
+    public String toString(){
+        return getYoutubeTitle();
+    }
 }
