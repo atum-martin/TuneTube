@@ -23,7 +23,7 @@ public class YoutubeLink {
     //video ID represents a string similar to the following: /watch?v=rDWuqrJAyGw
     private String videoId;
     private String title;
-    private List<YouTubeParser.VideoDownload> youtubeUrls = null;
+    private transient List<YouTubeParser.VideoDownload> youtubeUrls = null;
 
     public YoutubeLink(String videoId, String title){
 

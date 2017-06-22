@@ -27,6 +27,12 @@ public class YoutubeTask {
             case DATABASE_RECENT:
                 tracks = connection.getRecentlyPlayed();
                 return tracks;
+            case SEARCHES_RECENT:
+                tracks = connection.getRecentSearches();
+                return tracks;
+            case SEARCH_RESULTS:
+                tracks = connection.getSearchResults(query);
+                return tracks;
             default:
                 break;
         }
@@ -37,7 +43,9 @@ public class YoutubeTask {
         SEARCH,
         PLAYLIST,
         DATABASE_RECENT,
-        VIDEO;
+        VIDEO,
+        SEARCHES_RECENT,
+        SEARCH_RESULTS;
     }
 
     private Type action;
@@ -45,12 +53,16 @@ public class YoutubeTask {
     DatabaseConnection connection;
 
     public YoutubeTask(Type action, String query){
+        this(action, null, query);
+    }
+
+    public YoutubeTask(Type action, DatabaseConnection connection, String query){
         this.action = action;
         this.query = query;
+        this.connection = connection;
     }
 
     public YoutubeTask(Type action, DatabaseConnection connection){
-        this.connection = connection;
-        this.action = action;
+        this(action, connection, null);
     }
 }

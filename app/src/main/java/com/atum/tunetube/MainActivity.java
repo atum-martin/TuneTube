@@ -13,6 +13,7 @@ import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
+import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -24,11 +25,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private TunePlayer player;
     private SearchView searchMenuItem;
     private DatabaseConnection databaseConnection;
-    private List<PlaylistItem> playlists = new LinkedList<>();
+    private List<YoutubeLink> playlists = new LinkedList<>();
 
     private void constructPlaylists(){
         YoutubeTask task = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
         playlists.add(new PlaylistItem("Recently Played", task));
+
+        task = new YoutubeTask(YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
+        playlists.add(new PlaylistItem("Recently Searched", task));
 
         task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/playlist?list=PLFPg_IUxqnZNnACUGsfn50DySIOVSkiKI");
         playlists.add(new PlaylistItem("EDM", task));
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     playlists.add("EDM");
                     playlists.add("Pop Music");
                     playlists.add("Dance Music");*/
-                    playListAdapter.displayPlaylists(playlists);
+                    playListAdapter.displayPlaylist(playlists);
                     return true;
                 case R.id.recently_played:
                     YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
@@ -100,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, query);
+        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, databaseConnection, query);
         new YoutubeAsyncTask(MainActivity.this).execute(task);
         return false;
     }

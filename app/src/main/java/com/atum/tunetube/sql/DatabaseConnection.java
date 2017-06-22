@@ -6,13 +6,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.atum.tunetube.R;
+import com.atum.tunetube.model.PlaylistItem;
+import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,6 +98,31 @@ public class DatabaseConnection {
 
     public void submitSearch(String query, List<YoutubeLink> tracks) {
 
+        String json =  new Gson().toJson(tracks);
+        String[] args = new String[]{query, json, new Long(System.currentTimeMillis()).toString()};
+        connection.execSQL("INSERT INTO searches VALUES(?, ?, ?);", args);
+    }
+
+    public List<YoutubeLink> getRecentSearches(){
+        LinkedList<YoutubeLink> output = new LinkedList<>();
+        Cursor resultSet = connection.rawQuery("Select * from searches ORDER BY search_time DESC",null);
+        while(resultSet.moveToNext()){
+            String query = resultSet.getString(0);
+            YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH_RESULTS, this, query);
+            output.add(new PlaylistItem(query, task));
+        }
+        return output;
+    }
+
+    public List<YoutubeLink> getSearchResults(String query) {
+        Cursor resultSet = connection.rawQuery("Select * from searches ORDER BY search_time DESC LIMIT 1",null);
+        while(resultSet.moveToNext()){
+            String results = resultSet.getString(1);
+            Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();
+            List<YoutubeLink> output = new Gson().fromJson(results, listType);
+            return output;
+        }
+        return new LinkedList<>();
     }
 
     private class Upgrade {
@@ -111,6 +142,8 @@ public class DatabaseConnection {
 
     private void createTables() {
         connection.execSQL("CREATE TABLE IF NOT EXISTS tracks_played(youtubeTitle VARCHAR,youtubeUrl VARCHAR PRIMARY KEY, last_played LONG);");
+        connection.execSQL("CREATE TABLE IF NOT EXISTS searches (query VARCHAR,results VARCHAR, search_time LONG);");
+
         //connection.execSQL("INSERT INTO tracks_played VALUES('Tobu - Infectious [NCS Release]','/watch?v=ux8-EbW6DUI','"+System.currentTimeMillis()+"');");
         //connection.execSQL("INSERT INTO tracks_played VALUES('Tobu - Infectious 22','/watch?v=ux8-EbW6DUI23','"+(System.currentTimeMillis()-20000)+"');");
 

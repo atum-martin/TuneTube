@@ -41,12 +41,19 @@ public class PlaylistAdapter {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                listener.playTrack(songs.get(itemPosition));
+                YoutubeLink link = songs.get(itemPosition);
+                if(link != null && link instanceof PlaylistItem){
+                    PlaylistItem item = (PlaylistItem) link;
+                    YoutubeTask task = item.getTask();
+                    new YoutubeAsyncTask(activity).execute(task);
+                } else {
+                    listener.playTrack(songs.get(itemPosition));
+                }
             }
         });
 
     }
-
+    /*
     public void displayPlaylists(final List<PlaylistItem> items){
         ListView mainListView = (ListView) activity.findViewById(R.id.listview);
         final ArrayAdapter<PlaylistItem> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<PlaylistItem>());
@@ -63,5 +70,5 @@ public class PlaylistAdapter {
                 new YoutubeAsyncTask(activity).execute(task);
             }
         });
-    }
+    }*/
 }
