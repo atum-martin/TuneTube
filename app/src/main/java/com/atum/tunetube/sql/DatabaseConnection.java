@@ -108,6 +108,8 @@ public class DatabaseConnection {
         Cursor resultSet = connection.rawQuery("Select * from searches ORDER BY search_time DESC",null);
         while(resultSet.moveToNext()){
             String query = resultSet.getString(0);
+
+            System.out.println("row in db: "+query);
             YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH_RESULTS, this, query);
             output.add(new PlaylistItem(query, task));
         }
@@ -115,7 +117,7 @@ public class DatabaseConnection {
     }
 
     public List<YoutubeLink> getSearchResults(String query) {
-        Cursor resultSet = connection.rawQuery("Select * from searches ORDER BY search_time DESC LIMIT 1",null);
+        Cursor resultSet = connection.rawQuery("Select * from searches WHERE query = '"+query+"' ORDER BY search_time DESC LIMIT 1",null);
         while(resultSet.moveToNext()){
             String results = resultSet.getString(1);
             Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();

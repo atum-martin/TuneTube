@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         task = new YoutubeTask(YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
         playlists.add(new PlaylistItem("Recently Searched", task));
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/playlist?list=PLFPg_IUxqnZNnACUGsfn50DySIOVSkiKI");
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos");
         playlists.add(new PlaylistItem("EDM", task));
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/playlist?list=PLDcnymzs18LWrKzHmzrGH1JzLBqrHi3xQ");
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCE80FOXpJydkkMo-BYoJdEg/videos");
         playlists.add(new PlaylistItem("Pop Music", task));
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w");
+        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w/videos");
         playlists.add(new PlaylistItem("Rock Music", task));
     }
 
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        searchMenuItem.clearFocus();
         YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, databaseConnection, query);
         new YoutubeAsyncTask(MainActivity.this).execute(task);
         return false;
