@@ -171,10 +171,18 @@ public class DatabaseConnection {
         while(resultSet.moveToNext()){
             String youtubeTitle = resultSet.getString(0);
             String youtubeUrl = resultSet.getString(1);
+
             long lastPlayed = resultSet.getLong(2);
-            YoutubeLink link = new YoutubeLink(youtubeUrl, youtubeTitle);
+            //play_count column 3
+            String json = resultSet.getString(4);
+            //YoutubeLink link = new YoutubeLink(youtubeUrl, youtubeTitle);
+            //Type type = new TypeToken<YoutubeLink>(){}.getType();
+            System.out.println("recommened json: "+json);
+            YoutubeLink link = new Gson().fromJson(json, YoutubeLink.class);
             output.addAll(link.getRelatedItems());
-            System.out.println("recentlyRec: "+link.getYoutubeTitle());
+            for(YoutubeLink l : link.getRelatedItems()) {
+                System.out.println("recentlyRec: " + l.getYoutubeTitle());
+            }
         }
         return output;
     }
@@ -184,8 +192,9 @@ public class DatabaseConnection {
         SQLiteStatement statement = connection.compileStatement(updateQuery);
         int affectedRows = statement.executeUpdateDelete();
         if(affectedRows <= 0){
-            String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(), new Long(System.currentTimeMillis()).toString(), "1"};
-            connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?, ?);", args);
+            String json =  new Gson().toJson(track);
+            String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(), new Long(System.currentTimeMillis()).toString(), "1", json};
+            connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?, ?, ?);", args);
         }
     }
 }

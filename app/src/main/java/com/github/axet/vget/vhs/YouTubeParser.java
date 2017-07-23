@@ -721,6 +721,7 @@ public class YouTubeParser extends VGetParser {
                 for (String line : splits) {
                     YoutubeLink link = ParseYoutubeLink.parseHtml(line);
                     if (link != null) {
+                        System.out.println("adding recommended track: "+ link.getYoutubeUrl()+" "+link.getYoutubeTitle());
                         info.addRelated(link);
                     }
                 }

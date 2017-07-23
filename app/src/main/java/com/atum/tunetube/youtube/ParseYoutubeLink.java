@@ -20,7 +20,15 @@ public class ParseYoutubeLink {
                 //TODO:
                 return null;
             }
-            String title =  StringEscapeUtils.unescapeHtml4(line.substring(line.indexOf(">")+1,line.indexOf("</a>")));
+            int titleIdx = line.indexOf(">");
+            int titleEndIdx = line.indexOf("</a>");
+            String title = "";
+            if(titleIdx != line.length() && titleEndIdx != -1) {
+                title = StringEscapeUtils.unescapeHtml4(line.substring(titleIdx + 1, titleEndIdx));
+            } else {
+                title = line.substring(line.indexOf("title=\"")+7);
+                title = StringEscapeUtils.unescapeHtml4(title.substring(0, title.indexOf("\"")));
+            }
             YoutubeLink link = new YoutubeLink(videoId,title);
 
             System.out.println(videoId+" "+title);

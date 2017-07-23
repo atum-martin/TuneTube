@@ -21,8 +21,9 @@ public class PlayTrackAsync extends AsyncTask<YoutubeLink, Integer, Long> {
     @Override
     protected Long doInBackground(YoutubeLink... links) {
         for(YoutubeLink link : links){
-            player.getDBConnection().updatePlaytime(link);
             try {
+                link.getYoutubeUrls();
+                player.getDBConnection().updatePlaytime(link);
                 player.setUrl(link.getYoutubeUrls().get(0).url.toString(), link.getYoutubeTitle());
             } catch (IOException e) {
                 e.printStackTrace();
