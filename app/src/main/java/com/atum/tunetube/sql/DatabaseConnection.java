@@ -179,9 +179,11 @@ public class DatabaseConnection {
             //Type type = new TypeToken<YoutubeLink>(){}.getType();
             System.out.println("recommened json: "+json);
             YoutubeLink link = new Gson().fromJson(json, YoutubeLink.class);
-            output.addAll(link.getRelatedItems());
-            for(YoutubeLink l : link.getRelatedItems()) {
-                System.out.println("recentlyRec: " + l.getYoutubeTitle());
+            if(link != null && link.getRelatedItems() != null) {
+                output.addAll(link.getRelatedItems());
+                for (YoutubeLink l : link.getRelatedItems()) {
+                    System.out.println("recentlyRec: " + l.getYoutubeTitle());
+                }
             }
         }
         return output;
