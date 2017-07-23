@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         task = new YoutubeTask(YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
         playlists.add(new PlaylistItem("Recently Searched", task));
 
+        task = new YoutubeTask(YoutubeTask.Type.RECOMMENED_RECENT, databaseConnection);
+        playlists.add(new PlaylistItem("Recommended Tracks", task));
+
         task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos");
         playlists.add(new PlaylistItem("EDM", task));
 

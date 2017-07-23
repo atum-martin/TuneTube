@@ -24,6 +24,7 @@ public class YoutubeLink {
     private String videoId;
     private String title;
     private transient List<YouTubeParser.VideoDownload> youtubeUrls = null;
+    private List<YoutubeLink> relatedItems = new LinkedList<>();
 
     public YoutubeLink(String videoId, String title){
 
@@ -63,6 +64,9 @@ public class YoutubeLink {
             if(!(track.stream instanceof YouTubeInfo.StreamVideo))
                 youtubeUrls.add(track);
         }
+
+        relatedItems = info.getRelatedItems();
+
         //youtubeUrls.addAll(list);
         Collections.sort(youtubeUrls);
         try {
@@ -215,6 +219,8 @@ public class YoutubeLink {
     public String getVideoId() {
         return videoId;
     }
+
+    public List<YoutubeLink> getRelatedItems () { return relatedItems; }
 
     @Override
     public String toString(){

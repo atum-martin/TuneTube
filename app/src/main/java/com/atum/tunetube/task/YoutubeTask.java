@@ -27,6 +27,9 @@ public class YoutubeTask {
             case DATABASE_RECENT:
                 tracks = connection.getRecentlyPlayed();
                 return tracks;
+            case RECOMMENED_RECENT:
+                tracks = connection.getRecentlyRecommended();
+                return tracks;
             case SEARCHES_RECENT:
                 tracks = connection.getRecentSearches();
                 return tracks;
@@ -45,7 +48,8 @@ public class YoutubeTask {
         DATABASE_RECENT,
         VIDEO,
         SEARCHES_RECENT,
-        SEARCH_RESULTS;
+        SEARCH_RESULTS,
+        RECOMMENED_RECENT;
     }
 
     private Type action;

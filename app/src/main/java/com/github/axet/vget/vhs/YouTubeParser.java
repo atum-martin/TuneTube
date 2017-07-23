@@ -35,6 +35,8 @@ import org.liquidplayer.webkit.javascriptcore.JSFunction;
 import org.liquidplayer.webkit.javascriptcore.JSValue;
 //import org.apache.http.client.utils.URLEncodedUtils;
 
+import com.atum.tunetube.youtube.ParseYoutubeLink;
+import com.atum.tunetube.youtube.YoutubeLink;
 import com.github.axet.vget.info.VGetParser;
 import com.github.axet.vget.info.VideoFileInfo;
 import com.github.axet.vget.info.VideoInfo;
@@ -712,6 +714,19 @@ public class YouTubeParser extends VGetParser {
 
     void extractHtmlInfo(List<VideoDownload> sNextVideoURL, YouTubeInfo info, String html, AtomicBoolean stop,
             Runnable notify) throws Exception {
+        {
+            //extract related videos
+            String[] splits = html.split("\n");
+            if(splits != null) {
+                for (String line : splits) {
+                    YoutubeLink link = ParseYoutubeLink.parseHtml(line);
+                    if (link != null) {
+                        info.addRelated(link);
+                    }
+                }
+            }
+        }
+
         {
             Pattern age = Pattern.compile("(verify_age)");
             Matcher ageMatch = age.matcher(html);

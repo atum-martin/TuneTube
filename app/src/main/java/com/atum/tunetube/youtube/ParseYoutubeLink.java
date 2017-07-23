@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 public class ParseYoutubeLink {
 
     public static YoutubeLink parseHtml(String line){
-        if(line.contains("yt-lockup-title")){
+        if(line.contains("yt-lockup-title") || line.contains("content-link")){
             int index = line.indexOf("<a");
             line = line.substring(index);
             index = line.indexOf("href=\"");

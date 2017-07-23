@@ -165,6 +165,20 @@ public class DatabaseConnection {
         return output;
     }
 
+    public List<YoutubeLink> getRecentlyRecommended(){
+        LinkedList<YoutubeLink> output = new LinkedList<>();
+        Cursor resultSet = connection.rawQuery("Select * from tracks_played ORDER BY last_played DESC",null);
+        while(resultSet.moveToNext()){
+            String youtubeTitle = resultSet.getString(0);
+            String youtubeUrl = resultSet.getString(1);
+            long lastPlayed = resultSet.getLong(2);
+            YoutubeLink link = new YoutubeLink(youtubeUrl, youtubeTitle);
+            output.addAll(link.getRelatedItems());
+            System.out.println("recentlyRec: "+link.getYoutubeTitle());
+        }
+        return output;
+    }
+
     public void updatePlaytime(YoutubeLink track){
         String updateQuery = "UPDATE tracks_played SET last_played = "+System.currentTimeMillis()+", play_count=play_count+1 WHERE youtubeUrl = '"+track.getVideoId()+"';";
         SQLiteStatement statement = connection.compileStatement(updateQuery);

@@ -2,10 +2,17 @@ package com.github.axet.vget.vhs;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.atum.tunetube.youtube.YoutubeLink;
 import com.github.axet.vget.info.VideoInfo;
 
 public class YouTubeInfo extends VideoInfo {
+
+    public void addRelated(YoutubeLink link) {
+        relatedItems.add(link);
+    }
 
     // keep it in order hi->lo
     public enum YoutubeQuality {
@@ -102,6 +109,7 @@ public class YouTubeInfo extends VideoInfo {
 
     private StreamInfo vq;
     private URI playerURI;
+    private List<YoutubeLink> relatedItems = new LinkedList<>();
 
     public YouTubeInfo(URL web) {
         super(web);
@@ -122,5 +130,7 @@ public class YouTubeInfo extends VideoInfo {
     public void setPlayerURI(URI playerURI) {
         this.playerURI = playerURI;
     }
+
+    public List<YoutubeLink> getRelatedItems(){ return relatedItems; }
 
 }
