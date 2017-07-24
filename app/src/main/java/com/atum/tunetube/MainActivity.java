@@ -1,6 +1,7 @@
 package com.atum.tunetube;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.SearchView;
 import com.atum.tunetube.http.HttpProxy;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.TunePlayer;
+import com.atum.tunetube.presentation.PlayerController;
 import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         try {
             new HttpProxy();
         } catch (IOException e) {
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         player = new TunePlayer(this);
         playListAdapter = new PlaylistAdapter(this, player);
+
+
         searchMenuItem = (SearchView) findViewById(R.id.musicsearch);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

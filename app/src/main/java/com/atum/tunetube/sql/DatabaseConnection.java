@@ -169,21 +169,12 @@ public class DatabaseConnection {
         LinkedList<YoutubeLink> output = new LinkedList<>();
         Cursor resultSet = connection.rawQuery("Select * from tracks_played ORDER BY last_played DESC",null);
         while(resultSet.moveToNext()){
-            String youtubeTitle = resultSet.getString(0);
-            String youtubeUrl = resultSet.getString(1);
 
-            long lastPlayed = resultSet.getLong(2);
             //play_count column 3
             String json = resultSet.getString(4);
-            //YoutubeLink link = new YoutubeLink(youtubeUrl, youtubeTitle);
-            //Type type = new TypeToken<YoutubeLink>(){}.getType();
-            System.out.println("recommened json: "+json);
             YoutubeLink link = new Gson().fromJson(json, YoutubeLink.class);
             if(link != null && link.getRelatedItems() != null) {
                 output.addAll(link.getRelatedItems());
-                for (YoutubeLink l : link.getRelatedItems()) {
-                    System.out.println("recentlyRec: " + l.getYoutubeTitle());
-                }
             }
         }
         return output;

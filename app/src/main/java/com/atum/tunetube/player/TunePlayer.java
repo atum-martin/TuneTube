@@ -3,8 +3,13 @@ package com.atum.tunetube.player;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.VideoView;
 
 import com.atum.tunetube.MainActivity;
+import com.atum.tunetube.R;
+import com.atum.tunetube.presentation.PlayerController;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
 
@@ -73,6 +78,20 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         System.out.println("media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
+        final PlayerController controller = new PlayerController(context.getApplicationContext(), mPlayer, context);
+        mPlayer.setOnPreparedListener(controller);
+
+        LinearLayout root = (LinearLayout) context.findViewById(R.id.container);
+
+        ViewTreeObserver vto = root.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new  ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                controller.displayController();
+            }
+        });
+
+
         //mPlayer.setVolume(0.1f, 0.1f);
 
         mPlayer.start();
@@ -109,5 +128,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     public DatabaseConnection getDBConnection(){
         return context.getDBConnection();
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return player;
     }
 }

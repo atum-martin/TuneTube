@@ -53,22 +53,5 @@ public class PlaylistAdapter {
         });
 
     }
-    /*
-    public void displayPlaylists(final List<PlaylistItem> items){
-        ListView mainListView = (ListView) activity.findViewById(R.id.listview);
-        final ArrayAdapter<PlaylistItem> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<PlaylistItem>());
 
-        for(PlaylistItem item : items){
-            listAdapter.add(item);
-        }
-        mainListView.setAdapter( listAdapter );
-        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
-            {
-                YoutubeTask task = items.get(itemPosition).getTask();
-                System.out.println("executing display playlist event: "+task+" ");
-                new YoutubeAsyncTask(activity).execute(task);
-            }
-        });
-    }*/
 }
