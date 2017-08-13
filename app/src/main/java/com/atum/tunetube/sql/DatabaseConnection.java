@@ -4,15 +4,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.os.Environment;
 
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlaylistItem;
+import com.atum.tunetube.player.IndexDiskFiles;
 import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +38,21 @@ public class DatabaseConnection {
 
     public DatabaseConnection(Context ctx, String name){
         this.ctx = ctx;
+        File databaseFile = new File(name);
+        //databaseFile.delete();
+        boolean dbExists = databaseFile.exists();
+
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
         createTables();
         upgradeDB();
+
+        //If the DB doesn't exist index files previously created by the application.
+        if(!dbExists){
+            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
+            File songDir = new File(filePath);
+            IndexDiskFiles indexer = new IndexDiskFiles(this);
+            indexer.indexDirectory(songDir);
+        }
     }
 
     private void upgradeDB() {

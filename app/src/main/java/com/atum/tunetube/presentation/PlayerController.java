@@ -27,7 +27,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
         mediaController = new MediaController(context);
     }
 
-    public void displayController(){
+   /* public void displayController(){
 
         if(handler == null) {
             Looper.prepare();
@@ -46,7 +46,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
                 mediaController.show();
             }
         });
-    }
+    }*/
 
     public MediaController getMediaController(){
         return mediaController;

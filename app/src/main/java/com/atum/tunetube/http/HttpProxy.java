@@ -38,7 +38,7 @@ public class HttpProxy extends NanoHTTPD {
         String title = parms.get("title");
         System.out.println("receiving http buffer for: "+title+ " "+url);
         try {
-            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u";
+            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube/"+title.replaceAll(" ", "_")+".m3u";
             File f = new File(filePath);
             InputStream in;
             if(f.exists()){

@@ -78,18 +78,18 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         System.out.println("media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
-        final PlayerController controller = new PlayerController(context.getApplicationContext(), mPlayer, context);
-        mPlayer.setOnPreparedListener(controller);
+       // final PlayerController controller = new PlayerController(context.getApplicationContext(), mPlayer, context);
+        //mPlayer.setOnPreparedListener(controller);
 
         LinearLayout root = (LinearLayout) context.findViewById(R.id.container);
 
-        ViewTreeObserver vto = root.getViewTreeObserver();
+        /*ViewTreeObserver vto = root.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new  ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 controller.displayController();
             }
-        });
+        });*/
 
 
         //mPlayer.setVolume(0.1f, 0.1f);

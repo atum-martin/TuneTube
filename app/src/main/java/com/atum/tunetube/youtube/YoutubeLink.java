@@ -77,7 +77,7 @@ public class YoutubeLink {
     }
 
     private void checkForLocalFiles() {
-        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+title.replaceAll(" ", "_")+".m3u";
+        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube/"+title.replaceAll(" ", "_")+".m3u";
         File f = new File(filePath);
         if(f.exists()) {
             try {

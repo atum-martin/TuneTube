@@ -29,11 +29,11 @@
 
     </LinearLayout>
 
-    <MediaController android:id="@+id/media_controller"
+    <!-- <MediaController android:id="@+id/media_controller"
         android:layout_width="fill_parent"
         android:layout_height="200px"
         android:visibility="visible"/>
-
+    -->
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
