@@ -12,11 +12,9 @@ public class YoutubePlaylist {
         List<String> content = YoutubeHttp.getSingleton().openUrl(url);
         List<YoutubeLink> links = new LinkedList<>();
         for(String line : content){
-            if(line.contains("yt-lockup-title")){
-                YoutubeLink link = ParseYoutubeLink.parseHtml(line);
-                if(link != null)
-                    links.add(link);
-            }
+            YoutubeLink[] parsedLinks = ParseYoutubeLink.parseHtml(line);
+            for(YoutubeLink link : parsedLinks)
+                links.add(link);
         }
         return links;
     }
