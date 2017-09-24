@@ -21,7 +21,7 @@ public class ParseYoutubeLink {
             return parseJson(line);
         }
         //Youtube old UI.
-        if(line.contains("yt-lockup-title") || line.contains("content-link") || line.contains("yt-simple-endpoint")){
+        if(line.contains("yt-lockup-title") || line.contains("content-link")){
             System.out.println("parsing video: "+line);
             int index = line.indexOf("<a");
             line = line.substring(index);
