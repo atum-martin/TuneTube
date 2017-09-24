@@ -64,31 +64,58 @@ public class ParseYoutubeLink {
         LinkedList<YoutubeLink> outputVideos = new LinkedList<>();
         try {
             JSONObject json = new JSONObject(line);
-            JSONArray videos = json.getJSONObject("contents")
-                    .getJSONObject("twoColumnSearchResultsRenderer")
+            JSONArray videos = getYoutubeContents(json);
+            if(videos == null)
+                return new YoutubeLink[]{};
+
+            for(int i = 0; i < videos.length(); i++){
+                JSONObject video = videos.getJSONObject(i);
+                YoutubeLink youtubeTrack = parseYoutubeRenderer(video);
+                if(youtubeTrack != null)
+                    outputVideos.add(youtubeTrack);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return outputVideos.toArray(new YoutubeLink[outputVideos.size()]);
+    }
+
+    private static JSONArray getYoutubeContents(JSONObject contents) throws JSONException {
+
+        JSONObject twoColumnWatchNextResults = contents.getJSONObject("contents")
+                .getJSONObject("twoColumnSearchResultsRenderer");
+
+        if(!twoColumnWatchNextResults.isNull("primaryContents")) {
+            return twoColumnWatchNextResults
                     .getJSONObject("primaryContents")
                     .getJSONObject("sectionListRenderer")
                     .getJSONArray("contents")
                     .getJSONObject(0)
                     .getJSONObject("itemSectionRenderer")
                     .getJSONArray("contents");
-
-
-            for(int i = 0; i < videos.length(); i++){
-                JSONObject video = videos.getJSONObject(i);
-                if(video.isNull("videoRenderer"))
-                    continue;
-                JSONObject videoRenderer = video.getJSONObject("videoRenderer");
-
-                String videoId = PLAYERURL + videoRenderer.getString("videoId");
-                String title = videoRenderer.getJSONObject("title").getString("simpleText");
-                System.out.println("contructing json video: "+videoId +" "+title);
-
-                outputVideos.add(new YoutubeLink(videoId,title));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-        return outputVideos.toArray(new YoutubeLink[outputVideos.size()]);
+        if(!twoColumnWatchNextResults.isNull("secondaryResults")) {
+            return twoColumnWatchNextResults
+                    .getJSONObject("secondaryResults")
+                    .getJSONObject("secondaryResults")
+                    .getJSONArray("results");
+        }
+        return null;
+    }
+
+    private static YoutubeLink parseYoutubeRenderer(JSONObject renderer) throws JSONException {
+        JSONObject videoRenderer;
+        if(!renderer.isNull("videoRenderer")){
+            videoRenderer = renderer.getJSONObject("videoRenderer");
+        } else if(!renderer.isNull("compactVideoRenderer")){
+            videoRenderer = renderer.getJSONObject("compactVideoRenderer");
+        } else {
+            return null;
+        }
+
+        String videoId = PLAYERURL + videoRenderer.getString("videoId");
+        String title = videoRenderer.getJSONObject("title").getString("simpleText");
+        System.out.println("contructing json video: "+videoId +" "+title);
+        return new YoutubeLink(videoId,title);
     }
 }
