@@ -1,8 +1,6 @@
 package com.atum.tunetube;
 
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +9,12 @@ import android.widget.SearchView;
 
 import com.atum.tunetube.http.HttpProxy;
 import com.atum.tunetube.model.PlaylistItem;
-import com.atum.tunetube.player.IndexDiskFiles;
 import com.atum.tunetube.player.TunePlayer;
-import com.atum.tunetube.presentation.PlayerController;
 import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -103,12 +98,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
         constructPlaylists();
-
-        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
-        File songDir = new File(filePath);
-        if(!songDir.exists()){
-            songDir.mkdir();
-        }
 
     }
 

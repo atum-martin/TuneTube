@@ -107,8 +107,11 @@ public class ParseYoutubeLink {
         JSONObject videoRenderer;
         if(!renderer.isNull("videoRenderer")){
             videoRenderer = renderer.getJSONObject("videoRenderer");
-        } else if(!renderer.isNull("compactVideoRenderer")){
+        } else if(!renderer.isNull("compactVideoRenderer")) {
             videoRenderer = renderer.getJSONObject("compactVideoRenderer");
+        } else if(!renderer.isNull("channelRenderer")){
+            //use case for an artists channel appears in results rather than a track/video.
+            return null;
         } else {
             return null;
         }
