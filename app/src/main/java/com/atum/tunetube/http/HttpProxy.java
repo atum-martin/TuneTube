@@ -38,7 +38,9 @@ public class HttpProxy extends NanoHTTPD {
         String title = parms.get("title");
         System.out.println("receiving http buffer for: "+title+ " "+url);
         try {
-            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube/"+title.replaceAll(" ", "_")+".m3u";
+            String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
+            createDirIfNotExists(dir);
+            String filePath = dir+"/"+title.replaceAll(" ", "_")+".m3u";
             File f = new File(filePath);
             InputStream in;
             if(f.exists()){
@@ -61,6 +63,12 @@ public class HttpProxy extends NanoHTTPD {
             return newFixedLengthResponse("exception: "+e.getCause().toString());
         }
 
+    }
+
+    private void createDirIfNotExists(String dir) {
+        File f = new File(dir);
+        if(!f.exists())
+            f.mkdir();
     }
 
     private class RelayInputStream extends InputStream
