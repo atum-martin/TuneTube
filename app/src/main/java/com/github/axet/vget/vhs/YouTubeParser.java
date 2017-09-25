@@ -719,11 +719,11 @@ public class YouTubeParser extends VGetParser {
             String[] splits = html.split("\n");
             if(splits != null) {
                 for (String line : splits) {
-                    //YoutubeLink link = ParseYoutubeLink.parseHtml(line);
-                   // if (link != null) {
-                   //     System.out.println("adding recommended track: "+ link.getYoutubeUrl()+" "+link.getYoutubeTitle());
-                    //    info.addRelated(link);
-                    //}
+                    YoutubeLink[] youtubeTracks = ParseYoutubeLink.parseHtml(line);
+                    for(YoutubeLink link : youtubeTracks) {
+                        System.out.println("adding recommended track: " + link.getYoutubeUrl() + " " + link.getYoutubeTitle());
+                        info.addRelated(link);
+                    }
                 }
             }
         }
