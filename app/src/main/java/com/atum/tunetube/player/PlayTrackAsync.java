@@ -24,6 +24,9 @@ public class PlayTrackAsync extends AsyncTask<YoutubeLink, Integer, Long> {
             try {
                 link.getYoutubeUrls();
                 player.getDBConnection().updatePlaytime(link);
+                if(link.getYoutubeUrls().size() == 0){
+                    return 0L;
+                }
                 player.setUrl(link.getYoutubeUrls().get(0).url.toString(), link.getYoutubeTitle());
             } catch (IOException e) {
                 e.printStackTrace();

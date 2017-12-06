@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class ParseYoutubeLink {
 
-    private static final String PLAYERURL = "/watch?v=";
+    private static final String PLAYER_URL = "/watch?v=";
 
     public static YoutubeLink[] parseHtml(String line){
         //Youtube have a new desktop UI, this has changed from primarily using HTML to using json.
@@ -85,6 +85,7 @@ public class ParseYoutubeLink {
         JSONObject twoColumnWatchNextResults = contents.getJSONObject("contents")
                 .getJSONObject("twoColumnSearchResultsRenderer");
 
+        //search results
         if(!twoColumnWatchNextResults.isNull("primaryContents")) {
             return twoColumnWatchNextResults
                     .getJSONObject("primaryContents")
@@ -94,6 +95,7 @@ public class ParseYoutubeLink {
                     .getJSONObject("itemSectionRenderer")
                     .getJSONArray("contents");
         }
+        //Recommended tracks/videos
         if(!twoColumnWatchNextResults.isNull("secondaryResults")) {
             return twoColumnWatchNextResults
                     .getJSONObject("secondaryResults")
@@ -116,7 +118,7 @@ public class ParseYoutubeLink {
             return null;
         }
 
-        String videoId = PLAYERURL + videoRenderer.getString("videoId");
+        String videoId = PLAYER_URL + videoRenderer.getString("videoId");
         String title = videoRenderer.getJSONObject("title").getString("simpleText");
         System.out.println("contructing json video: "+videoId +" "+title);
         return new YoutubeLink(videoId,title);

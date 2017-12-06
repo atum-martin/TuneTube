@@ -33,8 +33,11 @@ public class YoutubeLink {
     }
 
     public List<YouTubeParser.VideoDownload> getYoutubeUrls(){
-        if(youtubeUrls == null)
-            populateYoutubeUrls();
+        //Attempt 3 times to get the youtube embedded info.
+        for(int attempt = 0; attempt < 3; attempt++) {
+            if (youtubeUrls == null || youtubeUrls.size() == 0)
+                populateYoutubeUrls();
+        }
         return youtubeUrls;
     }
 
