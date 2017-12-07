@@ -1,9 +1,7 @@
 package com.atum.tunetube.http;
 
-import android.os.Environment;
+import com.atum.tunetube.util.FileUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,22 +36,19 @@ public class HttpProxy extends NanoHTTPD {
         String title = parms.get("title");
         System.out.println("receiving http buffer for: "+title+ " "+url);
         try {
-            String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
-            createDirIfNotExists(dir);
-            String filePath = dir+"/"+title.replaceAll(" ", "_")+".m3u";
-            File f = new File(filePath);
-            InputStream in;
-            if(f.exists()){
+
+            InputStream in = FileUtils.getInputStreamForFile(title);
+            if(in != null){
                 for(Map.Entry<String, String> e : session.getHeaders().entrySet()){
                     System.out.println("headers: "+e.getKey()+" "+e.getValue());
                 }
-                in = new FileInputStream(f);
             } else {
                 HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
                 if (parms.get("Range") != null) {
                     http.setRequestProperty("Range", parms.get("Range"));
                     System.out.println("range: " + parms.get("Range"));
                 }
+                String filePath = FileUtils.getLocationForTitle(title);
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 in = new RelayInputStream(http.getInputStream(), fileOut);
             }
@@ -63,12 +58,6 @@ public class HttpProxy extends NanoHTTPD {
             return newFixedLengthResponse("exception: "+e.getCause().toString());
         }
 
-    }
-
-    private void createDirIfNotExists(String dir) {
-        File f = new File(dir);
-        if(!f.exists())
-            f.mkdir();
     }
 
     private class RelayInputStream extends InputStream

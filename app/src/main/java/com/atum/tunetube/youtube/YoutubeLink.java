@@ -1,11 +1,9 @@
 package com.atum.tunetube.youtube;
 
-import android.os.Environment;
-
+import com.atum.tunetube.util.FileUtils;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -43,11 +41,10 @@ public class YoutubeLink {
 
     private void populateYoutubeUrls(){
         youtubeUrls = new LinkedList<>();
-        try {
-            checkForLocalFiles();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+
+        YouTubeParser.VideoDownload videoCachedCopy = FileUtils.checkForLocalCachedCopy(title);
+        if(videoCachedCopy != null)
+            youtubeUrls.add(videoCachedCopy);
 
         if(youtubeUrls.size() > 0)
             return;
@@ -76,19 +73,6 @@ public class YoutubeLink {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void checkForLocalFiles() {
-        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube/"+title.replaceAll(" ", "_")+".m3u";
-        File f = new File(filePath);
-        if(f.exists()) {
-            try {
-                System.out.println("local file found for: "+title+" '"+f.getAbsolutePath()+"'");
-                youtubeUrls.add(new YouTubeParser.VideoDownload(null, new URL("file://"+f.getAbsolutePath())));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
