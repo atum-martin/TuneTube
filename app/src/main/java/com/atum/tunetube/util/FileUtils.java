@@ -18,7 +18,7 @@ import java.net.URL;
 
 public class FileUtils {
 
-    private static String getWorkingDirectory(){
+    public static String getWorkingDirectory(){
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
     }
 
@@ -42,7 +42,7 @@ public class FileUtils {
         return null;
     }
 
-    public static InputStream getInputStreamForFile(String title){
+    public static InputStream getInputStreamForTitle(String title){
         String dir = getWorkingDirectory();
         createDirIfNotExists(dir);
         String filePath = getLocationForTitle(title);

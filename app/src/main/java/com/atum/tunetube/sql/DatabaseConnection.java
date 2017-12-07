@@ -10,6 +10,7 @@ import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.IndexDiskFiles;
 import com.atum.tunetube.task.YoutubeTask;
+import com.atum.tunetube.util.FileUtils;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -48,8 +49,7 @@ public class DatabaseConnection {
 
         //If the DB doesn't exist index files previously created by the application.
         if(!dbExists){
-            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
-            File songDir = new File(filePath);
+            File songDir = new File(FileUtils.getWorkingDirectory());
             IndexDiskFiles indexer = new IndexDiskFiles(this);
             indexer.indexDirectory(songDir);
         }
