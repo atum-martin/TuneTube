@@ -10,13 +10,13 @@ import java.io.OutputStream;
  * to a file in parallel during the stream.
  */
 
-public class RelayInputStream extends InputStream
+class RelayInputStream extends InputStream
 {
     private InputStream mInputStream = null;
     private OutputStream mOutputStream = null;
     private long total = 0L;
 
-    public RelayInputStream(InputStream is, OutputStream os)
+    RelayInputStream(InputStream is, OutputStream os)
     {
         mInputStream = is;
         mOutputStream = os;
@@ -33,7 +33,7 @@ public class RelayInputStream extends InputStream
     @Override
     public int read(byte[] buffer) throws IOException
     {
-        System.out.println("read buffer = " + buffer.toString());
+        System.out.println("read buffer;");
         int read = mInputStream.read(buffer);
         mOutputStream.write(buffer, 0, read);
         return read;
@@ -44,7 +44,7 @@ public class RelayInputStream extends InputStream
     {
         int read = mInputStream.read(buffer, offset, length);
         total += read;
-        System.out.println("read buffer = " + buffer.toString() + "; offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
+        System.out.println("read buffer offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
         mOutputStream.write(buffer, offset, read);
         mOutputStream.flush();
         return read;

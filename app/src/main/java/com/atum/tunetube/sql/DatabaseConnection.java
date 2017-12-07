@@ -14,17 +14,12 @@ import com.atum.tunetube.youtube.YoutubeLink;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by atum-martin on 13/06/17.
@@ -42,70 +37,15 @@ public class DatabaseConnection {
         boolean dbExists = databaseFile.exists();
 
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
-        createTables();
-        upgradeDB();
+
+        InputStream databaseUpgradeFile = ctx.getResources().openRawResource(R.raw.databaseupdates);
+        new UpgradeDatabase(connection, databaseUpgradeFile);
 
         //If the DB doesn't exist index files previously created by the application.
         if(!dbExists){
             File songDir = new File(FileUtils.getWorkingDirectory());
             IndexDiskFiles indexer = new IndexDiskFiles(this);
             indexer.indexDirectory(songDir);
-        }
-    }
-
-    private void upgradeDB() {
-        Cursor resultSet = connection.rawQuery("PRAGMA user_version", null);
-        int dbVersion = -1;
-        if(resultSet.moveToNext()){
-            dbVersion = resultSet.getInt(0);
-            System.out.println("db version: "+resultSet.getInt(0));
-        }
-
-        Map<Integer, Upgrade> upgradeMap = new HashMap<>();
-        List<String> sqlCommands = null;
-        InputStream ins = ctx.getResources().openRawResource(R.raw.databaseupdates);
-        BufferedReader br = new BufferedReader(new InputStreamReader(ins));
-        String line;
-        try {
-            int id = -1;
-
-            int lineNumber = 0;
-            while((line = br.readLine()) != null){
-                lineNumber++;
-                line = line.trim();
-                if(line.startsWith("#")){
-                    //comments ignore
-                    continue;
-                }
-                else if(line.startsWith("id")){
-                    if(id != -1){
-                        upgradeMap.put(id, new Upgrade(id, sqlCommands));
-                    }
-                    sqlCommands = new LinkedList<>();
-                    id = Integer.parseInt(line.substring(3));
-                } else if(line.length() > 0){
-                    if(sqlCommands == null){
-                        throw new IOException("SQL command detected prior to database ID lineNo: "+lineNumber);
-                    }
-                    sqlCommands.add(line);
-                }
-            }
-            if(id != -1)
-                upgradeMap.put(id, new Upgrade(id, sqlCommands));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        while(true){
-            Upgrade up = upgradeMap.get(dbVersion);
-            if(up == null)
-                break;
-            System.out.println("applying schema update "+dbVersion);
-            for(String sql : up.getSqlCommands()){
-                connection.execSQL(sql);
-            }
-            dbVersion++;
-            connection.execSQL("PRAGMA user_version = "+dbVersion);
         }
     }
 
@@ -126,6 +66,7 @@ public class DatabaseConnection {
             YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH_RESULTS, this, query);
             output.add(new PlaylistItem(query, task));
         }
+        resultSet.close();
         return output;
     }
 
@@ -135,33 +76,11 @@ public class DatabaseConnection {
             String results = resultSet.getString(1);
             Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();
             List<YoutubeLink> output = new Gson().fromJson(results, listType);
+            resultSet.close();
             return output;
         }
+        resultSet.close();
         return new LinkedList<>();
-    }
-
-    private class Upgrade {
-        private int id;
-        private List<String> sqlCommands;
-
-        public Upgrade(int id, List<String> sqlCommands){
-            this.id = id;
-            this.sqlCommands = sqlCommands;
-            System.out.println("DB Upgrade: id: "+id+" commands: "+sqlCommands.size());
-        }
-
-        public List<String> getSqlCommands() {
-            return sqlCommands;
-        }
-    }
-
-    private void createTables() {
-        connection.execSQL("CREATE TABLE IF NOT EXISTS tracks_played(youtubeTitle VARCHAR,youtubeUrl VARCHAR PRIMARY KEY, last_played LONG);");
-        connection.execSQL("CREATE TABLE IF NOT EXISTS searches (query VARCHAR,results VARCHAR, search_time LONG);");
-
-        //connection.execSQL("INSERT INTO tracks_played VALUES('Tobu - Infectious [NCS Release]','/watch?v=ux8-EbW6DUI','"+System.currentTimeMillis()+"');");
-        //connection.execSQL("INSERT INTO tracks_played VALUES('Tobu - Infectious 22','/watch?v=ux8-EbW6DUI23','"+(System.currentTimeMillis()-20000)+"');");
-
     }
 
     public List<YoutubeLink> getRecentlyPlayed(){
@@ -175,6 +94,7 @@ public class DatabaseConnection {
             output.add(link);
             System.out.println("recentlyPlayed: "+link.getYoutubeTitle());
         }
+        resultSet.close();
         return output;
     }
 
@@ -190,6 +110,7 @@ public class DatabaseConnection {
                 output.addAll(link.getRelatedItems());
             }
         }
+        resultSet.close();
         return output;
     }
 
