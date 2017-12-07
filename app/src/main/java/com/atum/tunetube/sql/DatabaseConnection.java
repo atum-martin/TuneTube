@@ -4,11 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.os.Environment;
 
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlaylistItem;
-import com.atum.tunetube.player.IndexDiskFiles;
+import com.atum.tunetube.util.IndexDiskFiles;
 import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.util.FileUtils;
 import com.atum.tunetube.youtube.YoutubeLink;
@@ -17,7 +16,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

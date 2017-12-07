@@ -1,4 +1,4 @@
-package com.atum.tunetube.player;
+package com.atum.tunetube.util;
 
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;

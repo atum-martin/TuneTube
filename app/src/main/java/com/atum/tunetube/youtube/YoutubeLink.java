@@ -42,10 +42,12 @@ public class YoutubeLink {
     private void populateYoutubeUrls(){
         youtubeUrls = new LinkedList<>();
 
+        //Look for a cached copy of the track on disk first.
         YouTubeParser.VideoDownload videoCachedCopy = FileUtils.checkForLocalCachedCopy(title);
         if(videoCachedCopy != null)
             youtubeUrls.add(videoCachedCopy);
 
+        //If we already have a list of URLs don't perform the fetch again.
         if(youtubeUrls.size() > 0)
             return;
         YouTubeInfo info = null;
@@ -55,11 +57,10 @@ public class YoutubeLink {
             e.printStackTrace();
         }
 
-
         YouTubeParser parser = new YouTubeParser();
 
         List<YouTubeParser.VideoDownload> list = parser.extractLinks(info);
-        //Video only content is useless to the app.
+        //Video only content is useless to the app, filter this out.
         for(YouTubeParser.VideoDownload track : list){
             if(!(track.stream instanceof YouTubeInfo.StreamVideo))
                 youtubeUrls.add(track);
@@ -67,7 +68,8 @@ public class YoutubeLink {
 
         relatedItems = info.getRelatedItems();
 
-        //youtubeUrls.addAll(list);
+        //perform a sort on the list, this organizes the list in order of highest quality audio.
+        //Preferring audio without video.
         Collections.sort(youtubeUrls);
         try {
             Thread.sleep(1000);
