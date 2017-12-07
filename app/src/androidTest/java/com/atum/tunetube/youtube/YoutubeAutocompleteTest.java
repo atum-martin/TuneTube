@@ -34,6 +34,9 @@ public class YoutubeAutocompleteTest {
     @Test
     public void test3(){
         List<String> results = YoutubeAutocomplete.getAutocompleteSuggestions("alyssa reid game");
+        for(String result : results){
+            System.out.println("test3: "+result);
+        }
         Assert.assertTrue(results.size() > 0);
     }
 

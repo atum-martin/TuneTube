@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by atum-martin on 22/05/2017.
@@ -71,7 +73,15 @@ public class YoutubeAutocomplete {
      * @return The Json object that has been extract from the javascript.
      */
     private static String extractJson(String query, String javascript) {
-        int index = javascript.indexOf(query)+query.length()+2;
+
+        String pattern = "(?<="+query+"\",).*]]";
+        Pattern jsonPattern = Pattern.compile(pattern);
+        Matcher decodeFunctionNameMatch = jsonPattern.matcher(javascript);
+        decodeFunctionNameMatch.find();
+        return decodeFunctionNameMatch.group();
+
+
+        /*int index = javascript.indexOf(query)+query.length()+2;
         //index returned -1
         if(index == 1+query.length())
             return null;
@@ -81,7 +91,7 @@ public class YoutubeAutocomplete {
         if(endIdx == 1)
             return null;
         json = json.substring(0,endIdx);
-        return json;
+        return json;*/
     }
 
     private static String getSearchTerm(JSONArray jsonArray) throws JSONException {
