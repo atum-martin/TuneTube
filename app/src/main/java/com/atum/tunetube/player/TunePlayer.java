@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, PlayTrackListener {
 
     private final MainActivity context;
+    private static final String ENCODING = "UTF-8";
     private String url = null;
     private String nextUrl = null;
     private String nextTitle = null;
@@ -35,8 +36,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     public void setUrl(String url, String title) throws IOException {
         System.out.println("url of player: "+url);
+
         if(url.toLowerCase().startsWith("http"))
-            url = "http://localhost:8093/?url="+ URLEncoder.encode(url)+"&title="+URLEncoder.encode(title);
+            url = "http://localhost:8093/?url="+ URLEncoder.encode(url, ENCODING)+"&title="+URLEncoder.encode(title, ENCODING);
         System.out.println("url of player: "+url);
         this.url = url;
         if(player == null) {

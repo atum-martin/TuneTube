@@ -16,8 +16,8 @@ public class YoutubeAutocomplete {
 
     /**
      * Returns a list of suggestions based on the query provided from youtubes autocomplete backend.
-     * @param query
-     * @return
+     * @param query The search term you want to use to query youube.
+     * @return A list of auto-completed suggestion strings
      */
     public static List<String> getAutocompleteSuggestions(String query){
         YoutubeHttp http = YoutubeHttp.getSingleton();
@@ -39,9 +39,9 @@ public class YoutubeAutocomplete {
 
     /**
      * The purpose of this code is to return a List of strings representing the suggested autocomplete options for the query specified from the javascript supplied as a parameter.
-     * @param query
-     * @param javascript
-     * @return
+     * @param query The term you want to be autocompleted.
+     * @param javascript The javascript returned from YouTube's webserver.
+     * @return A list of suggested strings
      */
     public static List<String> extractSuggestions(String query, String javascript){
 
@@ -66,9 +66,9 @@ public class YoutubeAutocomplete {
 
     /**
      * The purpose of this function is to extract the json object from the javascript output of the youtube autocomplete API.
-     * @param query
-     * @param javascript
-     * @return
+     * @param query The term you want to be autocompleted.
+     * @param javascript The javascript returned from YouTube's webserver.
+     * @return The Json object that has been extract from the javascript.
      */
     private static String extractJson(String query, String javascript) {
         int index = javascript.indexOf(query)+query.length()+2;

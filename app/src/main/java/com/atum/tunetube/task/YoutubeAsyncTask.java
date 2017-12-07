@@ -1,7 +1,8 @@
-package com.atum.tunetube;
+package com.atum.tunetube.task;
 
 import android.os.AsyncTask;
 
+import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.atum.tunetube.youtube.YoutubeSearch;

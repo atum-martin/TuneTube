@@ -27,7 +27,7 @@ import java.util.List;
 
 public class DatabaseConnection {
 
-    private final Context ctx;
+    private Context ctx;
     private SQLiteDatabase connection;
 
     public DatabaseConnection(Context ctx, String name){
@@ -52,7 +52,7 @@ public class DatabaseConnection {
     public void submitSearch(String query, List<YoutubeLink> tracks) {
 
         String json =  new Gson().toJson(tracks);
-        String[] args = new String[]{query, json, new Long(System.currentTimeMillis()).toString()};
+        String[] args = new String[]{query, json, Long.valueOf(System.currentTimeMillis()).toString()};
         connection.execSQL("INSERT INTO searches VALUES(?, ?, ?);", args);
     }
 
@@ -72,7 +72,7 @@ public class DatabaseConnection {
 
     public List<YoutubeLink> getSearchResults(String query) {
         Cursor resultSet = connection.rawQuery("Select * from searches WHERE query = '"+query+"' ORDER BY search_time DESC LIMIT 1",null);
-        while(resultSet.moveToNext()){
+        if(resultSet.moveToNext()){
             String results = resultSet.getString(1);
             Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();
             List<YoutubeLink> output = new Gson().fromJson(results, listType);
@@ -120,7 +120,7 @@ public class DatabaseConnection {
         int affectedRows = statement.executeUpdateDelete();
         if(affectedRows <= 0){
             String json =  new Gson().toJson(track);
-            String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(), new Long(System.currentTimeMillis()).toString(), "1", json};
+            String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(),  Long.valueOf(System.currentTimeMillis()).toString(), "1", json};
             connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?, ?, ?);", args);
         }
     }

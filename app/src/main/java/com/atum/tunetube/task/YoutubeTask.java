@@ -49,7 +49,7 @@ public class YoutubeTask {
         VIDEO,
         SEARCHES_RECENT,
         SEARCH_RESULTS,
-        RECOMMENED_RECENT;
+        RECOMMENED_RECENT
     }
 
     private Type action;

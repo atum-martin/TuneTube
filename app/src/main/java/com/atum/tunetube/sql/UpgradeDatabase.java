@@ -2,17 +2,14 @@ package com.atum.tunetube.sql;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.atum.tunetube.R;
+import android.util.SparseArray;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by mchapman on 07/12/17.
@@ -48,8 +45,8 @@ public class UpgradeDatabase {
         connection.execSQL("CREATE TABLE IF NOT EXISTS searches (query VARCHAR,results VARCHAR, search_time LONG);");
     }
 
-    private Map<Integer, Upgrade> readUpgradeMap(InputStream in){
-        Map<Integer, Upgrade> upgradeMap = new HashMap<>();
+    private SparseArray<Upgrade> readUpgradeMap(InputStream in){
+        SparseArray<Upgrade> upgradeMap = new SparseArray<>();
         List<String> sqlCommands = null;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -99,7 +96,7 @@ public class UpgradeDatabase {
 
     private void upgradeDB(InputStream upgradeFile) {
         int dbVersion = readDBVersion();
-        Map<Integer, Upgrade> upgradeMap = readUpgradeMap(upgradeFile);
+        SparseArray<Upgrade> upgradeMap = readUpgradeMap(upgradeFile);
 
         while(true){
             Upgrade up = upgradeMap.get(dbVersion);

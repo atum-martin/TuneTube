@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
-import com.atum.tunetube.YoutubeAsyncTask;
+import com.atum.tunetube.task.YoutubeAsyncTask;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.PlayTrackListener;
 import com.atum.tunetube.task.YoutubeTask;
@@ -42,11 +42,14 @@ public class PlaylistAdapter {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
                 YoutubeLink link = songs.get(itemPosition);
+                //Determine if the item position is another playlist or a track.
                 if(link != null && link instanceof PlaylistItem){
+                    //If link is a playlist open that playlist.
                     PlaylistItem item = (PlaylistItem) link;
                     YoutubeTask task = item.getTask();
                     new YoutubeAsyncTask(activity).execute(task);
                 } else {
+                    //If link is a track play it.
                     listener.playTrack(songs.get(itemPosition));
                 }
             }
