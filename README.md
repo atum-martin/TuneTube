@@ -1,5 +1,6 @@
 # TuneTube
-
+[![Build Status](https://travis-ci.org/atum-martin/TuneTube.svg?branch=master)](https://travis-ci.org/atum-martin/TuneTube)
+<br />
 An android music player that uses youtube as its source for audio files. <br />
 Based on the Vget API refactored for android.<br />
 <br />
