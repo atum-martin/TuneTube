@@ -44,6 +44,23 @@ public class HttpRelayStreamTest {
         }
     }
 
+    @Test
+    public void finishCodeCoverage(){
+        byte[] arr = createRandomArray();
+        InputStream in = new ByteArrayInputStream(arr);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        RelayInputStream relay = new RelayInputStream(in , out);
+
+        try {
+            Assert.assertTrue(relay.read() != -1);
+            Assert.assertEquals(relay.available(), arr.length-1);
+            relay.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Test(expected = IOException.class)
     public void testRelayInputStreamNulls1() throws IOException {
         RelayInputStream relay = new RelayInputStream(null , null);
@@ -65,6 +82,12 @@ public class HttpRelayStreamTest {
     @Test(expected = IOException.class)
     public void testRelayInputStreamNulls4() throws IOException {
         RelayInputStream relay = new RelayInputStream(null , null);
+        relay.close();
+    }
+
+    @Test(expected = IOException.class)
+    public void testRelayInputStreamNulls5() throws IOException {
+        RelayInputStream relay = new RelayInputStream(new ByteArrayInputStream(new byte[1]) , null);
         relay.close();
     }
 }
