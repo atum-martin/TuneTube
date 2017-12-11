@@ -1,5 +1,7 @@
 package com.atum.tunetube.youtube;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import java.util.List;
@@ -13,8 +15,7 @@ public class YoutubePlaylistTest {
     public void testYoutubePlaylistGet(){
         String url = "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos";
         List<YoutubeLink> results = YoutubePlaylist.parsePlaylist(url);
-        for(YoutubeLink result : results){
-            System.out.println("playlist result: "+result.getYoutubeTitle());
-        }
+        //assert playlist is 20 or more in size
+        Assert.assertTrue(results.size() > 20);
     }
 }
