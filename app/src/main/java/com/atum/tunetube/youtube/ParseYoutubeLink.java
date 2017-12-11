@@ -31,7 +31,7 @@ public class ParseYoutubeLink {
             String videoId = line.substring(0, index);
             if(videoId.startsWith("/user")){
                 //TODO:
-                return null;
+                return new YoutubeLink[]{};
             }
             int titleIdx = line.indexOf(">");
             int titleEndIdx = line.indexOf("</a>");
@@ -82,8 +82,11 @@ public class ParseYoutubeLink {
 
     private static JSONArray getYoutubeContents(JSONObject contents) throws JSONException {
 
-        JSONObject twoColumnWatchNextResults = contents.getJSONObject("contents")
-                .getJSONObject("twoColumnSearchResultsRenderer");
+        JSONObject twoColumnWatchNextResults = contents.getJSONObject("contents");
+        if(!twoColumnWatchNextResults.isNull("twoColumnSearchResultsRenderer"))
+            twoColumnWatchNextResults = twoColumnWatchNextResults.getJSONObject("twoColumnSearchResultsRenderer");
+        if(!twoColumnWatchNextResults.isNull("twoColumnBrowseResultsRenderer"))
+            twoColumnWatchNextResults = twoColumnWatchNextResults.getJSONObject("twoColumnBrowseResultsRenderer");
 
         //search results
         if(!twoColumnWatchNextResults.isNull("primaryContents")) {
@@ -102,6 +105,22 @@ public class ParseYoutubeLink {
                     .getJSONObject("secondaryResults")
                     .getJSONArray("results");
         }
+        //playlists
+        if(!twoColumnWatchNextResults.isNull("tabs")) {
+            return twoColumnWatchNextResults
+                    .getJSONArray("tabs")
+                    .getJSONObject(1)
+                    .getJSONObject("tabRenderer")
+                    .getJSONObject("content")
+                    .getJSONObject("sectionListRenderer")
+                    .getJSONArray("contents")
+                    .getJSONObject(0)
+                    .getJSONObject("itemSectionRenderer")
+                    .getJSONArray("contents")
+                    .getJSONObject(0)
+                    .getJSONObject("gridRenderer")
+                    .getJSONArray("items");
+        }
         return null;
     }
 
@@ -111,6 +130,8 @@ public class ParseYoutubeLink {
             videoRenderer = renderer.getJSONObject("videoRenderer");
         } else if(!renderer.isNull("compactVideoRenderer")) {
             videoRenderer = renderer.getJSONObject("compactVideoRenderer");
+        } else if(!renderer.isNull("gridVideoRenderer")) {
+            videoRenderer = renderer.getJSONObject("gridVideoRenderer");
         } else if(!renderer.isNull("channelRenderer")){
             //use case for an artists channel appears in results rather than a track/video.
             return null;
