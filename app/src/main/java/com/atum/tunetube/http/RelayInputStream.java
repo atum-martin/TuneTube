@@ -25,23 +25,32 @@ class RelayInputStream extends InputStream
     @Override
     public int available() throws IOException
     {
+        checkStreams();
         System.out.println("available available = " + mInputStream.available());
         mInputStream.mark(mInputStream.available());
         return mInputStream.available();
+    }
+
+    private void checkStreams() throws IOException {
+        if(mInputStream == null){
+            throw new IOException("input stream cannot be null.");
+        }
+        if(mOutputStream == null){
+            throw new IOException("ouput stream cannot be null.");
+        }
     }
 
     @Override
     public int read(byte[] buffer) throws IOException
     {
         System.out.println("read buffer;");
-        int read = mInputStream.read(buffer);
-        mOutputStream.write(buffer, 0, read);
-        return read;
+        return read(buffer, 0, buffer.length);
     }
 
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException
     {
+        checkStreams();
         int read = mInputStream.read(buffer, offset, length);
         total += read;
         System.out.println("read buffer offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
@@ -53,6 +62,7 @@ class RelayInputStream extends InputStream
     @Override
     public int read() throws IOException
     {
+        checkStreams();
         System.out.println("read no data");
         int b = mInputStream.read();
         mOutputStream.write(b);
@@ -61,6 +71,7 @@ class RelayInputStream extends InputStream
 
     @Override
     public void close() throws IOException {
+        checkStreams();
         System.out.println("http proxy conn closed");
         mOutputStream.flush();
         mOutputStream.close();
