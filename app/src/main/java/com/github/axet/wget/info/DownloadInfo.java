@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+//import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * DownloadInfo class. Keep part information. We need to serialize this class between application restart. Thread safe.
@@ -13,13 +13,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author axet
  * 
  */
-@XStreamAlias("DownloadInfo")
+//@XStreamAlias("DownloadInfo")
 public class DownloadInfo extends URLInfo {
     private static final long serialVersionUID = 1952592930771906713L;
 
     public static long PART_LENGTH = 10 * 1024 * 1024;
 
-    @XStreamAlias("DownloadInfoPart")
+    //@XStreamAlias("DownloadInfoPart")
     public static class Part {
         /**
          * Notify States
