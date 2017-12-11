@@ -38,7 +38,7 @@ public class YoutubeHttp {
             conn.setRequestProperty("accept-language","en-US,en;q=0.8");
             conn.setRequestProperty("referer","https://www.youtube.com/");
             conn.setRequestProperty("upgrade-insecure-requests","1");
-            conn.setRequestProperty("user-agent:","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36");
+            conn.setRequestProperty("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36");
 
             String line;
             int returnCode = conn.getResponseCode();
