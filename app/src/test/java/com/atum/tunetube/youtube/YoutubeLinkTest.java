@@ -1,33 +1,17 @@
 package com.atum.tunetube.youtube;
 
-import android.os.Environment;
-
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.util.List;
-
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 
 /**
  * Created by atum-martin on 18/05/2017.
  */
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Environment.class})
 public class YoutubeLinkTest {
-    @Before
-    public void setupMocks(){
-        mockStatic(Environment.class);
-        when(Environment.getExternalStoragePublicDirectory("")).thenReturn(new File("/"));
-    }
 
     @Test
     public void testYoutubeTrackHotlink(){
