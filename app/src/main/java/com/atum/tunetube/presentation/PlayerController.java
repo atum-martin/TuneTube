@@ -5,6 +5,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.MediaController;
 
 import com.atum.tunetube.R;
@@ -14,95 +16,90 @@ import com.atum.tunetube.R;
  * Created by atum-martin on 24/07/2017.
  */
 
-public class PlayerController implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl {
+public class PlayerController implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl, Runnable {
 
     private MediaPlayer player;
     private Activity activity;
     private Handler handler = null;
     private MediaController mediaController;
+    private static final String TAG = "AudioPlayer";
 
-    public PlayerController(Context context, MediaPlayer player, Activity activity){
+    public PlayerController(MediaPlayer player, Activity activity){
         this.activity = activity;
         this.player = player;
-        mediaController = new MediaController(context);
+        mediaController = new MediaController(activity);
     }
 
-   /* public void displayController(){
+    public void run(){
+        displayController();
+    }
+
+   public void displayController(){
 
         if(handler == null) {
-            Looper.prepare();
+            //Looper.myLooper();
+            //Looper.prepare();
             handler = new Handler();
         }
         System.out.println("preparing media controller");
-        mediaController.setMediaPlayer(this);
-        activity.findViewById(R.id.media_controller);
-        mediaController.setAnchorView(activity.findViewById(R.id.media_controller));
-        mediaController.setEnabled(true);
-        mediaController.show();
+       Log.d(TAG, "onPrepared");
+       mediaController.setMediaPlayer(this);
+       mediaController.setAnchorView(activity.findViewById(R.id.main_audio_controller));
 
-        handler.post(new Runnable() {
-            public void run() {
-                mediaController.setEnabled(true);
-                mediaController.show();
-            }
-        });
-    }*/
+       handler.post(new Runnable() {
+           public void run() {
+               System.out.println("preparing media controller 2");
+               mediaController.setEnabled(true);
+               mediaController.show();
+           }
+       });
+    }
 
     public MediaController getMediaController(){
         return mediaController;
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-
-    }
-
-    @Override
+    //--MediaPlayerControl methods----------------------------------------------------
     public void start() {
         player.start();
     }
 
-    @Override
+    public void show() {
+        mediaController.show();
+    }
+
     public void pause() {
         player.pause();
     }
 
-    @Override
     public int getDuration() {
         return player.getDuration();
     }
 
-    @Override
     public int getCurrentPosition() {
         return player.getCurrentPosition();
     }
 
-    @Override
-    public void seekTo(int pos) {
-        player.seekTo(pos);
+    public void seekTo(int i) {
+        player.seekTo(i);
     }
 
-    @Override
     public boolean isPlaying() {
         return player.isPlaying();
     }
 
-    @Override
     public int getBufferPercentage() {
         return 0;
     }
 
-    @Override
     public boolean canPause() {
         return true;
     }
 
-    @Override
     public boolean canSeekBackward() {
         return true;
     }
 
-    @Override
     public boolean canSeekForward() {
         return true;
     }
@@ -110,5 +107,10 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
     @Override
     public int getAudioSessionId() {
         return 0;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+
     }
 }

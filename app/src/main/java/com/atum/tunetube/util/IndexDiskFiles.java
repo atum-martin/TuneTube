@@ -19,6 +19,8 @@ public class IndexDiskFiles {
     }
 
     public void indexDirectory(File dir){
+        if(dir == null)
+            return;
         for(File file : dir.listFiles()){
 
             if(!file.getName().endsWith(".m3u")){

@@ -23,7 +23,7 @@ public class FileUtils {
     }
 
     public static String getLocationForTitle(String title) {
-        return getWorkingDirectory()+"/"+title.replaceAll(" ", "_")+".m3u";
+        return getWorkingDirectory()+"/"+title.replaceAll(" ", "_").replaceAll("/", "_")+".m3u";
     }
 
     public static YouTubeParser.VideoDownload checkForLocalCachedCopy(String title) {

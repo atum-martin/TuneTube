@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.SearchView;
 
 import com.atum.tunetube.http.HttpProxy;
@@ -112,6 +113,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        mediaController.hide();
+        player.stop();
+        player.release();
+    }*/
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //the MediaController will hide after 3 seconds - tap the screen to make it appear again
+        if(player.getMediaController() != null)
+            player.getMediaController().show();
         return false;
     }
 }

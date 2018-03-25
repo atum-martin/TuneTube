@@ -3,8 +3,10 @@ package com.atum.tunetube.player;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.atum.tunetube.MainActivity;
@@ -29,6 +31,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     private String nextTitle = null;
     private MediaPlayer player = null;
     private TunePlayerCompleted playerCompletedListener = null;
+    private PlayerController controller = null;
 
     public TunePlayer(MainActivity context){
         this.context = context;
@@ -57,6 +60,10 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         this.playerCompletedListener = listener;
     }
 
+    public PlayerController getMediaController(){
+        return controller;
+    }
+
     public void setNextUrl(String url, String title) throws IOException {
         if(!player.isPlaying()){
             setUrl(url, title);
@@ -66,7 +73,8 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     }
 
     public void resetPlayer() {
-        player.reset();
+        if(player != null)
+            player.reset();
     }
 
     public MediaPlayer createPlayer(){
@@ -80,22 +88,14 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         System.out.println("media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
-       // final PlayerController controller = new PlayerController(context.getApplicationContext(), mPlayer, context);
-        //mPlayer.setOnPreparedListener(controller);
+        controller = new PlayerController(mPlayer, context);
+        mPlayer.setOnPreparedListener(controller);
 
         LinearLayout root = (LinearLayout) context.findViewById(R.id.container);
 
-        /*ViewTreeObserver vto = root.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new  ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                controller.displayController();
-            }
-        });*/
-
-
+        //display controller element
+        context.runOnUiThread(controller);
         //mPlayer.setVolume(0.1f, 0.1f);
-
         mPlayer.start();
         System.out.println("media player started");
         return mPlayer;
