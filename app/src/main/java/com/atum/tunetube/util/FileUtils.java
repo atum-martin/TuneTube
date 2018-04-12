@@ -18,9 +18,10 @@ import java.net.URL;
 
 public class FileUtils {
 
+    private static String DIRECTORY_NAME = "/TestTube";
 
     public static String getSDCardDirectory(){
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
     }
 
     private static String cacheTrackDirectory = getSDCardDirectory();
@@ -34,7 +35,7 @@ public class FileUtils {
 
     public static void setCacheDirectoryPath(String path){
         if(cacheTrackDirectory == null) {
-            cacheTrackDirectory = path;
+            cacheTrackDirectory = path+DIRECTORY_NAME;
             createDirIfNotExists(cacheTrackDirectory);
         }
     }

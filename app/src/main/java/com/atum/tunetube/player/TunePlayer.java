@@ -1,13 +1,8 @@
 package com.atum.tunetube.player;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Log;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;

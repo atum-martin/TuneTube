@@ -23,6 +23,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
     private Handler handler = null;
     private MediaController mediaController;
     private static final String TAG = "AudioPlayer";
+    private static final int TIMEOUT = 5;
 
     public PlayerController(MediaPlayer player, Activity activity){
         this.activity = activity;
@@ -38,8 +39,6 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
    public void displayController(){
 
         if(handler == null) {
-            //Looper.myLooper();
-            //Looper.prepare();
             handler = new Handler();
         }
         System.out.println("preparing media controller");
@@ -51,7 +50,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
            public void run() {
                System.out.println("preparing media controller 2");
                mediaController.setEnabled(true);
-               mediaController.show();
+               mediaController.show(TIMEOUT);
            }
        });
     }
@@ -66,7 +65,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
     }
 
     public void show() {
-        mediaController.show();
+        mediaController.show(TIMEOUT);
     }
 
     public void pause() {
