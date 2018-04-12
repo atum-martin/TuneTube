@@ -27,6 +27,7 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
     public PlayerController(MediaPlayer player, Activity activity){
         this.activity = activity;
         this.player = player;
+        Looper.prepare();
         mediaController = new MediaController(activity);
     }
 

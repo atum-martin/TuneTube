@@ -15,6 +15,7 @@ import com.atum.tunetube.presentation.PlaylistAdapter;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeAsyncTask;
 import com.atum.tunetube.task.YoutubeTask;
+import com.atum.tunetube.util.FileUtils;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FileUtils.setCacheDirectoryPath(this.getCacheDir().getPath());
         setContentView(R.layout.activity_main);
 
         try {

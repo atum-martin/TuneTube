@@ -18,8 +18,29 @@ import java.net.URL;
 
 public class FileUtils {
 
-    public static String getWorkingDirectory(){
+
+    public static String getSDCardDirectory(){
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/TestTube";
+    }
+
+    private static String cacheTrackDirectory = getSDCardDirectory();
+
+    static {
+        File f = new File(getSDCardDirectory());
+        if(!f.exists() && !createDirIfNotExists(getSDCardDirectory())){
+            cacheTrackDirectory = null;
+        }
+    }
+
+    public static void setCacheDirectoryPath(String path){
+        if(cacheTrackDirectory == null) {
+            cacheTrackDirectory = path;
+            createDirIfNotExists(cacheTrackDirectory);
+        }
+    }
+
+    public static String getWorkingDirectory(){
+        return cacheTrackDirectory;
     }
 
     public static String getLocationForTitle(String title) {
@@ -44,7 +65,6 @@ public class FileUtils {
 
     public static InputStream getInputStreamForTitle(String title){
         String dir = getWorkingDirectory();
-        createDirIfNotExists(dir);
         String filePath = getLocationForTitle(title);
         File f = new File(filePath);
         if(f.exists()){
@@ -57,10 +77,11 @@ public class FileUtils {
         return null;
     }
 
-    private static void createDirIfNotExists(String dir) {
+    private static boolean createDirIfNotExists(String dir) {
         File f = new File(dir);
         if(!f.exists())
-            f.mkdir();
+            return f.mkdir();
+        return true;
     }
 
 }
