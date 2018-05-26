@@ -1,5 +1,7 @@
 package com.atum.tunetube.youtube;
 
+import com.atum.tunetube.model.PlaylistItem;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,9 +10,9 @@ import java.util.List;
  */
 public class YoutubePlaylist {
 
-    public static List<YoutubeLink> parsePlaylist(String url){
+    public static List<PlaylistItem> parsePlaylist(String url){
         List<String> content = YoutubeHttp.getSingleton().openUrl(url);
-        List<YoutubeLink> links = new LinkedList<>();
+        List<PlaylistItem> links = new LinkedList<>();
         for(String line : content){
             YoutubeLink[] parsedLinks = ParseYoutubeLink.parseHtml(line);
             for(YoutubeLink link : parsedLinks)

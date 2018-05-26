@@ -1,5 +1,7 @@
 package com.atum.tunetube.youtube;
 
+import com.atum.tunetube.model.PlaylistItem;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
@@ -16,7 +18,7 @@ public class YoutubeSearch {
      * @param query The query you wish to pash to the search function.
      * @return
      */
-    public static List<YoutubeLink> getSearchResults(String query){
+    public static List<PlaylistItem> getSearchResults(String query){
         YoutubeHttp http = YoutubeHttp.getSingleton();
         String url;
         try {
@@ -30,7 +32,7 @@ public class YoutubeSearch {
         if (content.size() == 0)
             return new LinkedList<>();
 
-        List<YoutubeLink> links = new LinkedList<>();
+        List<PlaylistItem> links = new LinkedList<>();
         for(String line : content){
             YoutubeLink[] parsedLinks = ParseYoutubeLink.parseHtml(line);
             for(YoutubeLink link : parsedLinks)

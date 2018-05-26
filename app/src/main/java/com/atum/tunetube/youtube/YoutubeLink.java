@@ -1,5 +1,6 @@
 package com.atum.tunetube.youtube;
 
+import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.util.FileUtils;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by atum-martin on 15/05/2017.
  */
 
-public class YoutubeLink {
+public class YoutubeLink extends PlaylistItem {
 
     private static final String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
 
@@ -25,7 +26,7 @@ public class YoutubeLink {
     private List<YoutubeLink> relatedItems = new LinkedList<>();
 
     public YoutubeLink(String videoId, String title){
-
+        super(title);
         this.videoId = videoId;
         this.title = title;
     }

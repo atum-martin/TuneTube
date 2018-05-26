@@ -28,26 +28,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private TunePlayer player;
     private SearchView searchMenuItem;
     private DatabaseConnection databaseConnection;
-    private List<YoutubeLink> playlists = new LinkedList<>();
+    private List<PlaylistItem> playlists = new LinkedList<>();
 
     private void constructPlaylists(){
-        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
-        playlists.add(new PlaylistItem("Recently Played", task));
+        YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+        playlists.add(task);
 
-        task = new YoutubeTask(YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
-        playlists.add(new PlaylistItem("Recently Searched", task));
+        task = new YoutubeTask("Recently Searched", YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
+        playlists.add(task);
 
-        task = new YoutubeTask(YoutubeTask.Type.RECOMMENED_RECENT, databaseConnection);
-        playlists.add(new PlaylistItem("Recommended Tracks", task));
+        task = new YoutubeTask("Recommended Tracks", YoutubeTask.Type.RECOMMENED_RECENT, databaseConnection);
+        playlists.add(task);
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos");
-        playlists.add(new PlaylistItem("EDM", task));
+        task = new YoutubeTask("EDM", YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos");
+        playlists.add(task);
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCE80FOXpJydkkMo-BYoJdEg/videos");
-        playlists.add(new PlaylistItem("Pop Music", task));
+        task = new YoutubeTask("Pop Music", YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCE80FOXpJydkkMo-BYoJdEg/videos");
+        playlists.add(task);
 
-        task = new YoutubeTask(YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w/videos");
-        playlists.add(new PlaylistItem("Rock Music", task));
+        task = new YoutubeTask("Rock Music", YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w/videos");
+        playlists.add(task);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     playListAdapter.displayPlaylist(playlists);
                     return true;
                 case R.id.recently_played:
-                    YoutubeTask task2 = new YoutubeTask(YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+                    YoutubeTask task2 = new YoutubeTask("Recent", YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
                     new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
                 case R.id.stop_playing:
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         searchMenuItem.clearFocus();
-        YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH, databaseConnection, query);
+        YoutubeTask task = new YoutubeTask("Search", YoutubeTask.Type.SEARCH, databaseConnection, query);
         new YoutubeAsyncTask(MainActivity.this).execute(task);
         return false;
     }

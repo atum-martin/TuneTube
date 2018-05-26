@@ -1,5 +1,6 @@
 package com.atum.tunetube.task;
 
+import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.atum.tunetube.youtube.YoutubePlaylist;
@@ -12,10 +13,10 @@ import java.util.List;
  * Created by atum-martin on 07/06/2017.
  */
 
-public class YoutubeTask {
+public class YoutubeTask extends PlaylistItem {
 
-    public List<YoutubeLink> execute() {
-        List<YoutubeLink> tracks;
+    public List<PlaylistItem> execute() {
+        List<PlaylistItem> tracks;
         switch(action){
             case SEARCH:
                 tracks = YoutubeSearch.getSearchResults(query);
@@ -56,17 +57,18 @@ public class YoutubeTask {
     private String query;
     DatabaseConnection connection;
 
-    public YoutubeTask(Type action, String query){
-        this(action, null, query);
+    public YoutubeTask(String decription, Type action, String query){
+        this(decription, action, null, query);
     }
 
-    public YoutubeTask(Type action, DatabaseConnection connection, String query){
+    public YoutubeTask(String decription, Type action, DatabaseConnection connection, String query){
+        super(decription);
         this.action = action;
         this.query = query;
         this.connection = connection;
     }
 
-    public YoutubeTask(Type action, DatabaseConnection connection){
-        this(action, connection, null);
+    public YoutubeTask(String decription, Type action, DatabaseConnection connection){
+        this(decription, action, connection, null);
     }
 }

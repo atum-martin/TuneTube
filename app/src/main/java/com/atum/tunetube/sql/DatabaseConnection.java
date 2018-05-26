@@ -49,33 +49,33 @@ public class DatabaseConnection {
         }
     }
 
-    public void submitSearch(String query, List<YoutubeLink> tracks) {
+    public void submitSearch(String query, List<PlaylistItem> tracks) {
 
         String json =  new Gson().toJson(tracks);
         String[] args = new String[]{query, json, Long.valueOf(System.currentTimeMillis()).toString()};
         connection.execSQL("INSERT INTO searches VALUES(?, ?, ?);", args);
     }
 
-    public List<YoutubeLink> getRecentSearches(){
-        LinkedList<YoutubeLink> output = new LinkedList<>();
+    public List<PlaylistItem> getRecentSearches(){
+        LinkedList<PlaylistItem> output = new LinkedList<>();
         Cursor resultSet = connection.rawQuery("Select * from searches ORDER BY search_time DESC",null);
         while(resultSet.moveToNext()){
             String query = resultSet.getString(0);
 
             System.out.println("row in db: "+query);
-            YoutubeTask task = new YoutubeTask(YoutubeTask.Type.SEARCH_RESULTS, this, query);
-            output.add(new PlaylistItem(query, task));
+            YoutubeTask task = new YoutubeTask(query, YoutubeTask.Type.SEARCH_RESULTS, this, query);
+            output.add(task);
         }
         resultSet.close();
         return output;
     }
 
-    public List<YoutubeLink> getSearchResults(String query) {
+    public List<PlaylistItem> getSearchResults(String query) {
         Cursor resultSet = connection.rawQuery("Select * from searches WHERE query = '"+query+"' ORDER BY search_time DESC LIMIT 1",null);
         if(resultSet.moveToNext()){
             String results = resultSet.getString(1);
-            Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();
-            List<YoutubeLink> output = new Gson().fromJson(results, listType);
+            Type listType = new TypeToken<ArrayList<PlaylistItem>>(){}.getType();
+            List<PlaylistItem> output = new Gson().fromJson(results, listType);
             resultSet.close();
             return output;
         }
@@ -83,8 +83,8 @@ public class DatabaseConnection {
         return new LinkedList<>();
     }
 
-    public List<YoutubeLink> getRecentlyPlayed(){
-        LinkedList<YoutubeLink> output = new LinkedList<>();
+    public List<PlaylistItem> getRecentlyPlayed(){
+        LinkedList<PlaylistItem> output = new LinkedList<>();
         Cursor resultSet = connection.rawQuery("Select * from tracks_played ORDER BY last_played DESC",null);
         while(resultSet.moveToNext()){
             String youtubeTitle = resultSet.getString(0);
@@ -98,8 +98,8 @@ public class DatabaseConnection {
         return output;
     }
 
-    public List<YoutubeLink> getRecentlyRecommended(){
-        LinkedList<YoutubeLink> output = new LinkedList<>();
+    public List<PlaylistItem> getRecentlyRecommended(){
+        LinkedList<PlaylistItem> output = new LinkedList<>();
         Cursor resultSet = connection.rawQuery("Select * from tracks_played ORDER BY last_played DESC",null);
         while(resultSet.moveToNext()){
 

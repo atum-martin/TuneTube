@@ -30,27 +30,27 @@ public class PlaylistAdapter {
         this.listener = listener;
     }
 
-    public void displayPlaylist(final List<YoutubeLink> songs){
+    public void displayPlaylist(final List<PlaylistItem> songs){
         ListView mainListView = (ListView) activity.findViewById(R.id.listview);
-        final ArrayAdapter<YoutubeLink> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<YoutubeLink>());
+        final ArrayAdapter<PlaylistItem> listAdapter = new ArrayAdapter<>(activity, R.layout.simplerow, new ArrayList<PlaylistItem>());
 
-        for(YoutubeLink link : songs){
+        for(PlaylistItem link : songs){
             listAdapter.add(link);
         }
         mainListView.setAdapter( listAdapter );
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                YoutubeLink link = songs.get(itemPosition);
+                PlaylistItem item = songs.get(itemPosition);
                 //Determine if the item position is another playlist or a track.
-                if(link != null && link instanceof PlaylistItem){
+                if(item != null && item instanceof YoutubeTask){
                     //If link is a playlist open that playlist.
-                    PlaylistItem item = (PlaylistItem) link;
-                    YoutubeTask task = item.getTask();
+                    YoutubeTask task = (YoutubeTask) item;
                     new YoutubeAsyncTask(activity).execute(task);
-                } else {
+                } else if(item != null && item instanceof YoutubeLink){
+                    YoutubeLink link = (YoutubeLink) item;
                     //If link is a track play it.
-                    listener.playTrack(songs.get(itemPosition));
+                    listener.playTrack(link);
                 }
             }
         });
