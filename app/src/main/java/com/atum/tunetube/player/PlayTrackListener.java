@@ -1,6 +1,6 @@
 package com.atum.tunetube.player;
 
-import com.atum.tunetube.youtube.YoutubeLink;
+import com.atum.tunetube.model.PlayableItem;
 
 /**
  * Created by atum-martin on 08/06/2017.
@@ -8,5 +8,5 @@ import com.atum.tunetube.youtube.YoutubeLink;
 
 public interface PlayTrackListener {
 
-    void playTrack(YoutubeLink link);
+    void playTrack(PlayableItem link);
 }

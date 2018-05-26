@@ -29,9 +29,11 @@ public class DatabaseConnection {
 
     private Context ctx;
     private SQLiteDatabase connection;
+    private static DatabaseConnection instance = null;
 
     public DatabaseConnection(Context ctx, String name){
         this.ctx = ctx;
+        instance = this;
         File databaseFile = new File(name);
         //databaseFile.delete();
         boolean dbExists = databaseFile.exists();
@@ -47,6 +49,10 @@ public class DatabaseConnection {
             IndexDiskFiles indexer = new IndexDiskFiles(this);
             indexer.indexDirectory(songDir);
         }
+    }
+
+    public static DatabaseConnection getInstance(){
+        return instance;
     }
 
     public void submitSearch(String query, List<PlaylistItem> tracks) {
@@ -70,12 +76,12 @@ public class DatabaseConnection {
         return output;
     }
 
-    public List<PlaylistItem> getSearchResults(String query) {
+    public List<YoutubeLink> getSearchResults(String query) {
         Cursor resultSet = connection.rawQuery("Select * from searches WHERE query = '"+query+"' ORDER BY search_time DESC LIMIT 1",null);
         if(resultSet.moveToNext()){
             String results = resultSet.getString(1);
-            Type listType = new TypeToken<ArrayList<PlaylistItem>>(){}.getType();
-            List<PlaylistItem> output = new Gson().fromJson(results, listType);
+            Type listType = new TypeToken<ArrayList<YoutubeLink>>(){}.getType();
+            List<YoutubeLink> output = new Gson().fromJson(results, listType);
             resultSet.close();
             return output;
         }

@@ -1,5 +1,6 @@
 package com.atum.tunetube.task;
 
+import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
@@ -35,7 +36,8 @@ public class YoutubeTask extends PlaylistItem {
                 tracks = connection.getRecentSearches();
                 return tracks;
             case SEARCH_RESULTS:
-                tracks = connection.getSearchResults(query);
+                tracks = new LinkedList<>();
+                tracks.addAll(connection.getSearchResults(query));
                 return tracks;
             default:
                 break;

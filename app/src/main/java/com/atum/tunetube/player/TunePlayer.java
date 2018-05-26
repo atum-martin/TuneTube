@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
+import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.presentation.PlayerController;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
@@ -118,8 +119,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     }
 
     @Override
-    public void playTrack(YoutubeLink link) {
-        System.out.println("play track: "+link.getYoutubeTitle()+" "+link.getYoutubeUrl());
+    public void playTrack(PlayableItem link) {
         new PlayTrackAsync(this).execute(link);
     }
 

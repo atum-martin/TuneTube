@@ -1,10 +1,13 @@
 package com.atum.tunetube.youtube;
 
+import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.model.PlaylistItem;
+import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.util.FileUtils;
 import com.github.axet.vget.vhs.YouTubeInfo;
 import com.github.axet.vget.vhs.YouTubeParser;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -15,7 +18,7 @@ import java.util.List;
  * Created by atum-martin on 15/05/2017.
  */
 
-public class YoutubeLink extends PlaylistItem {
+public class YoutubeLink extends PlaylistItem implements PlayableItem {
 
     private static final String[] feat = new String[]{ "ft.", "ft ", "feat.", "featuring", "feat "};
 
@@ -53,6 +56,7 @@ public class YoutubeLink extends PlaylistItem {
             return;
         YouTubeInfo info = null;
         try {
+            System.out.println("getYoutubeUrl: "+getYoutubeUrl());
             info = new YouTubeInfo(new URL(getYoutubeUrl()));
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -215,5 +219,20 @@ public class YoutubeLink extends PlaylistItem {
     @Override
     public String toString(){
         return getYoutubeTitle();
+    }
+
+    @Override
+    public String getUrl() {
+        getYoutubeUrls();
+        DatabaseConnection.getInstance().updatePlaytime(this);
+        if(getYoutubeUrls().size() == 0) {
+            return null;
+        }
+        return getYoutubeUrls().get(0).url.toString();
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 }
