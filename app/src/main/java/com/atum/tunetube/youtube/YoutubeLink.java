@@ -1,5 +1,7 @@
 package com.atum.tunetube.youtube;
 
+import android.support.annotation.NonNull;
+
 import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.sql.DatabaseConnection;
@@ -217,6 +219,12 @@ public class YoutubeLink extends PlaylistItem implements PlayableItem {
     public List<YoutubeLink> getRelatedItems () { return relatedItems; }
 
     @Override
+    public boolean equals(Object other){
+        YoutubeLink link = (YoutubeLink) other;
+        return this.title.equals(link.title);
+    }
+
+    @Override
     public String toString(){
         return getYoutubeTitle();
     }
@@ -234,5 +242,11 @@ public class YoutubeLink extends PlaylistItem implements PlayableItem {
     @Override
     public String getTitle() {
         return title;
+    }
+
+
+    @Override
+    public int hashCode(){
+        return title.hashCode();
     }
 }

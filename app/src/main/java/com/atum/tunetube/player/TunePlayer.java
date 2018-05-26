@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlayableItem;
+import com.atum.tunetube.model.PlayerPlaylist;
+import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.presentation.PlayerController;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
@@ -23,11 +25,10 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     private final MainActivity context;
     private static final String ENCODING = "UTF-8";
     private String url = null;
-    private String nextUrl = null;
-    private String nextTitle = null;
     private MediaPlayer player = null;
     private TunePlayerCompleted playerCompletedListener = null;
     private PlayerController controller = null;
+    private PlayerPlaylist playlist = new PlayerPlaylist();
 
     public TunePlayer(MainActivity context){
         this.context = context;
@@ -58,14 +59,6 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     public PlayerController getMediaController(){
         return controller;
-    }
-
-    public void setNextUrl(String url, String title) throws IOException {
-        if(!player.isPlaying()){
-            setUrl(url, title);
-            return;
-        }
-        this.nextUrl = url;
     }
 
     public void resetPlayer() {
@@ -99,14 +92,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        System.out.println("attempting to play the next track.");
         String tmpUrl = this.url;
-        try {
-            if(nextUrl != null)
-                setUrl(nextUrl, nextTitle);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        nextUrl = null;
+        playNextTrack();
         if (playerCompletedListener != null){
             playerCompletedListener.trackCompleted(tmpUrl);
         }
@@ -120,7 +108,18 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     @Override
     public void playTrack(PlayableItem link) {
-        new PlayTrackAsync(this).execute(link);
+        PlaylistItem item = (PlaylistItem) link;
+        playlist.addFirst(item);
+        playNextTrack();
+    }
+    public void playNextTrack(){
+        PlayableItem item = playlist.poll();
+        if(item != null)
+            new PlayTrackAsync(this).execute(item);
+    }
+
+    public PlayerPlaylist getPlaylist(){
+        return playlist;
     }
 
     public DatabaseConnection getDBConnection(){

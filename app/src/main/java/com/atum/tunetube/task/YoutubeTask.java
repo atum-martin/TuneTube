@@ -1,5 +1,8 @@
 package com.atum.tunetube.task;
 
+import android.support.annotation.NonNull;
+
+import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.sql.DatabaseConnection;
@@ -39,6 +42,9 @@ public class YoutubeTask extends PlaylistItem {
                 tracks = new LinkedList<>();
                 tracks.addAll(connection.getSearchResults(query));
                 return tracks;
+            case CURRENT_PLAYLIST:
+                tracks = activity.getPlaylistManager().getCurrentPlaylist();
+                return tracks;
             default:
                 break;
         }
@@ -52,17 +58,27 @@ public class YoutubeTask extends PlaylistItem {
         VIDEO,
         SEARCHES_RECENT,
         SEARCH_RESULTS,
+        CURRENT_PLAYLIST,
         RECOMMENED_RECENT
     }
 
     private Type action;
     private String query;
-    DatabaseConnection connection;
+    MainActivity activity = null;
+    DatabaseConnection connection = null;
 
     public YoutubeTask(String decription, Type action, String query){
-        this(decription, action, null, query);
+        this(decription, action, (MainActivity) null, query);
     }
 
+    public YoutubeTask(String decription, Type action, MainActivity activity, String query){
+        super(decription);
+        this.action = action;
+        this.query = query;
+        this.activity = activity;
+        if(activity != null)
+            this.connection = activity.getDBConnection();
+    }
     public YoutubeTask(String decription, Type action, DatabaseConnection connection, String query){
         super(decription);
         this.action = action;
@@ -70,7 +86,7 @@ public class YoutubeTask extends PlaylistItem {
         this.connection = connection;
     }
 
-    public YoutubeTask(String decription, Type action, DatabaseConnection connection){
-        this(decription, action, connection, null);
+    public YoutubeTask(String decription, Type action, MainActivity activity){
+        this(decription, action, activity, null);
     }
 }

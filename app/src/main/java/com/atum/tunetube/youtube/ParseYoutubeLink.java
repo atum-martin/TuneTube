@@ -22,7 +22,7 @@ public class ParseYoutubeLink {
         }
         //Youtube old UI.
         if(line.contains("yt-lockup-title") || line.contains("content-link")){
-            System.out.println("parsing video: "+line);
+            //System.out.println("parsing video: "+line);
             int index = line.indexOf("<a");
             line = line.substring(index);
             index = line.indexOf("href=\"");
@@ -57,6 +57,7 @@ public class ParseYoutubeLink {
     private static YoutubeLink[] parseJson(String line) {
         //Obtain the json string only. it starts at "ytInitialData" and ends at a semi-colon.
         line = line.substring(line.indexOf("ytInitialData"));
+        //System.out.println("parsing json ytInitialData");
         if(!line.contains("="))
             return new YoutubeLink[]{};
         line = line.substring(line.indexOf("=")+1);
@@ -64,6 +65,7 @@ public class ParseYoutubeLink {
         LinkedList<YoutubeLink> outputVideos = new LinkedList<>();
         try {
             JSONObject json = new JSONObject(line);
+            //System.out.println("ytInitialData="+ json);
             JSONArray videos = getYoutubeContents(json);
             if(videos == null)
                 return new YoutubeLink[]{};

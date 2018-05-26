@@ -715,6 +715,8 @@ public class YouTubeParser extends VGetParser {
     void extractHtmlInfo(List<VideoDownload> sNextVideoURL, YouTubeInfo info, String html, AtomicBoolean stop,
             Runnable notify) throws Exception {
         {
+            //System.out.println("info: "+info.getWeb());
+            //System.out.println("html: "+html);
             //extract related videos
             String[] splits = html.split("\n");
             if(splits != null) {

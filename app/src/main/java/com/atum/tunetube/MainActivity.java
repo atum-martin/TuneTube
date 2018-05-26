@@ -6,9 +6,11 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.atum.tunetube.http.HttpProxy;
+import com.atum.tunetube.model.PlayerPlaylist;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.player.TunePlayer;
 import com.atum.tunetube.presentation.PlaylistAdapter;
@@ -31,13 +33,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<PlaylistItem> playlists = new LinkedList<>();
 
     private void constructPlaylists(){
-        YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+        YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
         playlists.add(task);
 
-        task = new YoutubeTask("Recently Searched", YoutubeTask.Type.SEARCHES_RECENT, databaseConnection);
+        task = new YoutubeTask("Recently Searched", YoutubeTask.Type.SEARCHES_RECENT, this);
         playlists.add(task);
 
-        task = new YoutubeTask("Recommended Tracks", YoutubeTask.Type.RECOMMENED_RECENT, databaseConnection);
+        task = new YoutubeTask("Recommended Tracks", YoutubeTask.Type.RECOMMENED_RECENT, this);
         playlists.add(task);
 
         task = new YoutubeTask("EDM", YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCCIPrrom6DIftcrInjeMvsQ/videos");
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         playlists.add(task);
 
         task = new YoutubeTask("Rock Music", YoutubeTask.Type.PLAYLIST, "https://www.youtube.com/channel/UCRZoK7sezr5KRjk7BBjmH6w/videos");
+        playlists.add(task);
+
+        task = new YoutubeTask("Current Playlist", YoutubeTask.Type.CURRENT_PLAYLIST, this);
         playlists.add(task);
     }
 
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     playListAdapter.displayPlaylist(playlists);
                     return true;
                 case R.id.recently_played:
-                    YoutubeTask task2 = new YoutubeTask("Recent", YoutubeTask.Type.DATABASE_RECENT, databaseConnection);
+                    YoutubeTask task2 = new YoutubeTask("Recent", YoutubeTask.Type.DATABASE_RECENT, MainActivity.this);
                     new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
                 case R.id.stop_playing:
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         searchMenuItem.clearFocus();
-        YoutubeTask task = new YoutubeTask("Search", YoutubeTask.Type.SEARCH, databaseConnection, query);
+        YoutubeTask task = new YoutubeTask("Search", YoutubeTask.Type.SEARCH, this, query);
         new YoutubeAsyncTask(MainActivity.this).execute(task);
         return false;
     }
@@ -132,5 +137,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if(player.getMediaController() != null)
             player.getMediaController().show();
         return false;
+    }
+
+    public PlayerPlaylist getPlaylistManager(){
+        return player.getPlaylist();
     }
 }
