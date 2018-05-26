@@ -1,5 +1,7 @@
 package com.atum.tunetube.youtube;
 
+import com.atum.tunetube.model.PlaylistItem;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -13,10 +15,10 @@ import java.util.List;
 
 public class YoutubeSearchTest {
 
-    private boolean grepIgnoreCaseYoutubeLinks(List<YoutubeLink> links, String grepTerm){
+    private boolean grepIgnoreCaseYoutubeLinks(List<PlaylistItem> links, String grepTerm){
         boolean resultsForGrep = false;
-        for(YoutubeLink link : links){
-            if(link.getYoutubeTitle().toLowerCase().contains(grepTerm)){
+        for(PlaylistItem link : links){
+            if(link.toString().toLowerCase().contains(grepTerm)){
                 resultsForGrep = true;
             }
         }
@@ -27,7 +29,7 @@ public class YoutubeSearchTest {
     public void obtainSearchResultsTest1(){
         //query term should be unique term not applicable to rapid change in web usage.
         String query = "adele";
-        List<YoutubeLink> results = YoutubeSearch.getSearchResults(query);
+        List<PlaylistItem> results = YoutubeSearch.getSearchResults(query);
         boolean resultsForGrep = grepIgnoreCaseYoutubeLinks(results, query);
         //If this assert fails it should indicate no results were found for the query.
         Assert.assertEquals(true, resultsForGrep);
@@ -39,7 +41,7 @@ public class YoutubeSearchTest {
     public void obtainSearchResultsTest2(){
         //query term should be unique term not applicable to rapid change in web usage.
         String query = "ellie goulding";
-        List<YoutubeLink> results = YoutubeSearch.getSearchResults(query);
+        List<PlaylistItem> results = YoutubeSearch.getSearchResults(query);
         boolean resultsForGrep = grepIgnoreCaseYoutubeLinks(results, query);
         //If this assert fails it should indicate no results were found for the query.
         Assert.assertEquals(true, resultsForGrep);
@@ -51,7 +53,7 @@ public class YoutubeSearchTest {
     public void obtainSearchResultsTest3(){
         //query term should be unique term not applicable to rapid change in web usage.
         String query = "kygo";
-        List<YoutubeLink> results = YoutubeSearch.getSearchResults(query);
+        List<PlaylistItem> results = YoutubeSearch.getSearchResults(query);
         boolean resultsForGrep = grepIgnoreCaseYoutubeLinks(results, query);
         //If this assert fails it should indicate no results were found for the query.
         Assert.assertEquals(true, resultsForGrep);
