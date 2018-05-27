@@ -15,6 +15,8 @@ import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by atum-martin on 23/05/2017.
@@ -129,4 +131,5 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     public MediaPlayer getMediaPlayer() {
         return player;
     }
+
 }

@@ -1,8 +1,13 @@
 package com.atum.tunetube;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SearchView searchMenuItem;
     private DatabaseConnection databaseConnection;
     private List<PlaylistItem> playlists = new LinkedList<>();
+    private LocalBroadcastManager bManager;
 
     private void constructPlaylists(){
         YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
@@ -54,6 +60,34 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         task = new YoutubeTask("Current Playlist", YoutubeTask.Type.CURRENT_PLAYLIST, this);
         playlists.add(task);
     }
+
+    public static final String PLAYER_ACTION = "com.atum.tunetube.player";
+    public static final String PLAYER_ACTION_NEXT_TRACK = "com.atum.tunetube.player.next_track";
+    public static final String PLAYER_ACTION_PLAY = "com.atum.tunetube.player.play";
+    public static final String PLAYER_ACTION_PAUSE = "com.atum.tunetube.player.pause";
+
+    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(PLAYER_ACTION)) {
+                String playerAction = intent.getStringExtra("action");
+                switch(playerAction){
+                    case PLAYER_ACTION_NEXT_TRACK:
+                        player.playNextTrack();
+                        break;
+                    case PLAYER_ACTION_PLAY:
+                        if(!player.getMediaPlayer().isPlaying()){
+                            player.getMediaPlayer().start();
+                        }
+                        break;
+                    case PLAYER_ACTION_PAUSE:
+                        player.getMediaPlayer().pause();
+                        break;
+                }
+            }
+        }
+    };
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         player = new TunePlayer(this);
         playListAdapter = new PlaylistAdapter(this, player);
 
+        bManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PLAYER_ACTION);
+        bManager.registerReceiver(bReceiver, intentFilter);
 
         searchMenuItem = (SearchView) findViewById(R.id.musicsearch);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -107,7 +145,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
         constructPlaylists();
+        startService();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bManager.unregisterReceiver(bReceiver);
+    }
+
+    public void startService() {
+        Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+        serviceIntent.setAction(NotificationService.ACTION.STARTFOREGROUND_ACTION);
+        startService(serviceIntent);
     }
 
     @Override
@@ -142,4 +193,5 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public PlayerPlaylist getPlaylistManager(){
         return player.getPlaylist();
     }
+
 }
