@@ -11,13 +11,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.atum.tunetube.player.TrackChangedListener;
-
-public class NotificationService extends Service implements TrackChangedListener {
+public class NotificationService extends Service {
 
     @Override
     public void onDestroy() {
@@ -66,11 +63,6 @@ public class NotificationService extends Service implements TrackChangedListener
         Intent RTReturn = new Intent(MainActivity.PLAYER_ACTION);
         RTReturn.putExtra("action", action);
         LocalBroadcastManager.getInstance(this).sendBroadcast(RTReturn);
-    }
-
-    @Override
-    public void trackChanged(String title) {
-        notificationExpandedView.setTextViewText(R.id.status_bar_track_name, title);
     }
 
     public interface ACTION {
