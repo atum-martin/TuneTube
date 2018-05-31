@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public void updateNotificationText(String text){
         Intent updateNotificationIntent = new Intent(this, MainActivity.class);
         updateNotificationIntent.setAction(MainActivity.PLAYER_ACTION);
+        updateNotificationIntent.putExtra("action", UPDATE_TEXT_ACTION);
         updateNotificationIntent.putExtra("text", text);
         LocalBroadcastManager.getInstance(this).sendBroadcast(updateNotificationIntent);
     }
