@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private DatabaseConnection databaseConnection;
     private List<PlaylistItem> playlists = new LinkedList<>();
     private LocalBroadcastManager bManager;
+    private Intent serviceIntent;
 
     private void constructPlaylists(){
         YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
@@ -157,10 +158,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public void onDestroy() {
         super.onDestroy();
         bManager.unregisterReceiver(bReceiver);
+        stopService(serviceIntent);
     }
 
     public void startService() {
-        Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+        serviceIntent = new Intent(MainActivity.this, NotificationService.class);
         serviceIntent.setAction(NotificationService.ACTION.STARTFOREGROUND_ACTION);
         startService(serviceIntent);
     }
