@@ -6,6 +6,9 @@ package com.atum.tunetube;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
@@ -58,6 +61,7 @@ public class NotificationService extends Service {
     Notification status;
     private final String LOG_TAG = "NotificationService";
     private RemoteViews notificationExpandedView;
+    private LocalBroadcastManager bManager;
 
     public void sendPlayerAction(String action) {
         Intent RTReturn = new Intent(MainActivity.PLAYER_ACTION);
@@ -140,6 +144,26 @@ public class NotificationService extends Service {
         status.icon = R.mipmap.ic_launcher;
         status.contentIntent = pendingIntent;
         startForeground(NOTIFICATION_ID.FOREGROUND_SERVICE, status);
+
+        bManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MainActivity.PLAYER_ACTION);
+        bManager.registerReceiver(bReceiver, intentFilter);
     }
+
+    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(MainActivity.PLAYER_ACTION)) {
+                String playerAction = intent.getStringExtra("action");
+                switch(playerAction){
+                    case MainActivity.UPDATE_TEXT_ACTION:
+                        String text = intent.getStringExtra("text");
+                        notificationExpandedView.setTextViewText(R.id.status_bar_track_name, text);
+                        break;
+                }
+            }
+        }
+    };
 
 }
