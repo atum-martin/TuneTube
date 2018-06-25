@@ -1,5 +1,6 @@
 package com.atum.tunetube.util;
 
+import android.content.Context;
 import android.os.Environment;
 
 import com.github.axet.vget.vhs.YouTubeParser;
@@ -20,24 +21,20 @@ public class FileUtils {
 
     private static String DIRECTORY_NAME = "/TestTube";
 
-    public static String getSDCardDirectory(){
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
-    }
+    private static String cacheTrackDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
 
-    private static String cacheTrackDirectory = getSDCardDirectory();
-
-    static {
-        File f = new File(getSDCardDirectory());
-        if(!f.exists() && !createDirIfNotExists(getSDCardDirectory())){
-            cacheTrackDirectory = null;
+    public static void init(Context context){
+        cacheTrackDirectory = getSDCardDirectory(context);
+        File f = new File(cacheTrackDirectory);
+        if(!f.exists() && !createDirIfNotExists(cacheTrackDirectory)){
+            cacheTrackDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
+            f = new File(cacheTrackDirectory);
+            createDirIfNotExists(f.getAbsolutePath());
         }
     }
 
-    public static void setCacheDirectoryPath(String path){
-        if(cacheTrackDirectory == null) {
-            cacheTrackDirectory = path+DIRECTORY_NAME;
-            createDirIfNotExists(cacheTrackDirectory);
-        }
+    private static String getSDCardDirectory(Context context){
+        return GetExternalStorage.getExternalStoragePath(context, true)+DIRECTORY_NAME;
     }
 
     public static String getWorkingDirectory(){
@@ -80,6 +77,7 @@ public class FileUtils {
 
     private static boolean createDirIfNotExists(String dir) {
         File f = new File(dir);
+        System.out.println("creating sd dir: "+dir);
         if(!f.exists())
             return f.mkdir();
         return true;

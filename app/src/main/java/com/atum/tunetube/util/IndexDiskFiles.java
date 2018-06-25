@@ -19,7 +19,7 @@ public class IndexDiskFiles {
     }
 
     public void indexDirectory(File dir){
-        if(dir == null)
+        if(dir == null || dir.listFiles() == null)
             return;
         for(File file : dir.listFiles()){
 
