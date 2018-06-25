@@ -116,8 +116,10 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     }
     public void playNextTrack(){
         PlayableItem item = playlist.poll();
-        if(item != null)
+        if(item != null) {
+            context.updateNotificationText(item.getTitle());
             new PlayTrackAsync(this).execute(item);
+        }
     }
 
     public PlayerPlaylist getPlaylist(){

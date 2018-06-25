@@ -66,12 +66,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final String PLAYER_ACTION_NEXT_TRACK = "com.atum.tunetube.player.next_track";
     public static final String PLAYER_ACTION_PLAY = "com.atum.tunetube.player.play";
     public static final String PLAYER_ACTION_PAUSE = "com.atum.tunetube.player.pause";
+    public static final String UPDATE_TEXT_ACTION = "com.atum.tunetube.player.update";
 
     private BroadcastReceiver bReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(PLAYER_ACTION)) {
                 String playerAction = intent.getStringExtra("action");
+                if(playerAction == null){
+                    return;
+                }
                 switch(playerAction){
                     case PLAYER_ACTION_NEXT_TRACK:
                         player.playNextTrack();
@@ -194,6 +198,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public PlayerPlaylist getPlaylistManager(){
         return player.getPlaylist();
+    }
+
+    public void updateNotificationText(String text){
+        Intent updateNotificationIntent = new Intent(this, MainActivity.class);
+        updateNotificationIntent.setAction(MainActivity.PLAYER_ACTION);
+        updateNotificationIntent.putExtra("action", UPDATE_TEXT_ACTION);
+        updateNotificationIntent.putExtra("text", text);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(updateNotificationIntent);
     }
 
 }
