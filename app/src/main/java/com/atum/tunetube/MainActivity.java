@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FileUtils.setCacheDirectoryPath(this.getCacheDir().getPath());
+        FileUtils.init(this);
         setContentView(R.layout.activity_main);
 
         try {
