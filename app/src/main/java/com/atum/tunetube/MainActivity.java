@@ -198,13 +198,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return false;
     }
 
-    /*@Override
+    @Override
     protected void onStop() {
         super.onStop();
-        mediaController.hide();
-        player.stop();
-        player.release();
-    }*/
+        player.resetPlayer();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
