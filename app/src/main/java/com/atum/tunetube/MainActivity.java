@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<PlaylistItem> playlists = new LinkedList<>();
     private LocalBroadcastManager bManager;
     private Intent serviceIntent;
-    private static Context instance;
+    private static MainActivity instance;
 
-    public static Context getInstance() {
+    public static MainActivity getInstance() {
         return instance;
     }
 
@@ -121,10 +121,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
                 case R.id.stop_playing:
-                    player.resetPlayer();
+                    //player.resetPlayer();
+                    Intent intent = new Intent(MainActivity.this, AndroidMediaPlayerActivity.class);
+                    startActivity(intent);
                     return true;
                 case R.id.settings:
-                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
                     return true;
             }
@@ -175,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public void onDestroy() {
         super.onDestroy();
+        player.resetPlayer();
         bManager.unregisterReceiver(bReceiver);
         stopService(serviceIntent);
     }
@@ -197,12 +200,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
         return false;
     }
-
+/*
     @Override
     protected void onStop() {
         super.onStop();
-        player.resetPlayer();
-    }
+
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -214,6 +217,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public PlayerPlaylist getPlaylistManager(){
         return player.getPlaylist();
+    }
+
+    public TunePlayer getPlayer() {
+        return player;
     }
 
     public void updateNotificationText(String text){

@@ -435,6 +435,8 @@ public class YouTubeParser extends VGetParser {
                     extractEmbedded(sNextVideoURL, info, stop, notify);
                 } catch (EmbeddingDisabled ee) {
                     throw e;
+                } catch (DownloadError ee){
+                    throw e;
                 }
             }
             return sNextVideoURL;

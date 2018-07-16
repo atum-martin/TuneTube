@@ -65,8 +65,13 @@ public class YoutubeLink extends PlaylistItem implements PlayableItem {
         }
 
         YouTubeParser parser = new YouTubeParser();
-
-        List<YouTubeParser.VideoDownload> list = parser.extractLinks(info);
+        List<YouTubeParser.VideoDownload> list;
+        try {
+            list = parser.extractLinks(info);
+        } catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
         //Video only content is useless to the app, filter this out.
         for(YouTubeParser.VideoDownload track : list){
             if(!(track.stream instanceof YouTubeInfo.StreamVideo))
