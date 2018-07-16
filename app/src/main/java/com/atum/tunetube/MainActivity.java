@@ -93,12 +93,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         player.playNextTrack();
                         break;
                     case PLAYER_ACTION_PLAY:
-                        if(!player.getMediaPlayer().isPlaying()){
+                        if(player.getMediaPlayer() != null && !player.getMediaPlayer().isPlaying()){
                             player.getMediaPlayer().start();
                         }
                         break;
                     case PLAYER_ACTION_PAUSE:
-                        player.getMediaPlayer().pause();
+                        if(player.getMediaPlayer() != null)
+                             player.getMediaPlayer().pause();
                         break;
                 }
             }

@@ -654,12 +654,15 @@ public class YouTubeParser extends VGetParser {
 
         // String fmt_list = URLDecoder.decode(map.get("fmt_list"), UTF8);
         // String[] fmts = fmt_list.split(",");
-
+        if(map.get("url_encoded_fmt_stream_map") == null)
+            throw new DownloadError("no url_encoded_fmt_stream_map found");
         String url_encoded_fmt_stream_map = URLDecoder.decode(map.get("url_encoded_fmt_stream_map"), UTF8);
 
         extractUrlEncodedVideos(sNextVideoURL, url_encoded_fmt_stream_map, info, stop, notify, true);
 
         // 'iurlmaxresæ or 'iurlsd' or 'thumbnail_url'
+        if(map.get("thumbnail_url") == null)
+            throw new DownloadError("no thumbnail_url found");
         String icon = map.get("thumbnail_url");
         icon = URLDecoder.decode(icon, UTF8);
         info.setIcon(new URL(icon));
