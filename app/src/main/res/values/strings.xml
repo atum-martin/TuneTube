@@ -13,13 +13,11 @@
     <string name="pref_ringtone_silent">Silent</string>
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
+    <string name="pref_storage_media_allowed">Enable local storage of media</string>
+    <string name="pref_storage_media_allowed_summary">Allows the storage of media to the device</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_maximum_media_limit">Maximum media limit</string>
+    <string name="pref_maximum_media_limit_summary">3000</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
