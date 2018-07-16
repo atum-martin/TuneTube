@@ -1,5 +1,7 @@
 package com.github.axet.vget.vhs;
 
+import android.net.Uri;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,9 +30,9 @@ public class VimeoParser extends VGetParser {
 
     static public class VideoDownload {
         public VimeoQuality vq;
-        public URL url;
+        public Uri url;
 
-        public VideoDownload(VimeoQuality vq, URL u) {
+        public VideoDownload(VimeoQuality vq, Uri u) {
             this.vq = vq;
             this.url = u;
         }
@@ -190,10 +192,10 @@ public class VimeoParser extends VGetParser {
             info.setTitle(data.video.title);
 
             if (data.request.files.h264.hd != null)
-                list.add(new VideoDownload(VimeoQuality.pHi, new URL(data.request.files.h264.hd.url)));
+                list.add(new VideoDownload(VimeoQuality.pHi, Uri.parse(data.request.files.h264.hd.url)));
 
             if (data.request.files.h264.sd != null)
-                list.add(new VideoDownload(VimeoQuality.pLow, new URL(data.request.files.h264.sd.url)));
+                list.add(new VideoDownload(VimeoQuality.pLow, Uri.parse(data.request.files.h264.sd.url)));
 
             info.setIcon(new URL(icon));
         } catch (MalformedURLException e) {

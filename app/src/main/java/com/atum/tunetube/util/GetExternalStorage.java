@@ -34,6 +34,7 @@ public class GetExternalStorage {
                 Object storageVolumeElement = Array.get(result, i);
                 String path = (String) getPath.invoke(storageVolumeElement);
                 boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
+                System.out.println("found mount point: "+path);
                 if (is_removable == removable) {
                     System.out.println("found external sd: "+path);
                     return path;

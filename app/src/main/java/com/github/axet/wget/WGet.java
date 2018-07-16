@@ -1,5 +1,7 @@
 package com.github.axet.wget;
 
+import android.net.Uri;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +77,7 @@ public class WGet {
     }
 
     void create(URL source, File target) {
-        info = new DownloadInfo(source);
+        info = new DownloadInfo(Uri.parse(source.toString()));
         info.extract();
         create(target);
     }
@@ -100,7 +102,7 @@ public class WGet {
     }
 
     public static File calcName(URL source, File target) {
-        DownloadInfo info = new DownloadInfo(source);
+        DownloadInfo info = new DownloadInfo(Uri.parse(source.toString()));
         info.extract();
         return calcName(info, target);
     }
@@ -202,7 +204,7 @@ public class WGet {
     }
 
     public static String getHtml(final URL source, final HtmlLoader load, final AtomicBoolean stop) {
-        return getHtml(new DownloadInfo(source), load, stop);
+        return getHtml(new DownloadInfo(Uri.parse(source.toString())), load, stop);
     }
 
     public static String getHtml(final DownloadInfo source, final HtmlLoader load, final AtomicBoolean stop) {
@@ -241,7 +243,7 @@ public class WGet {
             @Override
             public void moved(URL url) {
                 DownloadInfo old = info;
-                info = new DownloadInfo(url);
+                info = new DownloadInfo(Uri.parse(url.toString()));
                 info.setReferer(old.getReferer());
                 load.notifyMoved();
             }

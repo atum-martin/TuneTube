@@ -1,5 +1,7 @@
 package com.github.axet.wget;
 
+import android.net.Uri;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +114,7 @@ public class DirectRange extends Direct {
                 @Override
                 public void moved(URL url) {
                     DownloadInfo old = info;
-                    info = new DownloadInfo(url);
+                    info = new DownloadInfo(Uri.parse(url.toString()));
                     info.extract(stop, notify);
                     if (info.canResume(old))
                         info.resume(old);

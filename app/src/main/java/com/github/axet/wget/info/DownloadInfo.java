@@ -1,5 +1,7 @@
 package com.github.axet.wget.info;
 
+import android.net.Uri;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,11 +166,11 @@ public class DownloadInfo extends URLInfo {
      */
     private long count;
 
-    public DownloadInfo(URL source) {
+    public DownloadInfo(Uri source) {
         super(source);
     }
 
-    public DownloadInfo(URL source, ProxyInfo p) {
+    public DownloadInfo(Uri source, ProxyInfo p) {
         super(source);
         setProxy(p);
     }

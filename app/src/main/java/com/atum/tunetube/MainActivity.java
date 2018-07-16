@@ -4,11 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,8 +29,11 @@ import com.atum.tunetube.util.FileUtils;
 import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -38,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<PlaylistItem> playlists = new LinkedList<>();
     private LocalBroadcastManager bManager;
     private Intent serviceIntent;
+    private static Context instance;
+
+    public static Context getInstance() {
+        return instance;
+    }
 
     private void constructPlaylists(){
         YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
@@ -60,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         task = new YoutubeTask("Current Playlist", YoutubeTask.Type.CURRENT_PLAYLIST, this);
         playlists.add(task);
+
     }
 
     public static final String PLAYER_ACTION = "com.atum.tunetube.player";
@@ -110,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 case R.id.stop_playing:
                     player.resetPlayer();
                     return true;
+                case R.id.settings:
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
             }
             return false;
         }
@@ -127,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FileUtils.init(this);
+        instance = this;
         setContentView(R.layout.activity_main);
 
         try {
@@ -149,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchMenuItem.setOnQueryTextListener(this);
 
         databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
+        FileUtils.init(this);
         constructPlaylists();
         startService();
 

@@ -1,5 +1,7 @@
 package com.github.axet.vget.vhs;
 
+import android.net.Uri;
+
 import java.net.URL;
 import java.util.List;
 
@@ -11,7 +13,7 @@ public class YouTubeMPGParser extends YouTubeParser {
     public YouTubeMPGParser() {
     }
 
-    void filter(List<VideoDownload> sNextVideoURL, String itag, URL url) {
+    void filter(List<VideoDownload> sNextVideoURL, String itag, Uri url) {
         Integer i = Integer.decode(itag);
         StreamInfo vd = itagMap.get(i);
 

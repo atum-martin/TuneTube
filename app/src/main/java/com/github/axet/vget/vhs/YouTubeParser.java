@@ -57,9 +57,9 @@ public class YouTubeParser extends VGetParser {
 
     static public class VideoDownload implements Comparable<VideoDownload>{
         public StreamInfo stream;
-        public URL url;
+        public Uri url;
 
-        public VideoDownload(StreamInfo s, URL u) {
+        public VideoDownload(StreamInfo s, Uri u) {
             this.stream = s;
             this.url = u;
         }
@@ -486,7 +486,7 @@ public class YouTubeParser extends VGetParser {
      *            download source url
      * @throws MalformedURLException
      */
-    void filter(List<VideoDownload> sNextVideoURL, String itag, URL url) {
+    void filter(List<VideoDownload> sNextVideoURL, String itag, Uri url) {
         Integer i = Integer.decode(itag);
         StreamInfo vd = itagMap.get(i);
 
@@ -799,7 +799,7 @@ public class YouTubeParser extends VGetParser {
 
                             url = URLDecoder.decode(url, UTF8);
 
-                            filter(sNextVideoURL, itag, new URL(url));
+                            filter(sNextVideoURL, itag, Uri.parse(url));
                         }
                     }
                 }
@@ -846,7 +846,7 @@ public class YouTubeParser extends VGetParser {
 
                             url = URLDecoder.decode(url, UTF8);
 
-                            filter(sNextVideoURL, itag, new URL(url));
+                            filter(sNextVideoURL, itag, Uri.parse(url));
                         }
                     }
                 }
@@ -943,15 +943,11 @@ public class YouTubeParser extends VGetParser {
                 }
 
                 if (url != null && itag != null && sig != null) {
-                    try {
-                        url += "&signature=" + sig;
-                        if(!url.contains("&ratebypass"))
-                            url += "&ratebypass=yes";
-                        filter(sNextVideoURL, itag, new URL(url));
-                        continue;
-                    } catch (MalformedURLException e) {
-                        // ignore bad urls
-                    }
+                    url += "&signature=" + sig;
+                    if(!url.contains("&ratebypass"))
+                        url += "&ratebypass=yes";
+                    filter(sNextVideoURL, itag, Uri.parse(url));
+                    continue;
                 }
             }
         }

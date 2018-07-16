@@ -1,5 +1,7 @@
 package com.github.axet.wget.info;
 
+import android.net.Uri;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,12 +39,12 @@ public class URLInfo extends BrowserInfo {
     /**
      * source url (set by user)
      */
-    private URL source;
+    private Uri source;
 
     /**
      * download url (if redirected/moved)
      */
-    protected URL url;
+    protected Uri url;
 
     /**
      * have been extracted?
@@ -98,7 +100,7 @@ public class URLInfo extends BrowserInfo {
 
     private ProxyInfo proxy;
 
-    public URLInfo(URL source) {
+    public URLInfo(Uri source) {
         this.source = source;
         this.url = source;
     }
@@ -107,9 +109,9 @@ public class URLInfo extends BrowserInfo {
         HttpURLConnection conn;
 
         if (getProxy() != null) {
-            conn = (HttpURLConnection) url.openConnection(getProxy().proxy);
+            conn = (HttpURLConnection) new URL(url.toString()).openConnection(getProxy().proxy);
         } else {
-            conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) new URL(url.toString()).openConnection();
         }
 
         if (cookie != null)
@@ -187,8 +189,8 @@ public class URLInfo extends BrowserInfo {
                                     String urlmeta = vv[1];
                                     String[] uu = urlmeta.split("url=");
                                     if (uu.length > 1) {
-                                        setReferer(url);
-                                        url = new URL(uu[1]);
+                                        setReferer(new URL(url.toString()));
+                                        url = Uri.parse(uu[1]);
                                         String c = conn.getHeaderField("Set-cookie");
                                         if (c != null)
                                             setCookie(c);
@@ -211,8 +213,8 @@ public class URLInfo extends BrowserInfo {
 
                 @Override
                 public void moved(URL u) {
-                    setReferer(url);
-                    url = u;
+                    setReferer(u);
+                    url = Uri.parse(u.toString());
                     setState(States.RETRYING);
                     notify.run();
                 }
@@ -308,7 +310,7 @@ public class URLInfo extends BrowserInfo {
         length = l;
     }
 
-    synchronized public URL getSource() {
+    synchronized public Uri getSource() {
         return source;
     }
 

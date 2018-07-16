@@ -1,5 +1,7 @@
 package com.github.axet.vget.info;
 
+import android.net.Uri;
+
 import java.io.File;
 import java.net.URL;
 
@@ -9,11 +11,11 @@ import com.github.axet.wget.info.ProxyInfo;
 public class VideoFileInfo extends DownloadInfo {
     public File targetFile;
 
-    public VideoFileInfo(URL source) {
+    public VideoFileInfo(Uri source) {
         super(source);
     }
 
-    public VideoFileInfo(URL source, ProxyInfo p) {
+    public VideoFileInfo(Uri source, ProxyInfo p) {
         super(source, p);
     }
 

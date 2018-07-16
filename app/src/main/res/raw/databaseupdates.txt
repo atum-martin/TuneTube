@@ -6,3 +6,5 @@ id 0
 ALTER TABLE tracks_played ADD COLUMN play_count INT DEFAULT 1
 id 1
 ALTER TABLE tracks_played ADD COLUMN payload VARCHAR DEFAULT '{}'
+id 2
+CREATE TABLE IF NOT EXISTS storage_directorys (path VARCHAR,type VARCHAR);

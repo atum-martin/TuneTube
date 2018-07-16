@@ -1,5 +1,8 @@
 package com.atum.tunetube.http;
 
+import android.support.v4.provider.DocumentFile;
+
+import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.util.FileUtils;
 
 import java.io.FileOutputStream;
@@ -49,7 +52,13 @@ public class HttpProxy extends NanoHTTPD {
                     System.out.println("range: " + parms.get("Range"));
                 }
                 String filePath = FileUtils.getLocationForTitle(title);
-                FileOutputStream fileOut = new FileOutputStream(filePath);
+                OutputStream fileOut = null;
+                if(FileUtils.getDocumentDir() != null){
+                    DocumentFile newFile = FileUtils.getDocumentDir().createFile("audio/vorbis", FileUtils.getStringForTitle(title));
+                    fileOut = MainActivity.getInstance().getContentResolver().openOutputStream(newFile.getUri());
+                } else {
+                    fileOut = new FileOutputStream(filePath);
+                }
                 in = new RelayInputStream(http.getInputStream(), fileOut);
             }
             return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);

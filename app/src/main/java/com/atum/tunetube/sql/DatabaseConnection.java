@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.net.Uri;
+import android.support.v4.provider.DocumentFile;
 
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlaylistItem;
@@ -17,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,5 +132,29 @@ public class DatabaseConnection {
             String[] args = new String[]{track.getYoutubeTitle(), track.getVideoId(),  Long.valueOf(System.currentTimeMillis()).toString(), "1", json};
             connection.execSQL("INSERT INTO tracks_played VALUES(?, ?, ?, ?, ?);", args);
         }
+    }
+
+    public void persistDocumentUri(Uri uri) {
+        String uriStr = uri.toString();
+        System.out.println("saving document path: "+uriStr);
+        String updateQuery = "UPDATE storage_directorys SET path = '"+uriStr+"' WHERE type = 'media_directory';";
+        SQLiteStatement statement = connection.compileStatement(updateQuery);
+        int affectedRows = statement.executeUpdateDelete();
+        if(affectedRows <= 0){
+            String[] args = new String[]{uriStr, "media_directory"};
+            connection.execSQL("INSERT INTO storage_directorys VALUES(?, ?);", args);
+        }
+    }
+
+    public Uri getMediaDocumentUri(){
+        Cursor resultSet = connection.rawQuery("Select * from storage_directorys WHERE type = 'media_directory'",null);
+        String uriStr = null;
+        if(resultSet.moveToNext()){
+            uriStr = resultSet.getString(0);
+            System.out.println("decoded media uri: "+uriStr);
+        }
+        if(uriStr == null)
+            return null;
+        return Uri.parse(uriStr);
     }
 }

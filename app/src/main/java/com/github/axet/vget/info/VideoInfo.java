@@ -1,5 +1,7 @@
 package com.github.axet.vget.info;
 
+import android.net.Uri;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ public class VideoInfo {
     // user friendly url (not direct video stream url)
     private URL web;
 
-    private URL source;
+    private Uri source;
     private List<VideoFileInfo> info = new ArrayList<VideoFileInfo>();
     private String title;
     private URL icon;
@@ -124,11 +126,11 @@ public class VideoInfo {
         this.icon = icon;
     }
 
-    synchronized public URL getSource() {
+    synchronized public Uri getSource() {
         return source;
     }
 
-    synchronized public void setSource(URL source) {
+    synchronized public void setSource(Uri source) {
         this.source = source;
     }
 

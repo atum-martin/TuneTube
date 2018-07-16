@@ -1,5 +1,6 @@
 package com.github.axet.vget.info;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
