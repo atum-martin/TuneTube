@@ -23,9 +23,16 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class HttpProxy extends NanoHTTPD {
 
-    public HttpProxy() throws IOException {
+    private boolean cacheSupport = true;
+
+    public HttpProxy(boolean cacheSupport) throws IOException {
         super(8093);
+        this.cacheSupport = cacheSupport;
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+    }
+
+    public HttpProxy() throws IOException {
+        this(true);
     }
 
     @Override
@@ -42,7 +49,10 @@ public class HttpProxy extends NanoHTTPD {
         Log.i(Constants.HTTP_TAG,"receiving http buffer for: "+title+ " "+url);
         try {
 
-            InputStream in = FileUtils.getInputStreamForTitle(title);
+            InputStream in = null;
+            //If cache is supported check for a local static copy of the requested file.
+            if(cacheSupport)
+                in = FileUtils.getInputStreamForTitle(title);
             if(in != null){
                 for(Map.Entry<String, String> e : session.getHeaders().entrySet()){
                     Log.i(Constants.HTTP_TAG,"headers: "+e.getKey()+" "+e.getValue());
@@ -53,15 +63,19 @@ public class HttpProxy extends NanoHTTPD {
                     http.setRequestProperty("Range", parms.get("Range"));
                     Log.i(Constants.HTTP_TAG,"range: " + parms.get("Range"));
                 }
-                String filePath = FileUtils.getLocationForTitle(title);
-                OutputStream fileOut = null;
-                if(FileUtils.getDocumentDir() != null){
-                    DocumentFile newFile = FileUtils.getDocumentDir().createFile("audio/vorbis", FileUtils.getStringForTitle(title));
-                    fileOut = MainActivity.getInstance().getContentResolver().openOutputStream(newFile.getUri());
+                if(cacheSupport) {
+                    String filePath = FileUtils.getLocationForTitle(title);
+                    OutputStream fileOut = null;
+                    if (FileUtils.getDocumentDir() != null) {
+                        DocumentFile newFile = FileUtils.getDocumentDir().createFile("audio/vorbis", FileUtils.getStringForTitle(title));
+                        fileOut = MainActivity.getInstance().getContentResolver().openOutputStream(newFile.getUri());
+                    } else {
+                        fileOut = new FileOutputStream(filePath);
+                    }
+                    in = new RelayInputStream(http.getInputStream(), fileOut);
                 } else {
-                    fileOut = new FileOutputStream(filePath);
+                    in = http.getInputStream();
                 }
-                in = new RelayInputStream(http.getInputStream(), fileOut);
             }
             return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
         } catch (IOException e) {
