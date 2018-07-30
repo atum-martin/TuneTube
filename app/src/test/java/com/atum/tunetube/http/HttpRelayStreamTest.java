@@ -1,20 +1,32 @@
 package com.atum.tunetube.http;
 
+import android.util.Log;
+
 import org.junit.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Created by mchapman on 11/12/17.
  */
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Log.class})
 public class HttpRelayStreamTest {
+
+    @Before
+    public void setup(){
+        PowerMockito.mockStatic(Log.class);
+    }
 
     private byte[] createRandomArray(){
         byte[] arr = new byte[128];

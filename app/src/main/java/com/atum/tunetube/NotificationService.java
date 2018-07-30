@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
@@ -143,14 +144,24 @@ public class NotificationService extends Service {
         notificationExpandedView.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);*/
 
         notificationExpandedView.setTextViewText(R.id.status_bar_track_name, "Song Title");
+        //String channelId = "TestTubeNotification";
 
-        builder = new Notification.Builder(this);
+        builder = new Notification.Builder(this/*, channelId*/);
         status = builder.build();
         status.contentView = notificationExpandedView;
         status.bigContentView = notificationExpandedView;
         status.flags = Notification.FLAG_ONGOING_EVENT;
         status.icon = R.mipmap.ic_launcher;
         status.contentIntent = pendingIntent;
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, "Test Tube notification",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setShowBadge(false);
+            channel.setSound(null, null);
+            mNotificationManager.createNotificationChannel(channel);
+        }*/
+
         startForeground(FOREGROUND_SERVICE, status);
 
         bManager = LocalBroadcastManager.getInstance(this);

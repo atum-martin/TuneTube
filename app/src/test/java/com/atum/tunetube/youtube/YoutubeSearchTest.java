@@ -1,10 +1,17 @@
 package com.atum.tunetube.youtube;
 
+import android.util.Log;
+
 import com.atum.tunetube.model.PlaylistItem;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -12,8 +19,14 @@ import java.util.List;
 /**
  * Created by mchapman on 11/12/17.
  */
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Log.class})
 public class YoutubeSearchTest {
+
+    @Before
+    public void setup(){
+        PowerMockito.mockStatic(Log.class);
+    }
 
     private boolean grepIgnoreCaseYoutubeLinks(List<PlaylistItem> links, String grepTerm){
         boolean resultsForGrep = false;

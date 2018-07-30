@@ -2,6 +2,7 @@ package com.atum.tunetube.player;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.LinearLayout;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by atum-martin on 23/05/2017.
  */
 
-public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, PlayTrackListener {
+public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener, PlayTrackListener {
 
     private final MainActivity context;
     private static final String ENCODING = "UTF-8";
@@ -81,6 +82,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         Log.i(Constants.MEDIA_TAG,"media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
+        mPlayer.setOnSeekCompleteListener(this);
         controller = new PlayerController(mPlayer, context);
         mPlayer.setOnPreparedListener(controller);
 
@@ -136,4 +138,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         return player;
     }
 
+    @Override
+    public void onSeekComplete(MediaPlayer mediaPlayer) {
+        SystemClock.sleep(500);
+        player.start();
+    }
 }

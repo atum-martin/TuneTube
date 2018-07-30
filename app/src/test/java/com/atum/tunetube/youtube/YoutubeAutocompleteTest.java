@@ -5,15 +5,26 @@ import android.util.Log;
 import com.atum.tunetube.Constants;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
 
 /**
  * Created by Admin on 22/05/2017.
  */
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Log.class})
 public class YoutubeAutocompleteTest {
+
+    @Before
+    public void setup(){
+        PowerMockito.mockStatic(Log.class);
+    }
 
     @Test
     public void test1(){
