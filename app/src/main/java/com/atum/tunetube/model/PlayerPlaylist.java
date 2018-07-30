@@ -1,5 +1,9 @@
 package com.atum.tunetube.model;
 
+import android.util.Log;
+
+import com.atum.tunetube.Constants;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +64,7 @@ public class PlayerPlaylist {
         for (PlaylistItem item : newItems){
             if(item instanceof PlayableItem) {
                 items.add(item);
-                System.out.println("constructed playlist: " + item.toString());
+                Log.i(Constants.TAG,"constructed playlist: " + item.toString());
             }
         }
     }

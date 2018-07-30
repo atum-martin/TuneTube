@@ -170,7 +170,7 @@ public class NotificationService extends Service {
                 switch(playerAction){
                     case MainActivity.UPDATE_TEXT_ACTION:
                         String text = intent.getStringExtra("text");
-                        System.out.println("attempting to update notification to: "+text);
+                        Log.i(LOG_TAG,"attempting to update notification to: "+text);
                         notificationExpandedView.setTextViewText(R.id.status_bar_track_name, text);
                         mNotificationManager.notify(FOREGROUND_SERVICE, builder.build());
                         break;

@@ -2,7 +2,10 @@ package com.atum.tunetube.sql;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.util.SparseArray;
+
+import com.atum.tunetube.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +35,7 @@ public class UpgradeDatabase {
         Upgrade(int id, List<String> sqlCommands){
             this.id = id;
             this.sqlCommands = sqlCommands;
-            System.out.println("DB Upgrade: id: "+id+" commands: "+sqlCommands.size());
+            Log.i(Constants.DB_TAG,"DB Upgrade: id: "+id+" commands: "+sqlCommands.size());
         }
 
         List<String> getSqlCommands() {
@@ -88,7 +91,7 @@ public class UpgradeDatabase {
         int dbVersion = -1;
         if(resultSet.moveToNext()){
             dbVersion = resultSet.getInt(0);
-            System.out.println("db version: "+resultSet.getInt(0));
+            Log.i(Constants.DB_TAG,"db version: "+resultSet.getInt(0));
         }
         resultSet.close();
         return dbVersion;
@@ -102,7 +105,7 @@ public class UpgradeDatabase {
             Upgrade up = upgradeMap.get(dbVersion);
             if(up == null)
                 break;
-            System.out.println("applying schema update "+dbVersion);
+            Log.i(Constants.DB_TAG,"applying schema update "+dbVersion);
             for(String sql : up.getSqlCommands()){
                 connection.execSQL(sql);
             }

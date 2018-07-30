@@ -1,5 +1,9 @@
 package com.atum.tunetube.http;
 
+import android.util.Log;
+
+import com.atum.tunetube.Constants;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +30,7 @@ class RelayInputStream extends InputStream
     public int available() throws IOException
     {
         checkStreams();
-        System.out.println("available available = " + mInputStream.available());
+        Log.i(Constants.HTTP_TAG,"available available = " + mInputStream.available());
         mInputStream.mark(mInputStream.available());
         return mInputStream.available();
     }
@@ -43,7 +47,7 @@ class RelayInputStream extends InputStream
     @Override
     public int read(byte[] buffer) throws IOException
     {
-        System.out.println("read buffer;");
+        Log.i(Constants.HTTP_TAG,"read buffer;");
         return read(buffer, 0, buffer.length);
     }
 
@@ -53,7 +57,7 @@ class RelayInputStream extends InputStream
         checkStreams();
         int read = mInputStream.read(buffer, offset, length);
         total += read;
-        System.out.println("read buffer offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
+        Log.i(Constants.HTTP_TAG,"read buffer offset = " + offset + "; length = " + length+" total: "+(total / 1024L));
         mOutputStream.write(buffer, offset, read);
         mOutputStream.flush();
         return read;
@@ -63,7 +67,7 @@ class RelayInputStream extends InputStream
     public int read() throws IOException
     {
         checkStreams();
-        System.out.println("read no data");
+        Log.i(Constants.HTTP_TAG,"read no data");
         int b = mInputStream.read();
         mOutputStream.write(b);
         return b;
@@ -72,7 +76,7 @@ class RelayInputStream extends InputStream
     @Override
     public void close() throws IOException {
         checkStreams();
-        System.out.println("http proxy conn closed");
+        Log.i(Constants.HTTP_TAG,"http proxy conn closed");
         mOutputStream.flush();
         mOutputStream.close();
         mInputStream.close();

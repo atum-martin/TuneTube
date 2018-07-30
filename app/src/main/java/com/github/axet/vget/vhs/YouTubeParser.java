@@ -2,6 +2,7 @@ package com.github.axet.vget.vhs;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -35,6 +36,7 @@ import org.liquidplayer.webkit.javascriptcore.JSFunction;
 import org.liquidplayer.webkit.javascriptcore.JSValue;
 //import org.apache.http.client.utils.URLEncodedUtils;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.youtube.ParseYoutubeLink;
 import com.atum.tunetube.youtube.YoutubeLink;
 import com.github.axet.vget.info.VGetParser;
@@ -195,7 +197,7 @@ public class YouTubeParser extends VGetParser {
         static ConcurrentMap<String, String> playerCache = new ConcurrentHashMap<String, String>();
 
         public DecryptSignatureHtml5(String signatur, URI playerURI) {
-            System.out.println("encrypted signiture: "+signatur);
+            Log.i(Constants.YOUTUBE_TAG,"encrypted signiture: "+signatur);
             this.sig = signatur;
             this.playerURI = playerURI;
         }
@@ -226,7 +228,7 @@ public class YouTubeParser extends VGetParser {
                             notify.run();
                         }
                     }, stop);
-                    System.out.println("player uri: "+ playerURI.toString());
+                    Log.i(Constants.YOUTUBE_TAG,"player uri: "+ playerURI.toString());
                     playerCache.put(playerURI.toString(), result);
                     return result;
                 } catch (MalformedURLException e) {
@@ -294,15 +296,15 @@ public class YouTubeParser extends VGetParser {
                 throw new DownloadError("Unable to extract the main decode function!");
             }
 
-            System.out.println("decoder function script after obtaining func: "+functionName+" '"+decodeScript+"'");
-            //System.out.println("playerJS: "+playerJS);
+            Log.i(Constants.YOUTUBE_TAG,"decoder function script after obtaining func: "+functionName+" '"+decodeScript+"'");
+            //Log.i(Constants.YOUTUBE_TAG,"playerJS: "+playerJS);
             // determine the name of the helper function which is used by the
             // main decode function
             Pattern decodeFunctionHelperName = Pattern.compile("\\);([a-zA-Z0-9]+)\\.");
             Matcher decodeFunctionHelperNameMatch = decodeFunctionHelperName.matcher(decodeScript.toString());
             if (decodeFunctionHelperNameMatch.find()) {
                 final String decodeFuncHelperName = decodeFunctionHelperNameMatch.group(1);
-                System.out.println("searching for JS func: "+decodeFuncHelperName);
+                Log.i(Constants.YOUTUBE_TAG,"searching for JS func: "+decodeFuncHelperName);
                 Pattern decodeFunctionHelper = Pattern.compile(
                         String.format("(var %s=\\{[a-zA-Z0-9]*:function\\(.*?\\};)", decodeFuncHelperName),
                         Pattern.DOTALL);
@@ -316,7 +318,7 @@ public class YouTubeParser extends VGetParser {
             } else {
                 throw new DownloadError("Unable to determine the name of the helper decode function!");
             }
-            System.out.println("decoder function script after obtaining func2: "+functionName+" '"+decodeScript+"'");
+            Log.i(Constants.YOUTUBE_TAG,"decoder function script after obtaining func2: "+functionName+" '"+decodeScript+"'");
             return decodeScript.toString();
         }
 
@@ -327,28 +329,28 @@ public class YouTubeParser extends VGetParser {
             //ScriptEngineManager manager = new ScriptEngineManager();
             // use a js script engine
             //ScriptEngine engine = manager.getEngineByName("JavaScript");
-            System.out.println("starting decrypt logic");
+            Log.i(Constants.YOUTUBE_TAG,"starting decrypt logic");
             JSContext context = new JSContext();
 
             final String playerScript = getHtml5PlayerScript(stop, notify);
-            //System.out.println("html5player: "+playerScript);
+            //Log.i(Constants.YOUTUBE_TAG,"html5player: "+playerScript);
             final String decodeFuncName = getMainDecodeFunctionName(playerScript);
-            System.out.println("decodeFuncName: "+decodeFuncName);
+            Log.i(Constants.YOUTUBE_TAG,"decodeFuncName: "+decodeFuncName);
             final String decodeScript = extractDecodeFunctions(playerScript, decodeFuncName);
-            //System.out.println("decodeScript: "+decodeScript);
+            //Log.i(Constants.YOUTUBE_TAG,"decodeScript: "+decodeScript);
             String decodedSignature = null;
             try {
                 // evaluate script
                 //engine.eval(decodeScript);
                 JSValue inv = context.evaluateScript(decodeScript);
-                //System.out.println("starting decrypt logic 1: "+inv);
+                //Log.i(Constants.YOUTUBE_TAG,"starting decrypt logic 1: "+inv);
 
                 JSFunction inv2 = context.property(decodeFuncName).toFunction();
-                //System.out.println("starting decrypt logic 2: "+inv2);
+                //Log.i(Constants.YOUTUBE_TAG,"starting decrypt logic 2: "+inv2);
                 JSValue value = new JSValue(context, sig);
                 decodedSignature = inv2.call(context, value).toString();
                 //decodedSignature = inv2.call().toString();
-                System.out.println("starting decrypt logic 3: "+decodedSignature);
+                Log.i(Constants.YOUTUBE_TAG,"starting decrypt logic 3: "+decodedSignature);
                 //inv.
 
                 //Invocable inv = (Invocable) engine;
@@ -689,7 +691,7 @@ public class YouTubeParser extends VGetParser {
     public static Map<String, String> getQueryMap(String qs) {
         try {
             qs = qs.trim();
-            System.out.println("getQueryMap: "+qs);
+            Log.i(Constants.YOUTUBE_TAG,"getQueryMap: "+qs);
             List<NameValuePair> list;
             list = getQueryString(qs);
             HashMap<String, String> map = new HashMap<String, String>();
@@ -720,15 +722,15 @@ public class YouTubeParser extends VGetParser {
     void extractHtmlInfo(List<VideoDownload> sNextVideoURL, YouTubeInfo info, String html, AtomicBoolean stop,
             Runnable notify) throws Exception {
         {
-            //System.out.println("info: "+info.getWeb());
-            //System.out.println("html: "+html);
+            //Log.i(Constants.YOUTUBE_TAG,"info: "+info.getWeb());
+            //Log.i(Constants.YOUTUBE_TAG,"html: "+html);
             //extract related videos
             String[] splits = html.split("\n");
             if(splits != null) {
                 for (String line : splits) {
                     YoutubeLink[] youtubeTracks = ParseYoutubeLink.parseHtml(line);
                     for(YoutubeLink link : youtubeTracks) {
-                        System.out.println("adding recommended track: " + link.getYoutubeUrl() + " " + link.getYoutubeTitle());
+                        Log.i(Constants.YOUTUBE_TAG,"adding recommended track: " + link.getYoutubeUrl() + " " + link.getYoutubeTitle());
                         info.addRelated(link);
                     }
                 }
@@ -758,9 +760,9 @@ public class YouTubeParser extends VGetParser {
             if (playerVersionMatch.find()) {
                 String playerFinalUrl = "https://www.youtube.com/yts/jsbin/player-"+playerVersionMatch.group(1)+"/en_US/base.js";
                 info.setPlayerURI(new URI(playerFinalUrl));
-                System.out.println("setting player url as: " + info.getPlayerURI());
+                Log.i(Constants.YOUTUBE_TAG,"setting player url as: " + info.getPlayerURI());
             } else {
-                System.out.println("no player found");
+                Log.i(Constants.YOUTUBE_TAG,"no player found");
             }
         }
 
@@ -883,7 +885,7 @@ public class YouTubeParser extends VGetParser {
         for (String urlString : urlStrings) {
             urlString = StringEscapeUtils.unescapeJava(urlString);
 
-            System.out.println("undecoded youtube url: "+urlString);
+            Log.i(Constants.YOUTUBE_TAG,"undecoded youtube url: "+urlString);
             String urlFull = URLDecoder.decode(urlString, UTF8);
 
             // universal request
@@ -898,7 +900,7 @@ public class YouTubeParser extends VGetParser {
                     if (linkMatch.find()) {
                         url = linkMatch.group(1);
                         url = URLDecoder.decode(url, UTF8);
-                        System.out.println("undecoded youtube url 2: "+urlString);
+                        Log.i(Constants.YOUTUBE_TAG,"undecoded youtube url 2: "+urlString);
                     }
                 }
 
@@ -936,13 +938,13 @@ public class YouTubeParser extends VGetParser {
                         sig = linkMatch.group(1);
 
                         if (info.getPlayerURI() == null) {
-                            System.out.println("no html5 player could be found.");
+                            Log.i(Constants.YOUTUBE_TAG,"no html5 player could be found.");
                             DecryptSignature ss = new DecryptSignature(sig);
                             sig = ss.decrypt();
                         } else {
                             DecryptSignatureHtml5 ss = new DecryptSignatureHtml5(sig, info.getPlayerURI());
                             sig = ss.decrypt(stop, notify);
-                            System.out.println("decrypted video url: "+itag+" "+sig);
+                            Log.i(Constants.YOUTUBE_TAG,"decrypted video url: "+itag+" "+sig);
                         }
                     }
                 }

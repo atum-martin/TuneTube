@@ -1,5 +1,7 @@
 package com.github.axet.vget;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
@@ -11,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.atum.tunetube.Constants;
 import com.github.axet.threads.LimitThreadPool;
 import com.github.axet.vget.info.VGetParser;
 import com.github.axet.vget.info.VideoFileInfo;
@@ -543,7 +546,7 @@ public class VGet {
                         if (dinfo.targetFile == null) {
                             throw new RuntimeException("bad target");
                         }
-                        System.out.println("attempting to dl content type: "+dinfo.getContentType());
+                        Log.i(Constants.YOUTUBE_TAG,"attempting to dl content type: "+dinfo.getContentType());
                         boolean a = dinfo.getContentType().contains("audio/");
                         if(!a)
                         	continue;

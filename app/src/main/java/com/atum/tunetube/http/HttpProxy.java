@@ -1,7 +1,9 @@
 package com.atum.tunetube.http;
 
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.util.FileUtils;
 
@@ -37,19 +39,19 @@ public class HttpProxy extends NanoHTTPD {
         }
         String url = parms.get("url");
         String title = parms.get("title");
-        System.out.println("receiving http buffer for: "+title+ " "+url);
+        Log.i(Constants.HTTP_TAG,"receiving http buffer for: "+title+ " "+url);
         try {
 
             InputStream in = FileUtils.getInputStreamForTitle(title);
             if(in != null){
                 for(Map.Entry<String, String> e : session.getHeaders().entrySet()){
-                    System.out.println("headers: "+e.getKey()+" "+e.getValue());
+                    Log.i(Constants.HTTP_TAG,"headers: "+e.getKey()+" "+e.getValue());
                 }
             } else {
                 HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
                 if (parms.get("Range") != null) {
                     http.setRequestProperty("Range", parms.get("Range"));
-                    System.out.println("range: " + parms.get("Range"));
+                    Log.i(Constants.HTTP_TAG,"range: " + parms.get("Range"));
                 }
                 String filePath = FileUtils.getLocationForTitle(title);
                 OutputStream fileOut = null;

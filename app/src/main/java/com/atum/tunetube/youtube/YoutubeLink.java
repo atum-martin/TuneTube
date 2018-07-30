@@ -1,7 +1,9 @@
 package com.atum.tunetube.youtube;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.model.PlayableItem;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.sql.DatabaseConnection;
@@ -58,7 +60,7 @@ public class YoutubeLink extends PlaylistItem implements PlayableItem {
             return;
         YouTubeInfo info = null;
         try {
-            System.out.println("getYoutubeUrl: "+getYoutubeUrl());
+            Log.i(Constants.YOUTUBE_TAG,"getYoutubeUrl: "+getYoutubeUrl());
             info = new YouTubeInfo(new URL(getYoutubeUrl()));
         } catch (MalformedURLException e) {
             e.printStackTrace();

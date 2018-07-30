@@ -1,5 +1,9 @@
 package com.atum.tunetube.youtube;
 
+import android.util.Log;
+
+import com.atum.tunetube.Constants;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +26,7 @@ public class ParseYoutubeLink {
         }
         //Youtube old UI.
         if(line.contains("yt-lockup-title") || line.contains("content-link")){
-            //System.out.println("parsing video: "+line);
+            //Log.i(Constants.YOUTUBE_TAG,"parsing video: "+line);
             int index = line.indexOf("<a");
             line = line.substring(index);
             index = line.indexOf("href=\"");
@@ -44,10 +48,10 @@ public class ParseYoutubeLink {
             }
             YoutubeLink link = new YoutubeLink(videoId,title);
 
-            System.out.println(videoId+" "+title);
-            System.out.println("track: "+link.getTrackName());
+            Log.i(Constants.YOUTUBE_TAG,videoId+" "+title);
+            Log.i(Constants.YOUTUBE_TAG,"track: "+link.getTrackName());
             for(String artist : link.getArtists()) {
-                System.out.println("artist: " + artist);
+                Log.i(Constants.YOUTUBE_TAG,"artist: " + artist);
             }
             return new YoutubeLink[]{ link };
         }
@@ -57,7 +61,7 @@ public class ParseYoutubeLink {
     private static YoutubeLink[] parseJson(String line) {
         //Obtain the json string only. it starts at "ytInitialData" and ends at a semi-colon.
         line = line.substring(line.indexOf("ytInitialData"));
-        //System.out.println("parsing json ytInitialData");
+        //Log.i(Constants.YOUTUBE_TAG,"parsing json ytInitialData");
         if(!line.contains("="))
             return new YoutubeLink[]{};
         line = line.substring(line.indexOf("=")+1);
@@ -65,7 +69,7 @@ public class ParseYoutubeLink {
         LinkedList<YoutubeLink> outputVideos = new LinkedList<>();
         try {
             JSONObject json = new JSONObject(line);
-            //System.out.println("ytInitialData="+ json);
+            //Log.i(Constants.YOUTUBE_TAG,"ytInitialData="+ json);
             JSONArray videos = getYoutubeContents(json);
             if(videos == null)
                 return new YoutubeLink[]{};
@@ -143,7 +147,7 @@ public class ParseYoutubeLink {
 
         String videoId = PLAYER_URL + videoRenderer.getString("videoId");
         String title = videoRenderer.getJSONObject("title").getString("simpleText");
-        System.out.println("contructing json video: "+videoId +" "+title);
+        Log.i(Constants.YOUTUBE_TAG,"contructing json video: "+videoId +" "+title);
         return new YoutubeLink(videoId,title);
     }
 }

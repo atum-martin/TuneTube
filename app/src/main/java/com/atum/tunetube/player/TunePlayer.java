@@ -2,8 +2,10 @@ package com.atum.tunetube.player;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlayableItem;
@@ -37,11 +39,11 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
     }
 
     public void setUrl(String url, String title) throws IOException {
-        System.out.println("url of player: "+url);
+        Log.i(Constants.MEDIA_TAG,"url of player: "+url);
 
         if(url.toLowerCase().startsWith("http"))
             url = "http://localhost:8093/?url="+ URLEncoder.encode(url, ENCODING)+"&title="+URLEncoder.encode(title, ENCODING);
-        System.out.println("url of player: "+url);
+        Log.i(Constants.MEDIA_TAG,"url of player: "+url);
         this.url = url;
         if(player == null) {
             player = createPlayer();
@@ -49,9 +51,9 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
             resetPlayer();
             player.setDataSource(context, Uri.parse(url));
             player.prepare();
-            System.out.println("media player prepared");
+            Log.i(Constants.MEDIA_TAG,"media player prepared");
             player.start();
-            System.out.println("media player started");
+            Log.i(Constants.MEDIA_TAG,"media player started");
         }
     }
 
@@ -76,7 +78,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         } catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println("media player prepared");
+        Log.i(Constants.MEDIA_TAG,"media player prepared");
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
         controller = new PlayerController(mPlayer, context);
@@ -88,13 +90,13 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         context.runOnUiThread(controller);
         //mPlayer.setVolume(0.1f, 0.1f);
         mPlayer.start();
-        System.out.println("media player started");
+        Log.i(Constants.MEDIA_TAG,"media player started");
         return mPlayer;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        System.out.println("attempting to play the next track.");
+        Log.i(Constants.MEDIA_TAG,"attempting to play the next track.");
         String tmpUrl = this.url;
         playNextTrack();
         if (playerCompletedListener != null){
@@ -104,7 +106,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        System.out.println("error with media player");
+        Log.i(Constants.MEDIA_TAG,"error with media player");
         return false;
     }
 

@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlaylistItem;
 import com.atum.tunetube.util.IndexDiskFiles;
@@ -71,7 +73,7 @@ public class DatabaseConnection {
         while(resultSet.moveToNext()){
             String query = resultSet.getString(0);
 
-            System.out.println("row in db: "+query);
+            Log.i(Constants.DB_TAG,"row in db: "+query);
             YoutubeTask task = new YoutubeTask(query, YoutubeTask.Type.SEARCH_RESULTS, this, query);
             output.add(task);
         }
@@ -101,7 +103,7 @@ public class DatabaseConnection {
             long lastPlayed = resultSet.getLong(2);
             YoutubeLink link = new YoutubeLink(youtubeUrl, youtubeTitle);
             output.add(link);
-            System.out.println("recentlyPlayed: "+link.getYoutubeTitle());
+            Log.i(Constants.DB_TAG,"recentlyPlayed: "+link.getYoutubeTitle());
         }
         resultSet.close();
         return output;
@@ -136,7 +138,7 @@ public class DatabaseConnection {
 
     public void persistDocumentUri(Uri uri) {
         String uriStr = uri.toString();
-        System.out.println("saving document path: "+uriStr);
+        Log.i(Constants.DB_TAG,"saving document path: "+uriStr);
         String updateQuery = "UPDATE storage_directorys SET path = '"+uriStr+"' WHERE type = 'media_directory';";
         SQLiteStatement statement = connection.compileStatement(updateQuery);
         int affectedRows = statement.executeUpdateDelete();
@@ -151,7 +153,7 @@ public class DatabaseConnection {
         String uriStr = null;
         if(resultSet.moveToNext()){
             uriStr = resultSet.getString(0);
-            System.out.println("decoded media uri: "+uriStr);
+            Log.i(Constants.DB_TAG,"decoded media uri: "+uriStr);
         }
         if(uriStr == null)
             return null;

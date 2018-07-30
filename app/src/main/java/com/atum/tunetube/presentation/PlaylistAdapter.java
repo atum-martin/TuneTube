@@ -1,6 +1,7 @@
 package com.atum.tunetube.presentation;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.MainActivity;
 import com.atum.tunetube.R;
 import com.atum.tunetube.model.PlayableItem;
@@ -110,7 +112,7 @@ public class PlaylistAdapter {
         }
 
         private void addTrackToPlaylist(int position) {
-            System.out.println("add position to playlist: "+position);
+            Log.i(Constants.TAG,"add position to playlist: "+position);
             activity.getPlaylistManager().add(songs.get(position));
         }
 

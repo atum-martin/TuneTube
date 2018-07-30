@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.MediaController;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.R;
 
 
@@ -41,14 +42,14 @@ public class PlayerController implements MediaPlayer.OnPreparedListener, MediaCo
         if(handler == null) {
             handler = new Handler();
         }
-        System.out.println("preparing media controller");
+       Log.i(Constants.TAG,"preparing media controller");
        Log.d(TAG, "onPrepared");
        mediaController.setMediaPlayer(this);
        mediaController.setAnchorView(activity.findViewById(R.id.main_audio_controller));
 
        handler.post(new Runnable() {
            public void run() {
-               System.out.println("preparing media controller 2");
+               Log.i(Constants.TAG,"preparing media controller 2");
                mediaController.setEnabled(true);
                mediaController.show(TIMEOUT);
            }

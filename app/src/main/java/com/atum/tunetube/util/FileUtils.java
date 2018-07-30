@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
+import com.atum.tunetube.Constants;
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.github.axet.vget.vhs.YouTubeParser;
 
@@ -67,7 +69,7 @@ public class FileUtils {
         if(documentDir != null) {
             DocumentFile media = documentDir.findFile(getStringForTitle(title));
             if(media != null) {
-                System.out.println("local sd-file found for: " + title + " '" + media.getUri() + "'");
+                Log.i(Constants.TAG,"local sd-file found for: " + title + " '" + media.getUri() + "'");
                 return new YouTubeParser.VideoDownload(null, media.getUri());
             }
         }
@@ -75,7 +77,7 @@ public class FileUtils {
         String filePath = getLocationForTitle(title);
         File f = new File(filePath);
         if(f.exists()) {
-            System.out.println("local file found for: "+title+" '"+f.getAbsolutePath()+"'");
+            Log.i(Constants.TAG,"local file found for: "+title+" '"+f.getAbsolutePath()+"'");
             return new YouTubeParser.VideoDownload(null, Uri.parse("file://"+f.getAbsolutePath()));
         }
         return null;
@@ -97,7 +99,7 @@ public class FileUtils {
 
     private static boolean createDirIfNotExists(String dir) {
         File f = new File(dir);
-        System.out.println("creating sd dir: "+dir);
+        Log.i(Constants.TAG,"creating sd dir: "+dir);
         if(!f.exists())
             return f.mkdir();
         return true;

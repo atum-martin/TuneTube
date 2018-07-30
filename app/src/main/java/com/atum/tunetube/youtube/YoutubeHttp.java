@@ -1,5 +1,9 @@
 package com.atum.tunetube.youtube;
 
+import android.util.Log;
+
+import com.atum.tunetube.Constants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,10 +46,10 @@ public class YoutubeHttp {
 
             String line;
             int returnCode = conn.getResponseCode();
-            System.out.println("return code: "+returnCode);
+            Log.i(Constants.YOUTUBE_TAG,"return code: "+returnCode);
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while((line = br.readLine()) != null){
-                System.out.println(line);
+                Log.i(Constants.YOUTUBE_TAG,line);
                 output.add(line);
             }
             br.close();
