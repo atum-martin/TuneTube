@@ -39,9 +39,6 @@ public class DatabaseConnection {
     public DatabaseConnection(Context ctx, String name){
         this.ctx = ctx;
         instance = this;
-        File databaseFile = new File(name);
-        //databaseFile.delete();
-        boolean dbExists = databaseFile.exists();
 
         connection = SQLiteDatabase.openOrCreateDatabase(name, null);
 
@@ -49,10 +46,9 @@ public class DatabaseConnection {
         new UpgradeDatabase(connection, databaseUpgradeFile);
 
         //If the DB doesn't exist index files previously created by the application.
-        if(!dbExists){
-            File songDir = new File(FileUtils.getWorkingDirectory());
+        if(getRecentlyPlayed().size() == 0){
             IndexDiskFiles indexer = new IndexDiskFiles(this);
-            indexer.indexDirectory(songDir);
+            indexer.indexDirectory(FileUtils.getDocumentDir());
         }
     }
 

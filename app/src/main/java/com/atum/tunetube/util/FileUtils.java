@@ -25,19 +25,10 @@ import java.net.URL;
 
 public class FileUtils {
 
-    private static String DIRECTORY_NAME = "/TestTube";
-
-    private static String cacheTrackDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
     private static DocumentFile documentDir = null;
 
     public static void init(Context context){
         setSDCardDirectory(context);
-        File f = new File(cacheTrackDirectory);
-        if(!f.exists() && !createDirIfNotExists(cacheTrackDirectory)){
-            cacheTrackDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+DIRECTORY_NAME;
-            f = new File(cacheTrackDirectory);
-            createDirIfNotExists(f.getAbsolutePath());
-        }
     }
 
     private static void setSDCardDirectory(Context context){
@@ -50,14 +41,6 @@ public class FileUtils {
             //uri not found.
             e.printStackTrace();
         }
-    }
-
-    public static String getWorkingDirectory(){
-        return cacheTrackDirectory;
-    }
-
-    public static String getLocationForTitle(String title) {
-        return getWorkingDirectory()+"/"+getStringForTitle(title);
     }
 
     public static String getStringForTitle(String title) {
@@ -73,36 +56,8 @@ public class FileUtils {
                 return new YouTubeParser.VideoDownload(null, media.getUri());
             }
         }
-        //check internal cache files
-        String filePath = getLocationForTitle(title);
-        File f = new File(filePath);
-        if(f.exists()) {
-            Log.i(Constants.TAG,"local file found for: "+title+" '"+f.getAbsolutePath()+"'");
-            return new YouTubeParser.VideoDownload(null, Uri.parse("file://"+f.getAbsolutePath()));
-        }
-        return null;
-    }
 
-    public static InputStream getInputStreamForTitle(String title){
-        String dir = getWorkingDirectory();
-        String filePath = getLocationForTitle(title);
-        File f = new File(filePath);
-        if(f.exists()){
-            try {
-                return new FileInputStream(f);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
         return null;
-    }
-
-    private static boolean createDirIfNotExists(String dir) {
-        File f = new File(dir);
-        Log.i(Constants.TAG,"creating sd dir: "+dir);
-        if(!f.exists())
-            return f.mkdir();
-        return true;
     }
 
     public static void setDocumentFile(DocumentFile documentFile, Uri treeUri) {

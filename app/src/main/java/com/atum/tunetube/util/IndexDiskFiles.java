@@ -1,5 +1,7 @@
 package com.atum.tunetube.util;
 
+import android.support.v4.provider.DocumentFile;
+
 import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.youtube.YoutubeLink;
 
@@ -18,10 +20,10 @@ public class IndexDiskFiles {
         this.db = db;
     }
 
-    public void indexDirectory(File dir){
-        if(dir == null || dir.listFiles() == null)
+    public void indexDirectory(DocumentFile provider){
+        if(provider == null || !provider.exists() || !provider.isDirectory() || provider.listFiles() == null)
             return;
-        for(File file : dir.listFiles()){
+        for(DocumentFile file : provider.listFiles()){
 
             if(!file.getName().endsWith(".m3u")){
                 continue;

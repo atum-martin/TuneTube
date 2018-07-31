@@ -50,32 +50,21 @@ public class HttpProxy extends NanoHTTPD {
         try {
 
             InputStream in = null;
-            //If cache is supported check for a local static copy of the requested file.
-            if(cacheSupport)
-                in = FileUtils.getInputStreamForTitle(title);
-            if(in != null){
-                for(Map.Entry<String, String> e : session.getHeaders().entrySet()){
-                    Log.i(Constants.HTTP_TAG,"headers: "+e.getKey()+" "+e.getValue());
-                }
-            } else {
-                HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
-                if (parms.get("Range") != null) {
-                    http.setRequestProperty("Range", parms.get("Range"));
-                    Log.i(Constants.HTTP_TAG,"range: " + parms.get("Range"));
-                }
-                if(cacheSupport) {
-                    String filePath = FileUtils.getLocationForTitle(title);
-                    OutputStream fileOut = null;
-                    if (FileUtils.getDocumentDir() != null) {
-                        DocumentFile newFile = FileUtils.getDocumentDir().createFile("audio/vorbis", FileUtils.getStringForTitle(title));
-                        fileOut = MainActivity.getInstance().getContentResolver().openOutputStream(newFile.getUri());
-                    } else {
-                        fileOut = new FileOutputStream(filePath);
-                    }
+            HttpURLConnection http = (HttpURLConnection) new URL(url).openConnection();
+            if (parms.get("Range") != null) {
+                http.setRequestProperty("Range", parms.get("Range"));
+                Log.i(Constants.HTTP_TAG,"range: " + parms.get("Range"));
+            }
+            if(cacheSupport) {
+                OutputStream fileOut = null;
+                if (FileUtils.getDocumentDir() != null) {
+                    DocumentFile newFile = FileUtils.getDocumentDir().createFile("audio/orbis", FileUtils.getStringForTitle(title));
+                    fileOut = MainActivity.getInstance().getContentResolver().openOutputStream(newFile.getUri());
                     in = new RelayInputStream(http.getInputStream(), fileOut);
-                } else {
-                    in = http.getInputStream();
                 }
+            }
+            if(in == null){
+                in = http.getInputStream();
             }
             return newChunkedResponse(Response.Status.OK, session.getHeaders().get("Content-Type"), in);
         } catch (IOException e) {

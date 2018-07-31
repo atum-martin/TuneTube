@@ -5,6 +5,7 @@ package com.atum.tunetube;
  */
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -144,9 +145,14 @@ public class NotificationService extends Service {
         notificationExpandedView.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);*/
 
         notificationExpandedView.setTextViewText(R.id.status_bar_track_name, "Song Title");
-        //String channelId = "TestTubeNotification";
+        String channelId = "TestTubeNotification";
 
-        builder = new Notification.Builder(this/*, channelId*/);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(this, channelId);
+        } else {
+            builder = new Notification.Builder(this);
+        }
+
         status = builder.build();
         status.contentView = notificationExpandedView;
         status.bigContentView = notificationExpandedView;
@@ -154,13 +160,13 @@ public class NotificationService extends Service {
         status.icon = R.mipmap.ic_launcher;
         status.contentIntent = pendingIntent;
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId, "Test Tube notification",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.setShowBadge(false);
             channel.setSound(null, null);
             mNotificationManager.createNotificationChannel(channel);
-        }*/
+        }
 
         startForeground(FOREGROUND_SERVICE, status);
 
