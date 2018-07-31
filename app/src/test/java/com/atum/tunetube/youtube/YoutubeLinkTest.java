@@ -161,4 +161,10 @@ public class YoutubeLinkTest {
         YoutubeLink link = new YoutubeLink("","Fifth Harmony - Worth It ft. Kid Ink");
         Assert.assertEquals("Worth It", link.getTrackName());
     }
+
+    @Test
+    public void testTrack6() throws Exception {
+        YoutubeLink link = new YoutubeLink("","No hypen in name");
+        Assert.assertEquals("No hypen in name", link.getTrackName());
+    }
 }

@@ -83,6 +83,7 @@ public class TunePlayer implements MediaPlayer.OnCompletionListener, MediaPlayer
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnErrorListener(this);
         mPlayer.setOnSeekCompleteListener(this);
+
         controller = new PlayerController(mPlayer, context);
         mPlayer.setOnPreparedListener(controller);
 

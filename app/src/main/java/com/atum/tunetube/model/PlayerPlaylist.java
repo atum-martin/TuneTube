@@ -11,22 +11,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by madtu on 26/05/2018.
+ * Created by atum_martin on 26/05/2018.
  */
 
 public class PlayerPlaylist {
     private LinkedList<PlaylistItem> items = new LinkedList<>();
 
     public PlayableItem poll(){
-        while(true) {
-            PlaylistItem item = items.poll();
-            if(item == null){
-                return null;
-            }
-            if(item instanceof PlayableItem){
-                return (PlayableItem) item;
-            }
+        PlaylistItem item = items.poll();
+        if(item == null){
+            return null;
         }
+        return (PlayableItem) item;
     }
 
     public boolean isEmpty(){
