@@ -28,6 +28,7 @@ import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.util.FileUtils;
 import com.atum.tunetube.youtube.YoutubeLink;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         searchMenuItem.setOnQueryTextListener(this);
 
-        databaseConnection = new DatabaseConnection(getApplicationContext(), this.getCacheDir()+"/testdb1");
+        databaseConnection = new DatabaseConnection(getResources().openRawResource(R.raw.databaseupdates), new File(this.getCacheDir()+"/testdb1"));
         FileUtils.init(this);
         constructPlaylists();
         startService();

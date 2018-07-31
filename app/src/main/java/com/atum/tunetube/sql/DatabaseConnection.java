@@ -32,17 +32,13 @@ import java.util.List;
 
 public class DatabaseConnection {
 
-    private Context ctx;
     private SQLiteDatabase connection;
     private static DatabaseConnection instance = null;
 
-    public DatabaseConnection(Context ctx, String name){
-        this.ctx = ctx;
+    public DatabaseConnection(InputStream databaseUpgradeFile, File databaseFile){
         instance = this;
 
-        connection = SQLiteDatabase.openOrCreateDatabase(name, null);
-
-        InputStream databaseUpgradeFile = ctx.getResources().openRawResource(R.raw.databaseupdates);
+        connection = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
         new UpgradeDatabase(connection, databaseUpgradeFile);
 
         //If the DB doesn't exist index files previously created by the application.
