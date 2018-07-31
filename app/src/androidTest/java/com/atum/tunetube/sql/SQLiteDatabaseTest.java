@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+
 public class SQLiteDatabaseTest {
 
     @Rule
