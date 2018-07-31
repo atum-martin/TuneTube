@@ -1,4 +1,8 @@
 language: android
+branches:
+  except:
+  #dont build release tags.
+    - /^v\d+\.\d+\.\d+_devbranch
 env:
   global:
     - COMPILE_SDK_VERSION=27 # Same as `compileSdkVersion` in build.gradle
@@ -50,4 +54,4 @@ after_success:
   - wget https://github.com/tcnksm/ghr/releases/download/v0.10.2/ghr_v0.10.2_linux_amd64.tar.gz
   - tar -xf ghr_v0.10.2_linux_amd64.tar.gz
   - chmod +x ghr_v0.10.2_linux_amd64/ghr
-  - ghr_v0.10.2_linux_amd64/ghr -u atum-martin -r TuneTube -b "developer_build [ci skip]" -delete -prerelease v0.1_dev_branch $TRAVIS_BUILD_DIR/app/build/outputs/apk/debug/app-debug.apk
+  - ghr_v0.10.2_linux_amd64/ghr -u atum-martin -r TuneTube -b "developer_build [ci skip]" -delete -prerelease v0.1.0_dev_branch $TRAVIS_BUILD_DIR/app/build/outputs/apk/debug/app-debug.apk
