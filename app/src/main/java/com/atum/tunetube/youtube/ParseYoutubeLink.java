@@ -17,8 +17,6 @@ import java.util.LinkedList;
 
 public class ParseYoutubeLink {
 
-    private static final String PLAYER_URL = "/watch?v=";
-
     public static YoutubeLink[] parseHtml(String line){
         //Youtube have a new desktop UI, this has changed from primarily using HTML to using json.
         if(line.contains("ytInitialData")){
@@ -68,86 +66,12 @@ public class ParseYoutubeLink {
         //line = line.substring(0,line.indexOf(";"));
         LinkedList<YoutubeLink> outputVideos = new LinkedList<>();
         try {
-            JSONObject json = new JSONObject(line);
-            //Log.i(Constants.YOUTUBE_TAG,"ytInitialData="+ json);
-            JSONArray videos = getYoutubeContents(json);
-            if(videos == null)
-                return new YoutubeLink[]{};
-
-            for(int i = 0; i < videos.length(); i++){
-                JSONObject video = videos.getJSONObject(i);
-                YoutubeLink youtubeTrack = parseYoutubeRenderer(video);
-                if(youtubeTrack != null)
-                    outputVideos.add(youtubeTrack);
-            }
+            YoutubeObject youtubeObject = new YoutubeObject(new JSONObject(line));
+            outputVideos.addAll(youtubeObject.getYoutubeMedia());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return outputVideos.toArray(new YoutubeLink[outputVideos.size()]);
     }
 
-    private static JSONArray getYoutubeContents(JSONObject contents) throws JSONException {
-
-        JSONObject twoColumnWatchNextResults = contents.getJSONObject("contents");
-        if(!twoColumnWatchNextResults.isNull("twoColumnSearchResultsRenderer"))
-            twoColumnWatchNextResults = twoColumnWatchNextResults.getJSONObject("twoColumnSearchResultsRenderer");
-        if(!twoColumnWatchNextResults.isNull("twoColumnBrowseResultsRenderer"))
-            twoColumnWatchNextResults = twoColumnWatchNextResults.getJSONObject("twoColumnBrowseResultsRenderer");
-
-        //search results
-        if(!twoColumnWatchNextResults.isNull("primaryContents")) {
-            return twoColumnWatchNextResults
-                    .getJSONObject("primaryContents")
-                    .getJSONObject("sectionListRenderer")
-                    .getJSONArray("contents")
-                    .getJSONObject(0)
-                    .getJSONObject("itemSectionRenderer")
-                    .getJSONArray("contents");
-        }
-        //Recommended tracks/videos
-        if(!twoColumnWatchNextResults.isNull("secondaryResults")) {
-            return twoColumnWatchNextResults
-                    .getJSONObject("secondaryResults")
-                    .getJSONObject("secondaryResults")
-                    .getJSONArray("results");
-        }
-        //playlists
-        if(!twoColumnWatchNextResults.isNull("tabs")) {
-            return twoColumnWatchNextResults
-                    .getJSONArray("tabs")
-                    .getJSONObject(1)
-                    .getJSONObject("tabRenderer")
-                    .getJSONObject("content")
-                    .getJSONObject("sectionListRenderer")
-                    .getJSONArray("contents")
-                    .getJSONObject(0)
-                    .getJSONObject("itemSectionRenderer")
-                    .getJSONArray("contents")
-                    .getJSONObject(0)
-                    .getJSONObject("gridRenderer")
-                    .getJSONArray("items");
-        }
-        return null;
-    }
-
-    private static YoutubeLink parseYoutubeRenderer(JSONObject renderer) throws JSONException {
-        JSONObject videoRenderer;
-        if(!renderer.isNull("videoRenderer")){
-            videoRenderer = renderer.getJSONObject("videoRenderer");
-        } else if(!renderer.isNull("compactVideoRenderer")) {
-            videoRenderer = renderer.getJSONObject("compactVideoRenderer");
-        } else if(!renderer.isNull("gridVideoRenderer")) {
-            videoRenderer = renderer.getJSONObject("gridVideoRenderer");
-        } else if(!renderer.isNull("channelRenderer")){
-            //use case for an artists channel appears in results rather than a track/video.
-            return null;
-        } else {
-            return null;
-        }
-
-        String videoId = PLAYER_URL + videoRenderer.getString("videoId");
-        String title = videoRenderer.getJSONObject("title").getString("simpleText");
-        Log.i(Constants.YOUTUBE_TAG,"contructing json video: "+videoId +" "+title);
-        return new YoutubeLink(videoId,title);
-    }
 }
