@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         task = new YoutubeTask("Current Playlist", YoutubeTask.Type.CURRENT_PLAYLIST, this);
         playlists.add(task);
 
+        //display the recently played playlist
+        new YoutubeAsyncTask(MainActivity.this).execute(task);
     }
 
     public static final String PLAYER_ACTION = "com.atum.tunetube.player";

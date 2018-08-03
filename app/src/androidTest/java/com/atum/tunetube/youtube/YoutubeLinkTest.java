@@ -29,7 +29,7 @@ public class YoutubeLinkTest {
         Assert.assertNotNull(link.getVideoId());
         Assert.assertNotNull(link.getYoutubeUrl());
         Assert.assertNotNull(link.getYoutubeUrls());
-        //Assert.assertTrue(link.getRelatedItems().size() > 1);
+        Assert.assertTrue(link.getRelatedItems().size() > 1);
     }
 
 }
