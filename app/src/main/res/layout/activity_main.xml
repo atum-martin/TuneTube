@@ -13,45 +13,27 @@
         android:orientation="vertical"
         tools:context="com.atum.tunetube.MainActivity">
 
-        <SearchView
-            android:id="@+id/musicsearch"
-            android:layout_width="386dp"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/content"
+        <FrameLayout
+            android:id="@+id/main_activity_fragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/listview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </ListView>
-
-        </LinearLayout>
+            android:layout_height="wrap_content">
+        </FrameLayout>
 
         <!-- <MediaController android:id="@+id/media_controller"
             android:layout_width="fill_parent"
             android:layout_height="200px"
             android:visibility="visible"/>
         -->
-
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/navigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_alignParentBottom="true"
-                android:background="?android:attr/windowBackground"
-                app:menu="@menu/navigation" />
-
     </LinearLayout>
 
-
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/main_audio_controller"

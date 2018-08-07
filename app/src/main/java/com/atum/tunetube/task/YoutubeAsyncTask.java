@@ -40,6 +40,6 @@ public class YoutubeAsyncTask extends AsyncTask<YoutubeTask, Integer, Long> {
 
     @Override
     protected void onPostExecute(Long result) {
-        activity.getPlayListAdapter().displayPlaylist(songs);
+        activity.displayPlaylist(songs);
     }
 }

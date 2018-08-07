@@ -35,6 +35,7 @@ dependencies {
     compile 'com.android.support:design:28.0.0-beta01'
     compile 'com.android.support:support-v4:28.0.0-beta01'
     compile 'com.android.support:recyclerview-v7:28.0.0-beta01'
+    compile 'com.android.support:preference-v7:28.0.0-beta01'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.httpcomponents:httpcore:4.4.1'

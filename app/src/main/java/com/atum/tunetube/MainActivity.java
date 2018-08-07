@@ -4,18 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.SearchView;
 
 import com.atum.tunetube.http.HttpProxy;
 import com.atum.tunetube.model.PlayerPlaylist;
@@ -26,36 +24,33 @@ import com.atum.tunetube.sql.DatabaseConnection;
 import com.atum.tunetube.task.YoutubeAsyncTask;
 import com.atum.tunetube.task.YoutubeTask;
 import com.atum.tunetube.util.FileUtils;
-import com.atum.tunetube.youtube.YoutubeLink;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private PlaylistAdapter playListAdapter;
     private TunePlayer player;
-    private SearchView searchMenuItem;
+
     private DatabaseConnection databaseConnection;
     private List<PlaylistItem> playlists = new LinkedList<>();
     private LocalBroadcastManager bManager;
     private Intent serviceIntent;
     private static MainActivity instance;
+    private PlaylistFragment playlistFragment;
 
     public static MainActivity getInstance() {
         return instance;
     }
 
     private void constructPlaylists(){
-        YoutubeTask task = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
-        playlists.add(task);
+        YoutubeTask recentTask = new YoutubeTask("Recently Played", YoutubeTask.Type.DATABASE_RECENT, this);
+        playlists.add(recentTask);
 
-        task = new YoutubeTask("Recently Searched", YoutubeTask.Type.SEARCHES_RECENT, this);
+        YoutubeTask task = new YoutubeTask("Recently Searched", YoutubeTask.Type.SEARCHES_RECENT, this);
         playlists.add(task);
 
         task = new YoutubeTask("Recommended Tracks", YoutubeTask.Type.RECOMMENED_RECENT, this);
@@ -74,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         playlists.add(task);
 
         //display the recently played playlist
-        new YoutubeAsyncTask(MainActivity.this).execute(task);
+        new YoutubeAsyncTask(MainActivity.this).execute(recentTask);
     }
 
     public static final String PLAYER_ACTION = "com.atum.tunetube.player";
@@ -82,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final String PLAYER_ACTION_PLAY = "com.atum.tunetube.player.play";
     public static final String PLAYER_ACTION_PAUSE = "com.atum.tunetube.player.pause";
     public static final String UPDATE_TEXT_ACTION = "com.atum.tunetube.player.update";
+    private static final String PLAYLIST_FRAGMENT_TAG = "PLAYLIST_FRAGMENT_TAG";
 
     private BroadcastReceiver bReceiver = new BroadcastReceiver() {
         @Override
@@ -117,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.playlists:
-                    playListAdapter.displayPlaylist(playlists);
+                    displayPlaylist(playlists);
                     return true;
                 case R.id.recently_played:
                     YoutubeTask task2 = new YoutubeTask("Recent", YoutubeTask.Type.DATABASE_RECENT, MainActivity.this);
@@ -129,8 +125,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     startActivity(intent);
                     return true;
                 case R.id.settings:
-                    intent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivity(intent);
+                    //intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    //startActivity(intent);
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.main_activity_fragment, new SettingsActivity.GeneralPreferenceFragment());
+                    ft.commit();
                     return true;
             }
             return false;
@@ -138,9 +137,21 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     };
 
-    public PlaylistAdapter getPlayListAdapter() {
-        return playListAdapter;
+    public void displayPlaylist(List<PlaylistItem> playlists) {
+
+        Fragment playlistFrag = getSupportFragmentManager().findFragmentById(R.id.main_activity_fragment);
+        if (playlistFrag != null && playlistFrag instanceof PlaylistFragment) {
+            playlistFragment.getPlayListAdapter().displayPlaylist(playlists);
+            Log.i(Constants.TAG, "fragment already visible updating playlist.");
+        } else {
+            playlistFragment.setPlaylist(playlists);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.main_activity_fragment, playlistFragment, PLAYLIST_FRAGMENT_TAG);
+            ft.commit();
+            Log.i(Constants.TAG, "fragment not visible.");
+        }
     }
+
 
     public DatabaseConnection getDBConnection(){
         return databaseConnection;
@@ -152,28 +163,37 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         instance = this;
         setContentView(R.layout.activity_main);
 
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         try {
             new HttpProxy();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        player = new TunePlayer(this);
-        playListAdapter = new PlaylistAdapter(this, player);
+
 
         bManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PLAYER_ACTION);
         bManager.registerReceiver(bReceiver, intentFilter);
 
-        searchMenuItem = (SearchView) findViewById(R.id.musicsearch);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        searchMenuItem.setOnQueryTextListener(this);
-
         databaseConnection = new DatabaseConnection(getResources().openRawResource(R.raw.databaseupdates), new File(this.getCacheDir()+"/testdb1"));
         FileUtils.init(this);
+
+        player = new TunePlayer(this);
         constructPlaylists();
+        playlistFragment = new PlaylistFragment();
+        playlistFragment.setPlayer(player);
+        playlistFragment.setPlaylist(playlists);
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_activity_fragment, playlistFragment, PLAYLIST_FRAGMENT_TAG);
+        ft.commit();
+
+
         startService();
+
+
 
     }
 
@@ -191,18 +211,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         startService(serviceIntent);
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        searchMenuItem.clearFocus();
-        YoutubeTask task = new YoutubeTask("Search", YoutubeTask.Type.SEARCH, this, query);
-        new YoutubeAsyncTask(MainActivity.this).execute(task);
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
 /*
     @Override
     protected void onStop() {
@@ -221,6 +229,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public PlayerPlaylist getPlaylistManager(){
         return player.getPlaylist();
     }
+
+    public PlaylistAdapter getPlayListAdapter() { return playlistFragment.getPlayListAdapter(); }
 
     public TunePlayer getPlayer() {
         return player;

@@ -33,17 +33,19 @@ import java.util.List;
 
 public class PlaylistAdapter {
 
-    private MainActivity activity;
+    private View view;
     private PlayTrackListener listener;
+    MainActivity context;
 
-    public PlaylistAdapter(MainActivity activity, PlayTrackListener listener){
-        this.activity = activity;
+    public PlaylistAdapter(MainActivity context, View view, PlayTrackListener listener){
+        this.view = view;
+        this.context = context;
         this.listener = listener;
     }
 
     public void displayPlaylist(final List<PlaylistItem> songs){
-        ListView mainListView = (ListView) activity.findViewById(R.id.listview);
-        final PlaylistInternalAdapter listAdapter = new PlaylistInternalAdapter(activity, songs);
+        ListView mainListView = (ListView) view.findViewById(R.id.listview);
+        final PlaylistInternalAdapter listAdapter = new PlaylistInternalAdapter(context, songs);
 
         for(PlaylistItem link : songs) {
             listAdapter.add(link);
@@ -54,9 +56,9 @@ public class PlaylistAdapter {
     public class PlaylistInternalAdapter extends BaseAdapter implements ListAdapter {
         private final List<PlaylistItem> songs;
         private ArrayList<PlaylistItem> list = new ArrayList<>();
-        private Context context;
+        private MainActivity context;
 
-        public PlaylistInternalAdapter(Context context, List<PlaylistItem> songs) {
+        public PlaylistInternalAdapter(MainActivity context, List<PlaylistItem> songs) {
             this.context = context;
             this.songs = songs;
         }
@@ -113,7 +115,7 @@ public class PlaylistAdapter {
 
         private void addTrackToPlaylist(int position) {
             Log.i(Constants.TAG,"add position to playlist: "+position);
-            activity.getPlaylistManager().add(songs.get(position));
+            context.getPlaylistManager().add(songs.get(position));
         }
 
 
@@ -123,7 +125,7 @@ public class PlaylistAdapter {
             if(item != null && item instanceof YoutubeTask){
                 //If link is a playlist open that playlist.
                 YoutubeTask task = (YoutubeTask) item;
-                new YoutubeAsyncTask(activity).execute(task);
+                new YoutubeAsyncTask(context).execute(task);
             } else if(item != null && item instanceof YoutubeLink){
                 YoutubeLink link = (YoutubeLink) item;
                 //If link is a track play it.
