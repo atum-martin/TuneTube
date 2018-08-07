@@ -1,18 +1,20 @@
 package com.atum.tunetube;
 
 import java.util.concurrent.TimeUnit;
-import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.atum.tunetube.player.TunePlayer;
 
-public class AndroidMediaPlayerActivity extends Activity {
+public class AndroidMediaPlayerFragment extends Fragment {
 
     private MediaPlayer mediaPlayer;
     private TunePlayer player;
@@ -22,23 +24,24 @@ public class AndroidMediaPlayerActivity extends Activity {
     private SeekBar seekbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
 
-        //set the layout of the Activity
-        setContentView(R.layout.mediaplayer_layout);
 
-        //initialize views
-        initializeViews();
+        return inflater.inflate(R.layout.mediaplayer_layout, parent, false);
     }
 
-    public void initializeViews(){
-        songName = (TextView) findViewById(R.id.songName);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        initializeViews(view);
+    }
+
+    public void initializeViews(View view){
+        songName = (TextView) view.findViewById(R.id.songName);
         player = MainActivity.getInstance().getPlayer();
         mediaPlayer = player.getMediaPlayer();
         finalTime = mediaPlayer.getDuration();
-        duration = (TextView) findViewById(R.id.songDuration);
-        seekbar = (SeekBar) findViewById(R.id.seekBar);
+        duration = (TextView) view.findViewById(R.id.songDuration);
+        seekbar = (SeekBar) view.findViewById(R.id.seekBar);
         songName.setText("Sample_Song.mp3");
 
         seekbar.setMax((int) finalTime);

@@ -4,13 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent serviceIntent;
     private static MainActivity instance;
     private PlaylistFragment playlistFragment;
+    private SettingsActivity.GeneralPreferenceFragment settingsFragment;
 
     public static MainActivity getInstance() {
         return instance;
@@ -120,15 +124,16 @@ public class MainActivity extends AppCompatActivity {
                     new YoutubeAsyncTask(MainActivity.this).execute(task2);
                     return true;
                 case R.id.stop_playing:
-                    //player.resetPlayer();
-                    Intent intent = new Intent(MainActivity.this, AndroidMediaPlayerActivity.class);
-                    startActivity(intent);
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.main_activity_fragment, new AndroidMediaPlayerFragment());
+                    ft.commit();
                     return true;
                 case R.id.settings:
                     //intent = new Intent(MainActivity.this, SettingsActivity.class);
                     //startActivity(intent);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.main_activity_fragment, new SettingsActivity.GeneralPreferenceFragment());
+                    settingsFragment = new SettingsActivity.GeneralPreferenceFragment();
+                    ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.main_activity_fragment, settingsFragment);
                     ft.commit();
                     return true;
             }
@@ -149,6 +154,23 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(R.id.main_activity_fragment, playlistFragment, PLAYLIST_FRAGMENT_TAG);
             ft.commit();
             Log.i(Constants.TAG, "fragment not visible.");
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (resultCode == RESULT_OK) {
+            Uri treeUri = resultData.getData();
+
+            getContentResolver().takePersistableUriPermission(treeUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(instance, treeUri);
+
+            Log.d("MainActivity","pickedDir: "+pickedDir.getName()+" "+pickedDir.getType());
+            FileUtils.setDocumentFile(pickedDir, treeUri);
+
+            Preference preference = settingsFragment.findPreference(getString(R.string.downloadDirButton));
+            preference.setSummary(pickedDir.getName());
         }
     }
 
